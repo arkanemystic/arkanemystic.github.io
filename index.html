@@ -1,1 +1,806 @@
-Hello World
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Profiler Portfolio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'VT323', monospace;
+        }
+        
+        body {
+            background-color: #c0c0c0;
+            color: #000;
+            line-height: 1.2;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .system-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #c0c0c0;
+            border: 2px solid #000;
+            box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .menu-bar {
+            display: flex;
+            background-color: #fff;
+            border-bottom: 2px solid #000;
+            padding: 5px 10px;
+            font-size: 18px;
+            justify-content: space-between;
+        }
+        
+        .menu-items {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .time-display {
+            font-weight: bold;
+        }
+        
+        .desktop-container {
+            display: grid;
+            grid-template-columns: 70px 1fr 70px;
+            min-height: 500px;
+        }
+        
+        .sidebar {
+            background-color: #c0c0c0;
+            border-right: 2px solid #000;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .sidebar.right {
+            border-right: none;
+            border-left: 2px solid #000;
+        }
+        
+        .icon-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .icon {
+            width: 40px;
+            height: 40px;
+            background-color: #fff;
+            border: 2px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+        
+        .main-content {
+            background-color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+        
+        .window {
+            width: 100%;
+            border: 2px solid #000;
+            margin-bottom: 20px;
+        }
+        
+        .window-title {
+            background-color: #000;
+            color: #fff;
+            padding: 5px 10px;
+            text-align: center;
+            font-size: 18px;
+            border-bottom: 2px solid #000;
+        }
+        
+        .tab-container {
+            display: flex;
+            border-bottom: 2px solid #000;
+        }
+        
+        .tab {
+            padding: 5px 10px;
+            cursor: pointer;
+            border-right: 2px solid #000;
+            background-color: #c0c0c0;
+        }
+        
+        .tab.active {
+            background-color: #fff;
+            border-bottom: 2px solid #fff;
+            margin-bottom: -2px;
+        }
+        
+        .window-content {
+            padding: 15px;
+            display: none;
+        }
+        
+        .window-content.active {
+            display: block;
+        }
+        
+        .graph-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .graph {
+            border: 2px solid #000;
+            padding: 10px;
+        }
+        
+        .graph-title {
+            text-align: center;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .graph-visual {
+            height: 100px;
+            border: 2px solid #000;
+            position: relative;
+            background-color: #fff;
+            overflow: hidden;
+        }
+        
+        .graph-bar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: #000;
+            height: 60%;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .stats-box {
+            border: 2px solid #000;
+            padding: 10px;
+        }
+        
+        .stats-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-align: center;
+            border-bottom: 1px solid #000;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .stats-label {
+            font-weight: bold;
+        }
+        
+        .projects-list, .skills-list, .contact-form {
+            width: 100%;
+        }
+        
+        .project-item, .skill-item {
+            border: 2px solid #000;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+        
+        .project-title, .skill-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .skill-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #c0c0c0;
+            border: 2px solid #000;
+            margin-top: 5px;
+        }
+        
+        .skill-progress {
+            height: 100%;
+            background-color: #000;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #000;
+            background-color: #fff;
+            font-family: 'VT323', monospace;
+            font-size: 16px;
+        }
+        
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        button {
+            background-color: #000;
+            color: #fff;
+            border: 2px solid #000;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background-color: #333;
+        }
+        
+        /* Pixelated effect for charts */
+        .chart-line {
+            position: absolute;
+            height: 1px;
+            background-color: #000;
+            width: 3px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .desktop-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .graph-container, .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="system-container">
+        <div class="menu-bar">
+            <div class="menu-items">
+                <div>Profiler</div>
+                <div>File</div>
+                <div>Edit</div>
+                <div>View</div>
+                <div>Window</div>
+                <div>Help</div>
+            </div>
+            <div class="time-display" id="time-display">00:00</div>
+        </div>
+        
+        <div class="desktop-container">
+            <!-- Left Sidebar -->
+            <div class="sidebar left">
+                <div class="icon-container" data-tab="about">
+                    <div class="icon">👤</div>
+                    <div>HDD1</div>
+                </div>
+                <div class="icon-container" data-tab="projects">
+                    <div class="icon">📁</div>
+                    <div>Projects</div>
+                </div>
+                <div class="icon-container" data-tab="skills">
+                    <div class="icon">📊</div>
+                    <div>Skills</div>
+                </div>
+                <div class="icon-container" data-tab="contact">
+                    <div class="icon">✉️</div>
+                    <div>Contact</div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="main-content" id="main-content">
+                <!-- Dashboard / About -->
+                <div class="window" id="about-window">
+                    <div class="window-title">Profiler</div>
+                    <div class="tab-container">
+                        <div class="tab active" data-tab="applications">Applications</div>
+                        <div class="tab" data-tab="processes">Processes</div>
+                        <div class="tab" data-tab="monitor">Monitor</div>
+                    </div>
+                    
+                    <!-- Applications Tab -->
+                    <div class="window-content active" id="applications-content">
+                        <div class="graph-container">
+                            <div class="graph">
+                                <div class="graph-title">CPU</div>
+                                <div class="graph-visual" id="cpu-graph">
+                                    <div class="graph-bar"></div>
+                                </div>
+                            </div>
+                            <div class="graph">
+                                <div class="graph-title">Memory</div>
+                                <div class="graph-visual" id="memory-graph">
+                                    <div class="graph-bar"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-container">
+                            <div class="stats-box">
+                                <div class="stats-title">Profile</div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Name:</div>
+                                    <div>John Doe</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Title:</div>
+                                    <div>Full-Stack Developer</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Experience:</div>
+                                    <div>5 Years</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Status:</div>
+                                    <div>Available</div>
+                                </div>
+                            </div>
+                            <div class="stats-box">
+                                <div class="stats-title">Resources (KB)</div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Creativity:</div>
+                                    <div>876</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Logic:</div>
+                                    <div>925</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Coffee:</div>
+                                    <div>487</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Free:</div>
+                                    <div>154</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Processes Tab -->
+                    <div class="window-content" id="processes-content">
+                        <div class="stats-box" style="width: 100%;">
+                            <div class="stats-title">About Me</div>
+                            <p style="margin-bottom: 10px;">I am a passionate full-stack developer with expertise in building modern web applications. With a background in both front-end and back-end technologies, I create seamless, user-friendly experiences that solve real-world problems.</p>
+                            <p>My approach combines technical excellence with creative problem-solving. I'm always eager to learn new technologies and methodologies to enhance my development skills.</p>
+                        </div>
+                        
+                        <div class="stats-container" style="margin-top: 15px;">
+                            <div class="stats-box">
+                                <div class="stats-title">Education</div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Degree:</div>
+                                    <div>B.S. Computer Science</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">University:</div>
+                                    <div>Tech University</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Year:</div>
+                                    <div>2018</div>
+                                </div>
+                            </div>
+                            <div class="stats-box">
+                                <div class="stats-title">Achievements</div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Certifications:</div>
+                                    <div>4</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Awards:</div>
+                                    <div>2</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Patents:</div>
+                                    <div>1</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Monitor Tab -->
+                    <div class="window-content" id="monitor-content">
+                        <div class="stats-box" style="width: 100%; margin-bottom: 15px;">
+                            <div class="stats-title">System Information</div>
+                            <div class="stats-row">
+                                <div class="stats-label">Operating System:</div>
+                                <div>Human 1.0</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Primary Language:</div>
+                                <div>JavaScript 8.3.2</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Secondary Language:</div>
+                                <div>Python 3.9.5</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">System Uptime:</div>
+                                <div>28 Years, 3 Months</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-box" style="width: 100%;">
+                            <div class="stats-title">Personal Information</div>
+                            <div class="stats-row">
+                                <div class="stats-label">Location:</div>
+                                <div>San Francisco, CA</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Interests:</div>
+                                <div>Coding, Hiking, Photography</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Languages:</div>
+                                <div>English, Spanish</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Availability:</div>
+                                <div>Full-time, Remote</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Projects Window -->
+                <div class="window" id="projects-window" style="display: none;">
+                    <div class="window-title">Projects</div>
+                    <div class="window-content active">
+                        <div class="projects-list">
+                            <div class="project-item">
+                                <div class="project-title">E-Commerce Platform</div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Type:</div>
+                                    <div>Web Application</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Tech:</div>
+                                    <div>React, Node.js, MongoDB</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Status:</div>
+                                    <div>Completed</div>
+                                </div>
+                                <p style="margin-top: 10px;">A full-featured online shopping platform with user authentication, product catalog, and secure payment processing.</p>
+                            </div>
+                            
+                            <div class="project-item">
+                                <div class="project-title">Task Management System</div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Type:</div>
+                                    <div>Web Application</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Tech:</div>
+                                    <div>Vue.js, Express, PostgreSQL</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Status:</div>
+                                    <div>In Progress</div>
+                                </div>
+                                <p style="margin-top: 10px;">Collaborative project management tool designed for teams to track tasks, deadlines, and project milestones.</p>
+                            </div>
+                            
+                            <div class="project-item">
+                                <div class="project-title">Weather Forecast App</div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Type:</div>
+                                    <div>Mobile Application</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Tech:</div>
+                                    <div>React Native, Weather API</div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Status:</div>
+                                    <div>Completed</div>
+                                </div>
+                                <p style="margin-top: 10px;">Location-based weather application providing current conditions and 5-day forecasts with visual representations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Skills Window -->
+                <div class="window" id="skills-window" style="display: none;">
+                    <div class="window-title">Skills</div>
+                    <div class="window-content active">
+                        <div class="skills-list">
+                            <div class="skill-item">
+                                <div class="skill-title">Frontend Development</div>
+                                <div class="stats-row">
+                                    <div class="stats-label">HTML/CSS:</div>
+                                    <div class="skill-bar">
+                                        <div class="skill-progress" style="width: 95%;"></div>
+                                    </div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">JavaScript:</div>
+                                    <div class="skill-bar">
+                                        <div class="skill-progress" style="width: 90%;"></div>
+                                    </div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">React:</div>
+                                    <div class="skill-bar">
+                                        <div class="skill-progress" style="width: 85%;"></div>
+                                    </div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Vue.js:</div>
+                                    <div class="skill-bar">
+                                        <div class="skill-progress" style="width: 75%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-title">Backend Development</div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Node.js:</div>
+                                    <div class="skill-bar">
+                                        <div class="skill-progress" style="width: 80%;"></div>
+                                    </div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Python:</div>
+                                    <div class="skill-bar">
+                                        <div class="skill-progress" style="width: 70%;"></div>
+                                    </div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Express:</div>
+                                    <div class="skill-bar">
+                                        <div class="skill-progress" style="width: 75%;"></div>
+                                    </div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">API Design:</div>
+                                    <div class="skill-bar">
+                                        <div class="skill-progress" style="width: 85%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-title">Databases & DevOps</div>
+                                <div class="stats-row">
+                                    <div class="stats-label">MongoDB:</div>
+                                    <div class="skill-bar">
+                                        <div class="skill-progress" style="width: 80%;"></div>
+                                    </div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">PostgreSQL:</div>
+                                    <div class="skill-bar">
+                                        <div class="skill-progress" style="width: 75%;"></div>
+                                    </div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">Docker:</div>
+                                    <div class="skill-bar">
+                                        <div class="skill-progress" style="width: 65%;"></div>
+                                    </div>
+                                </div>
+                                <div class="stats-row">
+                                    <div class="stats-label">AWS:</div>
+                                    <div class="skill-bar">
+                                        <div class="skill-progress" style="width: 60%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Window -->
+                <div class="window" id="contact-window" style="display: none;">
+                    <div class="window-title">Contact</div>
+                    <div class="window-content active">
+                        <div class="stats-box" style="width: 100%; margin-bottom: 20px;">
+                            <div class="stats-title">Contact Information</div>
+                            <div class="stats-row">
+                                <div class="stats-label">Email:</div>
+                                <div>john.doe@example.com</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Phone:</div>
+                                <div>(123) 456-7890</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">LinkedIn:</div>
+                                <div>linkedin.com/in/johndoe</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">GitHub:</div>
+                                <div>github.com/johndoe</div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-form">
+                            <div class="form-group">
+                                <label for="name">Name:</label>
+                                <input type="text" id="name" name="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input type="email" id="email" name="email">
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Subject:</label>
+                                <input type="text" id="subject" name="subject">
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message:</label>
+                                <textarea id="message" name="message"></textarea>
+                            </div>
+                            <button type="submit">Send Message</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Sidebar -->
+            <div class="sidebar right">
+                <div class="icon-container">
+                    <div class="icon">💾</div>
+                    <div>HDD2</div>
+                </div>
+                <div class="icon-container">
+                    <div class="icon">📝</div>
+                    <div>Resume</div>
+                </div>
+                <div class="icon-container">
+                    <div class="icon">🖨️</div>
+                    <div>Printer</div>
+                </div>
+                <div class="icon-container">
+                    <div class="icon">🗑️</div>
+                    <div>Trash</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Update time display
+        function updateTime() {
+            const now = new Date();
+            let hours = now.getHours();
+            if (hours < 10) hours = '0' + hours;
+            let minutes = now.getMinutes();
+            if (minutes < 10) minutes = '0' + minutes;
+            document.getElementById('time-display').textContent = hours + ':' + minutes;
+        }
+        
+        updateTime();
+        setInterval(updateTime, 60000);
+        
+        // Tab navigation for About window
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Hide all content
+                const contents = document.querySelectorAll('.window-content');
+                contents.forEach(content => content.classList.remove('active'));
+                
+                // Show selected content
+                const tabName = tab.getAttribute('data-tab');
+                document.getElementById(tabName + '-content').classList.add('active');
+            });
+        });
+        
+        // Window navigation
+        const iconContainers = document.querySelectorAll('.icon-container');
+        iconContainers.forEach(icon => {
+            icon.addEventListener('click', () => {
+                const tabName = icon.getAttribute('data-tab');
+                if (!tabName) return;
+                
+                // Hide all windows
+                const windows = document.querySelectorAll('.window');
+                windows.forEach(window => {
+                    window.style.display = 'none';
+                });
+                
+                // Show selected window
+                document.getElementById(tabName + '-window').style.display = 'block';
+            });
+        });
+        
+        // Initialize the CPU and Memory graphs
+        function initGraphs() {
+            const cpuGraph = document.getElementById('cpu-graph');
+            const memoryGraph = document.getElementById('memory-graph');
+            
+            // Create random patterns for CPU usage
+            for (let i = 0; i < 30; i++) {
+                const height = Math.random() * 70 + 10;
+                const left = i * 3;
+                
+                const line = document.createElement('div');
+                line.classList.add('chart-line');
+                line.style.height = height + 'px';
+                line.style.left = left + 'px';
+                line.style.bottom = '0';
+                
+                cpuGraph.appendChild(line);
+            }
+            
+            // Create a more stable pattern for memory usage
+            for (let i = 0; i < 30; i++) {
+                const height = 60 + Math.random() * 20;
+                const left = i * 3;
+                
+                const line = document.createElement('div');
+                line.classList.add('chart-line');
+                line.style.height = height + 'px';
+                line.style.left = left + 'px';
+                line.style.bottom = '0';
+                
+                memoryGraph.appendChild(line);
+            }
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            initGraphs();
+            
+            // Show About window by default
+            document.getElementById('about-window').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
