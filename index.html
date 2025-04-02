@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Profiler Portfolio</title>
+    <title>devrashie | portfolio</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
         
@@ -238,6 +238,156 @@
         .form-group {
             margin-bottom: 15px;
         }
+
+        /* Existing media query improvements */
+@media (max-width: 768px) {
+    .desktop-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        border-right: none;
+        border-bottom: 2px solid #000;
+        padding: 10px;
+    }
+    
+    .sidebar.left {
+        order: 1;
+        border-bottom: 2px solid #000;
+    }
+    
+    .sidebar.right {
+        order: 3;
+        border-top: 2px solid #000;
+        border-left: none;
+    }
+    
+    .main-content {
+        order: 2;
+        width: 100%;
+    }
+    
+    .icon-container {
+        margin: 0 10px;
+    }
+    
+    .graph-container, 
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .window {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .projects-list,
+    .skills-list {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .project-item,
+    .skill-item {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    
+    .contact-form {
+        width: 100%;
+        padding: 0 10px;
+    }
+    
+    .form-group {
+        margin-bottom: 10px;
+    }
+    
+    input, 
+    textarea {
+        width: 100%;
+        padding: 8px;
+    }
+    
+    .tab-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .tab {
+        flex-grow: 1;
+        text-align: center;
+        border-bottom: 2px solid #000;
+    }
+    
+    .stats-row {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .stats-label {
+        margin-bottom: 5px;
+    }
+}
+
+@media (max-width: 768px) {
+    .desktop-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        display: none; /* Hide sidebars on mobile */
+    }
+    
+    .main-content {
+        width: 100%;
+    }
+    
+    .window {
+        display: none; /* Initially hide all windows */
+    }
+    
+    /* Show About window by default */
+    #about-window {
+        display: block;
+    }
+    
+    .graph-container, 
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .projects-list,
+    .skills-list {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .project-item,
+    .skill-item {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    
+    .contact-form {
+        width: 100%;
+        padding: 0 10px;
+    }
+    
+    .form-group {
+        margin-bottom: 10px;
+    }
+    
+    input, 
+    textarea {
+        width: 100%;
+        padding: 8px;
+    }
+}
         
         label {
             display: block;
@@ -369,11 +519,11 @@
                                 </div>
                                 <div class="stats-row">
                                     <div class="stats-label">Title:</div>
-                                    <div>Blockchain Researcher</div>
+                                    <div>Blockchain Research Assistant</div>
                                 </div>
                                 <div class="stats-row">
                                     <div class="stats-label">Experience:</div>
-                                    <div>5 Years</div>
+                                    <div>1.5 Years</div>
                                 </div>
                                 <div class="stats-row">
                                     <div class="stats-label">Status:</div>
@@ -438,11 +588,11 @@
                                 <div class="stats-title">Achievements</div>
                                 <div class="stats-row">
                                     <div class="stats-label">Certifications:</div>
-                                    <div>4</div>
+                                    <div>2</div>
                                 </div>
                                 <div class="stats-row">
                                     <div class="stats-label">Awards:</div>
-                                    <div>2</div>
+                                    <div>12</div>
                                 </div>
                                 <div class="stats-row">
                                     <div class="stats-label">Patents:</div>
@@ -829,8 +979,236 @@
         // Initial update and repeat every second
         updateBars();
         setInterval(updateBars, 1000);
-    });
+        
 
+        // Enhanced mobile tab navigation
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if we're on a mobile device
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile) {
+        // Create a mobile navigation menu
+        const mobileNavContainer = document.createElement('div');
+        mobileNavContainer.classList.add('mobile-nav');
+        mobileNavContainer.style.cssText = `
+            display: flex;
+            justify-content: space-around;
+            background-color: #c0c0c0;
+            border-bottom: 2px solid #000;
+            padding: 10px;
+        `;
+        
+        // Navigation items
+        const navItems = [
+            { icon: '👤', tab: 'about', label: 'About' },
+            { icon: '📁', tab: 'projects', label: 'Projects' },
+            { icon: '📊', tab: 'skills', label: 'Skills' },
+            { icon: '✉️', tab: 'contact', label: 'Contact' }
+        ];
+        
+        // Create mobile nav buttons
+        navItems.forEach(item => {
+            const navButton = document.createElement('div');
+            navButton.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+                    <div style="font-size: 24px;">${item.icon}</div>
+                    <div style="font-size: 12px;">${item.label}</div>
+                </div>
+            `;
+            
+            navButton.addEventListener('click', () => {
+                // Hide all windows
+                const windows = document.querySelectorAll('.window');
+                windows.forEach(window => {
+                    window.style.display = 'none';
+                });
+                
+                // Show selected window
+                document.getElementById(`${item.tab}-window`).style.display = 'block';
+            });
+            
+            mobileNavContainer.appendChild(navButton);
+        });
+        
+        // Insert mobile nav after menu bar
+        const menuBar = document.querySelector('.menu-bar');
+        menuBar.insertAdjacentElement('afterend', mobileNavContainer);
+    }
+});
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+    // Check if we're on a mobile device
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile) {
+        // Create a mobile taskbar container
+        const mobileTaskbar = document.createElement('div');
+        mobileTaskbar.style.cssText = `
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #c0c0c0;
+            border-top: 2px solid #000;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            z-index: 1000;
+        `;
+        
+        // Navigation items from left sidebar
+        const navItems = [
+            { icon: '👤', tab: 'about', label: 'HDD1' },
+            { icon: '📁', tab: 'projects', label: 'Projects' },
+            { icon: '📊', tab: 'skills', label: 'Skills' },
+            { icon: '✉️', tab: 'contact', label: 'Contact' }
+        ];
+        
+        // Create taskbar buttons
+        navItems.forEach(item => {
+            const taskbarButton = document.createElement('div');
+            taskbarButton.style.cssText = `
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                cursor: pointer;
+                padding: 5px;
+            `;
+            
+            taskbarButton.innerHTML = `
+                <div style="font-size: 24px;">${item.icon}</div>
+                <div style="font-size: 12px;">${item.label}</div>
+            `;
+            
+            taskbarButton.addEventListener('click', () => {
+                // Hide all windows
+                const windows = document.querySelectorAll('.window');
+                windows.forEach(window => {
+                    window.style.display = 'none';
+                });
+                
+                // Show selected window
+                document.getElementById(`${item.tab}-window`).style.display = 'block';
+            });
+            
+            mobileTaskbar.appendChild(taskbarButton);
+        });
+        
+        // Add taskbar to the body
+        document.body.appendChild(mobileTaskbar);
+        
+        // Adjust main content to have bottom padding for taskbar
+        const mainContent = document.getElementById('main-content');
+        mainContent.style.paddingBottom = '60px'; // Match taskbar height
+        
+        // Hide left sidebar on mobile
+        const leftSidebar = document.querySelector('.sidebar.left');
+        if (leftSidebar) {
+            leftSidebar.style.display = 'none';
+        }
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Existing code remains the same, add these functions:
+
+    function handleMobileLayout() {
+        const isMobile = window.innerWidth <= 768;
+        const leftSidebar = document.querySelector('.sidebar.left');
+        const mainContent = document.getElementById('main-content');
+
+        if (isMobile) {
+            // Create mobile taskbar
+            const mobileTaskbar = document.createElement('div');
+            mobileTaskbar.id = 'mobile-taskbar';
+            mobileTaskbar.style.cssText = `
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background-color: #c0c0c0;
+                border-top: 2px solid #000;
+                display: flex;
+                justify-content: space-around;
+                padding: 10px;
+                z-index: 1000;
+            `;
+            
+            // Navigation items
+            const navItems = [
+                { icon: '👤', tab: 'about', label: 'HDD1' },
+                { icon: '📁', tab: 'projects', label: 'Projects' },
+                { icon: '📊', tab: 'skills', label: 'Skills' },
+                { icon: '✉️', tab: 'contact', label: 'Contact' }
+            ];
+            
+            // Create taskbar buttons
+            navItems.forEach(item => {
+                const taskbarButton = document.createElement('div');
+                taskbarButton.style.cssText = `
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    cursor: pointer;
+                    padding: 5px;
+                `;
+                
+                taskbarButton.innerHTML = `
+                    <div style="font-size: 24px;">${item.icon}</div>
+                    <div style="font-size: 12px;">${item.label}</div>
+                `;
+                
+                taskbarButton.addEventListener('click', () => {
+                    // Hide all windows
+                    const windows = document.querySelectorAll('.window');
+                    windows.forEach(window => {
+                        window.style.display = 'none';
+                    });
+                    
+                    // Show selected window
+                    document.getElementById(`${item.tab}-window`).style.display = 'block';
+                });
+                
+                mobileTaskbar.appendChild(taskbarButton);
+            });
+            
+            // Add taskbar to the body
+            document.body.appendChild(mobileTaskbar);
+            
+            // Hide left sidebar
+            if (leftSidebar) {
+                leftSidebar.style.display = 'none';
+            }
+            
+            // Add padding to main content
+            if (mainContent) {
+                mainContent.style.paddingBottom = '60px';
+            }
+        } else {
+            // Remove mobile taskbar
+            const existingTaskbar = document.getElementById('mobile-taskbar');
+            if (existingTaskbar) {
+                existingTaskbar.remove();
+            }
+            
+            // Restore left sidebar
+            if (leftSidebar) {
+                leftSidebar.style.display = 'flex';
+            }
+            
+            // Remove bottom padding
+            if (mainContent) {
+                mainContent.style.paddingBottom = '0';
+            }
+        }
+    }
+
+    // Initial mobile layout check
+    handleMobileLayout();
+
+    // Add resize listener
+    window.addEventListener('resize', handleMobileLayout);
+});
     
     </script>
 </body>
