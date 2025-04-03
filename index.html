@@ -794,25 +794,425 @@
                             </div>
                         </div>
                         
-                        <div class="contact-form">
-                            <div class="form-group">
-                                <label for="name">Name:</label>
-                                <input type="text" id="name" name="name">
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Email:</label>
-                                <input type="email" id="email" name="email">
-                            </div>
-                            <div class="form-group">
-                                <label for="subject">Subject:</label>
-                                <input type="text" id="subject" name="subject">
-                            </div>
-                            <div class="form-group">
-                                <label for="message">Message:</label>
-                                <textarea id="message" name="message"></textarea>
-                            </div>
-                            <button type="submit">Send Message</button>
+                        <!-- Replace the existing contact form in your HTML with this code -->
+<div class="contact-form">
+    <form id="contactForm" action="https://formspree.io/f/mrbpyqvp" method="POST">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" name="subject">
+        </div>
+        <div class="form-group">
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" required></textarea>
+        </div>
+        <button type="submit" id="submitBtn">Send Message</button>
+        <div id="formStatus" style="margin-top: 10px; display: none;"></div>
+    </form>
+</div>
+
+<!-- Add this JavaScript to handle form submission with status messages -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const contactForm = document.getElementById('contactForm');
+        const formStatus = document.getElementById('formStatus');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                // Disable button and show loading state
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Sending...';
+                
+                // Get form data
+                const formData = new FormData(contactForm);
+                
+                // Send form data using fetch
+                fetch(contactForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Network response was not ok');
+                })
+                .then(data => {
+                    // Success message
+                    formStatus.style.display = 'block';
+                    formStatus.textContent = 'Message sent successfully!';
+                    formStatus.style.color = '#000';
+                    formStatus.style.backgroundColor = '#c0c0c0';
+                    formStatus.style.padding = '10px';
+                    formStatus.style.border = '2px solid #000';
+                    
+                    // Reset form
+                    contactForm.reset();
+                    
+                    // Reset button
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Message';
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        formStatus.style.display = 'none';
+                    }, 5000);
+                })
+                .catch(error => {
+                    // Error message
+                    formStatus.style.display = 'block';
+                    formStatus.textContent = 'There was an error sending your message. Please try again.';
+                    formStatus.style.color = '#fff';
+                    formStatus.style.backgroundColor = '#ff0000';
+                    formStatus.style.padding = '10px';
+                    formStatus.style.border = '2px solid #000';
+                    
+                    // Reset button
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Message';
+                    
+                    console.error('Error:', error);
+                });
+            });
+        }
+    });
+
+    // Add this script at the end of your existing JavaScript code
+document.addEventListener('DOMContentLoaded', () => {
+    // Resume button functionality
+    const resumeIcon = document.querySelector('.sidebar.right .icon-container:nth-child(2)');
+    if (resumeIcon) {
+        resumeIcon.addEventListener('click', () => {
+            // Create a modal window for the resume
+            const modalOverlay = document.createElement('div');
+            modalOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1001;
+            `;
+            
+            // Create a resume window
+            const resumeWindow = document.createElement('div');
+            resumeWindow.style.cssText = `
+                width: 80%;
+                max-width: 700px;
+                background-color: #c0c0c0;
+                border: 2px solid #000;
+                box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.2);
+                max-height: 90vh;
+                overflow-y: auto;
+            `;
+            
+            resumeWindow.innerHTML = `
+                <div style="background-color: #000; color: #fff; padding: 5px 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <span>RESUME.TXT</span>
+                    <span class="close-button" style="cursor: pointer;">✕</span>
+                </div>
+                <div style="padding: 20px; font-family: 'VT323', monospace;">
+                    <h2 style="text-align: center; margin-bottom: 15px;">DEV RASHIE</h2>
+                    <p style="text-align: center; margin-bottom: 20px;">Blockchain Research Assistant | devrashie@gmail.com</p>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="border-bottom: 1px solid #000; margin-bottom: 10px;">EDUCATION</h3>
+                        <p><strong>The Ohio State University</strong> - B.S. Computer Science & Math (Expected 2028)</p>
+                        <p>GPA: 3.85/4.0</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="border-bottom: 1px solid #000; margin-bottom: 10px;">EXPERIENCE</h3>
+                        <div style="margin-bottom: 15px;">
+                            <p><strong>Blockchain Research Assistant</strong> - Fintech Research Lab</p>
+                            <p><em>June 2023 - Present</em></p>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Analyzed smart contract vulnerabilities in DeFi applications</li>
+                                <li>Developed security testing frameworks for blockchain implementations</li>
+                                <li>Contributed to 2 published papers on blockchain security</li>
+                            </ul>
                         </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <p><strong>Software Development Intern</strong> - Tech Innovations Inc.</p>
+                            <p><em>Summer 2023</em></p>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Built React Native mobile applications with Firebase backend</li>
+                                <li>Implemented machine learning models for user behavior prediction</li>
+                                <li>Improved app performance by 35% through code optimization</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="border-bottom: 1px solid #000; margin-bottom: 10px;">PROJECTS</h3>
+                        <div style="margin-bottom: 10px;">
+                            <p><strong>POSEidon</strong> - AI-powered fitness coaching mobile app</p>
+                            <p>React Native, Vision Processing, On-Device AI, Firebase</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 10px;">
+                            <p><strong>Parking Detection Vision AI</strong> - Computer vision system</p>
+                            <p>Python, OpenCV, NumPy</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 10px;">
+                            <p><strong>Taste Match</strong> - Restaurant recommendation app</p>
+                            <p>React Native, Node.js, MongoDB, Google Places API</p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="border-bottom: 1px solid #000; margin-bottom: 10px;">SKILLS</h3>
+                        <p><strong>Languages:</strong> Java, Python, JavaScript, HTML/CSS</p>
+                        <p><strong>Technologies:</strong> React Native, Node.js, MongoDB, Firebase, OpenCV</p>
+                        <p><strong>Tools:</strong> Git, Docker, AWS, Figma</p>
+                    </div>
+                    
+                    <div>
+                        <h3 style="border-bottom: 1px solid #000; margin-bottom: 10px;">AWARDS & CERTIFICATIONS</h3>
+                        <p>AWS Certified Developer Associate</p>
+                        <p>1st Place, Campus Hackathon 2023</p>
+                        <p>Dean's List, 2022-2023</p>
+                    </div>
+                </div>
+            `;
+            
+            modalOverlay.appendChild(resumeWindow);
+            document.body.appendChild(modalOverlay);
+            
+            // Close button functionality
+            const closeButton = resumeWindow.querySelector('.close-button');
+            closeButton.addEventListener('click', () => {
+                modalOverlay.remove();
+            });
+            
+            // Close modal when clicking outside
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) {
+                    modalOverlay.remove();
+                }
+            });
+        });
+    }
+    
+    // Printer icon animation
+    const printerIcon = document.querySelector('.sidebar.right .icon-container:nth-child(3)');
+    if (printerIcon) {
+        printerIcon.addEventListener('click', () => {
+            // Create a printing animation overlay
+            const printingOverlay = document.createElement('div');
+            printingOverlay.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #c0c0c0;
+                border: 2px solid #000;
+                padding: 20px;
+                z-index: 1001;
+                text-align: center;
+                width: 300px;
+            `;
+            
+            printingOverlay.innerHTML = `
+                <div style="font-size: 18px; margin-bottom: 10px;">PRINTING...</div>
+                <div class="progress-bar" style="width: 100%; height: 20px; border: 2px solid #000; position: relative; overflow: hidden;">
+                    <div class="progress" style="height: 100%; width: 0%; background-color: #000;"></div>
+                </div>
+                <div class="print-message" style="margin-top: 15px; font-style: italic;">Initializing printer...</div>
+            `;
+            
+            document.body.appendChild(printingOverlay);
+            
+            // Funny printing messages
+            const printMessages = [
+                "Initializing printer...",
+                "Loading paper...",
+                "Detecting ink levels...",
+                "Ink not found! Have you checked behind the refrigerator?",
+                "Converting caffeine to code...",
+                "Please wait while I pretend to print...",
+                "ERROR: PC LOAD LETTER. What does that even mean?!",
+                "Looking for printer... Still looking...",
+                "Have you tried turning it off and on again?",
+                "Is this my purpose? Just to print your documents?",
+                "Printer jam... Applying butter...",
+                "Printer out of ink. Attempting to use tears instead...",
+                "Successfully printed to the wrong printer!",
+                "Print complete! Just kidding, nothing happened."
+            ];
+            
+            const messageElement = printingOverlay.querySelector('.print-message');
+            const progressBar = printingOverlay.querySelector('.progress');
+            
+            // Animate the progress bar and messages
+            let progress = 0;
+            let messageIndex = 0;
+            
+            const progressInterval = setInterval(() => {
+                progress += 5;
+                progressBar.style.width = `${progress}%`;
+                
+                if (progress % 20 === 0) {
+                    messageIndex = (messageIndex + 1) % printMessages.length;
+                    messageElement.textContent = printMessages[messageIndex];
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    messageElement.textContent = "Print failed successfully!";
+                    
+                    // Add printer sounds
+                    const printerSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2877/2877-preview.mp3");
+                    printerSound.volume = 0.3;
+                    printerSound.play();
+                    
+                    // Remove overlay after a delay
+                    setTimeout(() => {
+                        document.body.removeChild(printingOverlay);
+                    }, 3000);
+                }
+            }, 150);
+        });
+    }
+    
+    // Trash icon animation
+    const trashIcon = document.querySelector('.sidebar.right .icon-container:nth-child(4)');
+    if (trashIcon) {
+        trashIcon.addEventListener('click', () => {
+            // First ask what to delete
+            const deletePrompt = document.createElement('div');
+            deletePrompt.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #c0c0c0;
+                border: 2px solid #000;
+                padding: 20px;
+                z-index: 1001;
+                width: 300px;
+            `;
+            
+            deletePrompt.innerHTML = `
+                <div style="font-size: 18px; margin-bottom: 15px; text-align: center;">Delete System32?</div>
+                <div style="display: flex; justify-content: space-around;">
+                    <button id="yes-delete" style="background-color: #000; color: #fff; border: 2px solid #000; padding: 5px 15px; cursor: pointer;">Yes</button>
+                    <button id="no-delete" style="background-color: #c0c0c0; border: 2px solid #000; padding: 5px 15px; cursor: pointer;">No</button>
+                </div>
+            `;
+            
+            document.body.appendChild(deletePrompt);
+            
+            // No button - just close the prompt
+            const noButton = document.getElementById('no-delete');
+            noButton.addEventListener('click', () => {
+                document.body.removeChild(deletePrompt);
+            });
+            
+            // Yes button - fun animation
+            const yesButton = document.getElementById('yes-delete');
+            yesButton.addEventListener('click', () => {
+                document.body.removeChild(deletePrompt);
+                
+                // Create deletion animation
+                const deletionScreen = document.createElement('div');
+                deletionScreen.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: #0000aa;
+                    color: #ffffff;
+                    font-family: 'VT323', monospace;
+                    font-size: 24px;
+                    padding: 40px;
+                    z-index: 2000;
+                    overflow: hidden;
+                `;
+                
+                deletionScreen.innerHTML = `
+                    <div style="margin-bottom: 20px;">WINDOWS</div>
+                    <div id="error-message">A fatal exception 0E has occurred at 0028:C0011E36.</div>
+                    <div id="deletion-text" style="margin-top: 20px;"></div>
+                    <div style="position: absolute; bottom: 40px;">
+                        Press any key to continue_
+                    </div>
+                `;
+                
+                document.body.appendChild(deletionScreen);
+                
+                // Typewriter effect for deletion messages
+                const deletionMessages = [
+                    "The current application will be terminated.",
+                    "",
+                    "* Deleting System32...",
+                    "* Deleting important files...",
+                    "* Corrupting hard drive...",
+                    "* Downloading more RAM...",
+                    "* Contacting Russian hackers...",
+                    "* Selling your data to advertisers...",
+                    "* Subscribing you to cat facts...",
+                    "* Applying for credit cards in your name...",
+                    "* Just kidding! Your portfolio is safe.",
+                    "",
+                    "Click anywhere to return to portfolio."
+                ];
+                
+                const deletionText = document.getElementById('deletion-text');
+                let messageIndex = 0;
+                let charIndex = 0;
+                
+                function typeWriter() {
+                    if (messageIndex < deletionMessages.length) {
+                        if (charIndex < deletionMessages[messageIndex].length) {
+                            deletionText.innerHTML += deletionMessages[messageIndex].charAt(charIndex);
+                            charIndex++;
+                            setTimeout(typeWriter, 50);
+                        } else {
+                            deletionText.innerHTML += '<br>';
+                            messageIndex++;
+                            charIndex = 0;
+                            setTimeout(typeWriter, 500);
+                        }
+                    }
+                }
+                
+                typeWriter();
+                
+                // Add classic error sound
+                const errorSound = new Audio("https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3");
+                errorSound.volume = 0.3;
+                errorSound.play();
+                
+                // Click anywhere to return
+                deletionScreen.addEventListener('click', () => {
+                    document.body.removeChild(deletionScreen);
+                });
+            });
+        });
+    }
+});
+</script>
                     </div>
                 </div>
             </div>
