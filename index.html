@@ -169,16 +169,19 @@
             position: relative;
             background-color: #fff;
             overflow: hidden;
+            display: flex;
+            gap: 2px;
+            padding: 2px;
         }
         
         .graph-bar {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
+            flex: 1;
             background-color: #000;
-            height: 60%;
+            transition: height 0.2s ease;
+            align-self: flex-end;
+            min-width: 4px;
         }
-        
+
         .stats-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -500,11 +503,49 @@
                                 <div class="graph-title">CPU</div>
                                 <div class="graph-visual" id="cpu-graph">
                                     <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
                                 </div>
                             </div>
                             <div class="graph">
                                 <div class="graph-title">Memory</div>
                                 <div class="graph-visual" id="memory-graph">
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
+                                    <div class="graph-bar"></div>
                                     <div class="graph-bar"></div>
                                 </div>
                             </div>
@@ -892,126 +933,29 @@
 
     // Add this script at the end of your existing JavaScript code
 document.addEventListener('DOMContentLoaded', () => {
-    // Resume button functionality
-    const resumeIcon = document.querySelector('.sidebar.right .icon-container:nth-child(2)');
-    if (resumeIcon) {
-        resumeIcon.addEventListener('click', () => {
-            // Create a modal window for the resume
-            const modalOverlay = document.createElement('div');
-            modalOverlay.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.7);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 1001;
-            `;
-            
-            // Create a resume window
-            const resumeWindow = document.createElement('div');
-            resumeWindow.style.cssText = `
-                width: 80%;
-                max-width: 700px;
-                background-color: #c0c0c0;
-                border: 2px solid #000;
-                box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.2);
-                max-height: 90vh;
-                overflow-y: auto;
-            `;
-            
-            resumeWindow.innerHTML = `
-                <div style="background-color: #000; color: #fff; padding: 5px 10px; display: flex; justify-content: space-between; align-items: center;">
-                    <span>RESUME.TXT</span>
-                    <span class="close-button" style="cursor: pointer;">✕</span>
-                </div>
-                <div style="padding: 20px; font-family: 'VT323', monospace;">
-                    <h2 style="text-align: center; margin-bottom: 15px;">DEV RASHIE</h2>
-                    <p style="text-align: center; margin-bottom: 20px;">Blockchain Research Assistant | devrashie@gmail.com</p>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <h3 style="border-bottom: 1px solid #000; margin-bottom: 10px;">EDUCATION</h3>
-                        <p><strong>The Ohio State University</strong> - B.S. Computer Science & Math (Expected 2028)</p>
-                        <p>GPA: 3.85/4.0</p>
-                    </div>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <h3 style="border-bottom: 1px solid #000; margin-bottom: 10px;">EXPERIENCE</h3>
-                        <div style="margin-bottom: 15px;">
-                            <p><strong>Blockchain Research Assistant</strong> - Fintech Research Lab</p>
-                            <p><em>June 2023 - Present</em></p>
-                            <ul style="margin-left: 20px; margin-top: 5px;">
-                                <li>Analyzed smart contract vulnerabilities in DeFi applications</li>
-                                <li>Developed security testing frameworks for blockchain implementations</li>
-                                <li>Contributed to 2 published papers on blockchain security</li>
-                            </ul>
-                        </div>
-                        
-                        <div style="margin-bottom: 15px;">
-                            <p><strong>Software Development Intern</strong> - Tech Innovations Inc.</p>
-                            <p><em>Summer 2023</em></p>
-                            <ul style="margin-left: 20px; margin-top: 5px;">
-                                <li>Built React Native mobile applications with Firebase backend</li>
-                                <li>Implemented machine learning models for user behavior prediction</li>
-                                <li>Improved app performance by 35% through code optimization</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <h3 style="border-bottom: 1px solid #000; margin-bottom: 10px;">PROJECTS</h3>
-                        <div style="margin-bottom: 10px;">
-                            <p><strong>POSEidon</strong> - AI-powered fitness coaching mobile app</p>
-                            <p>React Native, Vision Processing, On-Device AI, Firebase</p>
-                        </div>
-                        
-                        <div style="margin-bottom: 10px;">
-                            <p><strong>Parking Detection Vision AI</strong> - Computer vision system</p>
-                            <p>Python, OpenCV, NumPy</p>
-                        </div>
-                        
-                        <div style="margin-bottom: 10px;">
-                            <p><strong>Taste Match</strong> - Restaurant recommendation app</p>
-                            <p>React Native, Node.js, MongoDB, Google Places API</p>
-                        </div>
-                    </div>
-                    
-                    <div style="margin-bottom: 20px;">
-                        <h3 style="border-bottom: 1px solid #000; margin-bottom: 10px;">SKILLS</h3>
-                        <p><strong>Languages:</strong> Java, Python, JavaScript, HTML/CSS</p>
-                        <p><strong>Technologies:</strong> React Native, Node.js, MongoDB, Firebase, OpenCV</p>
-                        <p><strong>Tools:</strong> Git, Docker, AWS, Figma</p>
-                    </div>
-                    
-                    <div>
-                        <h3 style="border-bottom: 1px solid #000; margin-bottom: 10px;">AWARDS & CERTIFICATIONS</h3>
-                        <p>AWS Certified Developer Associate</p>
-                        <p>1st Place, Campus Hackathon 2023</p>
-                        <p>Dean's List, 2022-2023</p>
-                    </div>
-                </div>
-            `;
-            
-            modalOverlay.appendChild(resumeWindow);
-            document.body.appendChild(modalOverlay);
-            
-            // Close button functionality
-            const closeButton = resumeWindow.querySelector('.close-button');
-            closeButton.addEventListener('click', () => {
-                modalOverlay.remove();
-            });
-            
-            // Close modal when clicking outside
-            modalOverlay.addEventListener('click', (e) => {
-                if (e.target === modalOverlay) {
-                    modalOverlay.remove();
-                }
-            });
+    // Add CPU/Memory gauge animation
+    function updateGauges() {
+        const cpuBars = document.querySelectorAll('#cpu-graph .graph-bar');
+        const memoryBars = document.querySelectorAll('#memory-graph .graph-bar');
+        
+        // Update CPU bars
+        cpuBars.forEach(bar => {
+            // Random height between 20% and 100%
+            const height = Math.random() * 80 + 20;
+            bar.style.height = height + '%';
+        });
+        
+        // Update Memory bars
+        memoryBars.forEach(bar => {
+            // Random height between 20% and 100%
+            const height = Math.random() * 80 + 20;
+            bar.style.height = height + '%';
         });
     }
+    
+    // Update gauges every 2 seconds
+    updateGauges();
+    setInterval(updateGauges, 2000);
     
     // Printer icon animation
     const printerIcon = document.querySelector('.sidebar.right .icon-container:nth-child(3)');
@@ -1211,6 +1155,84 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+    
+    // Books icon functionality
+    const booksIcon = document.getElementById('books-icon');
+    if (booksIcon) {
+        booksIcon.addEventListener('click', () => {
+            // Create a modal window for the books
+            const modalOverlay = document.createElement('div');
+            modalOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1001;
+            `;
+            
+            // Create a books window
+            const booksWindow = document.createElement('div');
+            booksWindow.style.cssText = `
+                width: 80%;
+                max-width: 700px;
+                background-color: #c0c0c0;
+                border: 2px solid #000;
+                box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.2);
+                max-height: 90vh;
+                overflow-y: auto;
+            `;
+            
+            booksWindow.innerHTML = `
+                <div style="background-color: #000; color: #fff; padding: 5px 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <span>READING_LIST.TXT</span>
+                    <span class="close-button" style="cursor: pointer;">✕</span>
+                </div>
+                <div style="padding: 20px; font-family: 'VT323', monospace;">
+                    <h2 style="text-align: center; margin-bottom: 15px;">Important Books</h2>
+                    
+                    <div class="book-section" style="margin-bottom: 20px;">
+                        <h3 style="border-bottom: 1px solid #000; margin-bottom: 10px;">My Essential Reads</h3>
+                        <div class="book-item" style="margin-bottom: 15px;">
+                            <p><strong>Siddhartha</strong> by Hermann Hesse</p>
+                        </div>
+                        
+                        <div class="book-item" style="margin-bottom: 15px;">
+                            <p><strong>A River in Darkness</strong> by Masaji Ishikawa</p>
+                        </div>
+                        
+                        <div class="book-item" style="margin-bottom: 15px;">
+                            <p><strong>Into the Wild</strong> by Jon Krakauer</p>
+                        </div>
+                        
+                        <div class="book-item" style="margin-bottom: 15px;">
+                            <p><strong>The Stoker</strong> by Franz Kafka</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modalOverlay.appendChild(booksWindow);
+            document.body.appendChild(modalOverlay);
+            
+            // Close button functionality
+            const closeButton = booksWindow.querySelector('.close-button');
+            closeButton.addEventListener('click', () => {
+                modalOverlay.remove();
+            });
+            
+            // Close modal when clicking outside
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) {
+                    modalOverlay.remove();
+                }
+            });
+        });
+    }
 });
 </script>
                     </div>
@@ -1222,11 +1244,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="icon-container">
                     <div class="icon">💾</div>
                     <div>HDD2</div>
-                </div>
-                <div class="icon-container">
-                    <div class="icon">📝</div>
-                    <div>Resume</div>
-                </div>
+                </div>            <div class="icon-container" id="books-icon">
+                <div class="icon">📚</div>
+                <div>Books</div>
+            </div>
                 <div class="icon-container">
                     <div class="icon">🖨️</div>
                     <div>Printer</div>
@@ -1253,18 +1274,20 @@ document.addEventListener('DOMContentLoaded', () => {
         updateTime();
         setInterval(updateTime, 60000);
         
-        // Tab navigation for About window
-        const tabs = document.querySelectorAll('.tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Remove active class from all tabs
-                tabs.forEach(t => t.classList.remove('active'));
+        // Tab navigation for About window tabs
+        const aboutTabs = document.querySelectorAll('#about-window .tab');
+        aboutTabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // Remove active class from all tabs in About window
+                aboutTabs.forEach(t => t.classList.remove('active'));
                 
                 // Add active class to clicked tab
                 tab.classList.add('active');
                 
-                // Hide all content
-                const contents = document.querySelectorAll('.window-content');
+                // Hide all content in About window
+                const contents = document.querySelectorAll('#about-window .window-content');
                 contents.forEach(content => content.classList.remove('active'));
                 
                 // Show selected content
@@ -1273,8 +1296,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
         
-        // Window navigation
-        const iconContainers = document.querySelectorAll('.icon-container');
+        // Window navigation for main sections
+        const iconContainers = document.querySelectorAll('.sidebar.left .icon-container');
         iconContainers.forEach(icon => {
             icon.addEventListener('click', () => {
                 const tabName = icon.getAttribute('data-tab');
@@ -1290,326 +1313,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById(tabName + '-window').style.display = 'block';
             });
         });
-        
-        // Initialize the CPU and Memory graphs
-        function initGraphs() {
-            const cpuGraph = document.getElementById('cpu-graph');
-            const memoryGraph = document.getElementById('memory-graph');
-            
-            // Create random patterns for CPU usage
-            for (let i = 0; i < 30; i++) {
-                const height = Math.random() * 70 + 10;
-                const left = i * 3;
-                
-                const line = document.createElement('div');
-                line.classList.add('chart-line');
-                line.style.height = height + 'px';
-                line.style.left = left + 'px';
-                line.style.bottom = '0';
-                
-                cpuGraph.appendChild(line);
-            }
-            
-            // Create a more stable pattern for memory usage
-            for (let i = 0; i < 30; i++) {
-                const height = 60 + Math.random() * 20;
-                const left = i * 3;
-                
-                const line = document.createElement('div');
-                line.classList.add('chart-line');
-                line.style.height = height + 'px';
-                line.style.left = left + 'px';
-                line.style.bottom = '0';
-                
-                memoryGraph.appendChild(line);
-            }
-        }
-        
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', () => {
-            initGraphs();
-            
-            // Show About window by default
-            document.getElementById('about-window').style.display = 'block';
-        });
-
-        document.addEventListener("DOMContentLoaded", () => {
-        const cpuGraph = document.getElementById("cpu-graph");
-        const memoryGraph = document.getElementById("memory-graph");
-
-        const numBars = 50; // Number of bars for a balanced look
-        const barWidth = 100 / numBars; // Thinner bars for realism
-
-        // Create bars dynamically
-        function createBars(graphElement) {
-            for (let i = 0; i < numBars; i++) {
-                const bar = document.createElement("div");
-                bar.classList.add("graph-bar");
-                bar.style.left = `${i * barWidth}%`;
-                bar.style.width = `${barWidth}%`;
-                bar.style.height = "50%"; // Initial height
-                
-                graphElement.appendChild(bar);
-            }
-        }
-
-        createBars(cpuGraph);
-        createBars(memoryGraph);
-
-        const cpuBars = document.querySelectorAll("#cpu-graph .graph-bar");
-        const memoryBars = document.querySelectorAll("#memory-graph .graph-bar");
-
-        // Function to update bars randomly with realistic variation
-        function updateBars() {
-            let cpuBase = Math.random() * 30 + 50; // Base CPU usage (50-80%)
-            let memoryBase = Math.random() * 20 + 60; // Base Memory usage (60-80%)
-
-            function adjustBars(bars, baseUsage, fluctuation) {
-                bars.forEach((bar) => {
-                    let randomOffset = (Math.random() - 0.5) * fluctuation; // Small random change
-                    let newHeight = Math.max(30, Math.min(100, baseUsage + randomOffset)); // Keep within 30-100%
-                    bar.style.height = `${newHeight}%`;
-                });
-            }
-
-            adjustBars(cpuBars, cpuBase, 30); // CPU fluctuates up to ±15%
-            adjustBars(memoryBars, memoryBase, 20); // Memory fluctuates up to ±10%
-        }
-
-        // Initial update and repeat every second
-        updateBars();
-        setInterval(updateBars, 1000);
-        
-
-        // Enhanced mobile tab navigation
-document.addEventListener('DOMContentLoaded', () => {
-    // Check if we're on a mobile device
-    const isMobile = window.innerWidth <= 768;
-    
-    if (isMobile) {
-        // Create a mobile navigation menu
-        const mobileNavContainer = document.createElement('div');
-        mobileNavContainer.classList.add('mobile-nav');
-        mobileNavContainer.style.cssText = `
-            display: flex;
-            justify-content: space-around;
-            background-color: #c0c0c0;
-            border-bottom: 2px solid #000;
-            padding: 10px;
-        `;
-        
-        // Navigation items
-        const navItems = [
-            { icon: '👤', tab: 'about', label: 'About' },
-            { icon: '📁', tab: 'projects', label: 'Projects' },
-            { icon: '📊', tab: 'skills', label: 'Skills' },
-            { icon: '✉️', tab: 'contact', label: 'Contact' }
-        ];
-        
-        // Create mobile nav buttons
-        navItems.forEach(item => {
-            const navButton = document.createElement('div');
-            navButton.innerHTML = `
-                <div style="display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-                    <div style="font-size: 24px;">${item.icon}</div>
-                    <div style="font-size: 12px;">${item.label}</div>
-                </div>
-            `;
-            
-            navButton.addEventListener('click', () => {
-                // Hide all windows
-                const windows = document.querySelectorAll('.window');
-                windows.forEach(window => {
-                    window.style.display = 'none';
-                });
-                
-                // Show selected window
-                document.getElementById(`${item.tab}-window`).style.display = 'block';
-            });
-            
-            mobileNavContainer.appendChild(navButton);
-        });
-        
-        // Insert mobile nav after menu bar
-        const menuBar = document.querySelector('.menu-bar');
-        menuBar.insertAdjacentElement('afterend', mobileNavContainer);
-    }
-});
-    });
-    document.addEventListener('DOMContentLoaded', () => {
-    // Check if we're on a mobile device
-    const isMobile = window.innerWidth <= 768;
-    
-    if (isMobile) {
-        // Create a mobile taskbar container
-        const mobileTaskbar = document.createElement('div');
-        mobileTaskbar.style.cssText = `
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: #c0c0c0;
-            border-top: 2px solid #000;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px;
-            z-index: 1000;
-        `;
-        
-        // Navigation items from left sidebar
-        const navItems = [
-            { icon: '👤', tab: 'about', label: 'HDD1' },
-            { icon: '📁', tab: 'projects', label: 'Projects' },
-            { icon: '📊', tab: 'skills', label: 'Skills' },
-            { icon: '✉️', tab: 'contact', label: 'Contact' }
-        ];
-        
-        // Create taskbar buttons
-        navItems.forEach(item => {
-            const taskbarButton = document.createElement('div');
-            taskbarButton.style.cssText = `
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                cursor: pointer;
-                padding: 5px;
-            `;
-            
-            taskbarButton.innerHTML = `
-                <div style="font-size: 24px;">${item.icon}</div>
-                <div style="font-size: 12px;">${item.label}</div>
-            `;
-            
-            taskbarButton.addEventListener('click', () => {
-                // Hide all windows
-                const windows = document.querySelectorAll('.window');
-                windows.forEach(window => {
-                    window.style.display = 'none';
-                });
-                
-                // Show selected window
-                document.getElementById(`${item.tab}-window`).style.display = 'block';
-            });
-            
-            mobileTaskbar.appendChild(taskbarButton);
-        });
-        
-        // Add taskbar to the body
-        document.body.appendChild(mobileTaskbar);
-        
-        // Adjust main content to have bottom padding for taskbar
-        const mainContent = document.getElementById('main-content');
-        mainContent.style.paddingBottom = '60px'; // Match taskbar height
-        
-        // Hide left sidebar on mobile
-        const leftSidebar = document.querySelector('.sidebar.left');
-        if (leftSidebar) {
-            leftSidebar.style.display = 'none';
-        }
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Existing code remains the same, add these functions:
-
-    function handleMobileLayout() {
-        const isMobile = window.innerWidth <= 768;
-        const leftSidebar = document.querySelector('.sidebar.left');
-        const mainContent = document.getElementById('main-content');
-
-        if (isMobile) {
-            // Create mobile taskbar
-            const mobileTaskbar = document.createElement('div');
-            mobileTaskbar.id = 'mobile-taskbar';
-            mobileTaskbar.style.cssText = `
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                background-color: #c0c0c0;
-                border-top: 2px solid #000;
-                display: flex;
-                justify-content: space-around;
-                padding: 10px;
-                z-index: 1000;
-            `;
-            
-            // Navigation items
-            const navItems = [
-                { icon: '👤', tab: 'about', label: 'HDD1' },
-                { icon: '📁', tab: 'projects', label: 'Projects' },
-                { icon: '📊', tab: 'skills', label: 'Skills' },
-                { icon: '✉️', tab: 'contact', label: 'Contact' }
-            ];
-            
-            // Create taskbar buttons
-            navItems.forEach(item => {
-                const taskbarButton = document.createElement('div');
-                taskbarButton.style.cssText = `
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    cursor: pointer;
-                    padding: 5px;
-                `;
-                
-                taskbarButton.innerHTML = `
-                    <div style="font-size: 24px;">${item.icon}</div>
-                    <div style="font-size: 12px;">${item.label}</div>
-                `;
-                
-                taskbarButton.addEventListener('click', () => {
-                    // Hide all windows
-                    const windows = document.querySelectorAll('.window');
-                    windows.forEach(window => {
-                        window.style.display = 'none';
-                    });
-                    
-                    // Show selected window
-                    document.getElementById(`${item.tab}-window`).style.display = 'block';
-                });
-                
-                mobileTaskbar.appendChild(taskbarButton);
-            });
-            
-            // Add taskbar to the body
-            document.body.appendChild(mobileTaskbar);
-            
-            // Hide left sidebar
-            if (leftSidebar) {
-                leftSidebar.style.display = 'none';
-            }
-            
-            // Add padding to main content
-            if (mainContent) {
-                mainContent.style.paddingBottom = '60px';
-            }
-        } else {
-            // Remove mobile taskbar
-            const existingTaskbar = document.getElementById('mobile-taskbar');
-            if (existingTaskbar) {
-                existingTaskbar.remove();
-            }
-            
-            // Restore left sidebar
-            if (leftSidebar) {
-                leftSidebar.style.display = 'flex';
-            }
-            
-            // Remove bottom padding
-            if (mainContent) {
-                mainContent.style.paddingBottom = '0';
-            }
-        }
-    }
-
-    // Initial mobile layout check
-    handleMobileLayout();
-
-    // Add resize listener
-    window.addEventListener('resize', handleMobileLayout);
-});
-    
     </script>
 </body>
 </html>
