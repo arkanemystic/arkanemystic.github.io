@@ -1,0 +1,22 @@
+{
+  "photos": [
+    {
+      "url": "https://res.cloudinary.com/your-cloud/image/upload/v1234567890/photos/photo1.jpg",
+      "created_at": "2025-01-08T10:30:00Z",
+      "title": "Desert Sunset",
+      "id": "photo_001"
+    },
+    {
+      "url": "https://res.cloudinary.com/your-cloud/image/upload/v1234567890/photos/photo2.jpg",
+      "created_at": "2025-01-07T15:45:00Z",
+      "title": "Mountain Peak",
+      "id": "photo_002"
+    },
+    {
+      "url": "https://res.cloudinary.com/your-cloud/image/upload/v1234567890/photos/photo3.jpg",
+      "created_at": "2025-01-06T08:20:00Z",
+      "title": "Ocean Horizon",
+      "id": "photo_003"
+    }
+  ]
+}

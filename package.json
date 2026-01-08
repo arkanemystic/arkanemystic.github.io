@@ -1,0 +1,16 @@
+{
+  "name": "arkanemystic-site-tools",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "gray-matter": "^4.0.3",
+    "marked": "^6.0.0",
+    "sanitize-html": "^2.11.0"
+  },
+  "scripts": {
+    "build:blog": "node ./scripts/generate.js --src journal/entries --out docs/blog"
+  },
+  "dependencies": {
+    "cloudinary": "^2.8.0"
+  }
+}
