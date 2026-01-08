@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Devakh Rashie</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
         
@@ -103,22 +104,21 @@
             overflow-y: auto;
         }
         
-        .window {
-            width: 100%;
-            border: 2px solid #000;
-            margin-bottom: 20px;
-        }
-        
-        .window-title {
-            background-color: #000;
-            color: #fff;
-            padding: 5px 10px;
-            text-align: center;
-            font-size: 18px;
-            border-bottom: 2px solid #000;
-        }
-        
-        .tab-container {
+    .window {
+        width: 100%;
+        border: 2px solid #000;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    
+    .window-title {
+        background-color: #000;
+        color: #fff;
+        padding: 5px 10px;
+        text-align: center;
+        font-size: 18px;
+        border-bottom: 2px solid #000;
+    }        .tab-container {
             display: flex;
             border-bottom: 2px solid #000;
         }
@@ -242,12 +242,80 @@
             margin-bottom: 15px;
         }
 
-        /* Existing media query improvements */
+    /* Default: hide tiles on desktop completely */
+    .mobile-tile-container {
+        display: none !important;
+        pointer-events: none;
+    }
+
+    /* Existing media query improvements */
 @media (max-width: 768px) {
     .desktop-container {
         grid-template-columns: 1fr;
     }
     
+    /* Mobile tile styles - responsive grid layout */
+    .mobile-tile-container {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        padding: 8px;
+        background-color: #c0c0c0;
+        border-bottom: 2px solid #000;
+        pointer-events: auto;
+        max-width: 100%;
+        overflow: hidden;
+    }
+    .mobile-tile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 65px;
+        background-color: #c0c0c0;
+        border: 2px solid #000;
+        cursor: pointer;
+        border-radius: 3px;
+        font-family: 'VT323', monospace;
+        text-align: center;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+    .mobile-tile:active {
+        background-color: #a0a0a0;
+        border-style: inset;
+    }
+    .mobile-tile .icon { font-size: 18px; line-height: 1; }
+    .mobile-tile .label { font-size: 8px; margin-top: 2px; word-break: break-word; line-height: 1.1; }
+    
+    /* Hide tabs on mobile to save space */
+    .tab-container { display: none; }
+    
+    /* Show first window content by default on mobile */
+    .window-content { display: none; }
+    .window-content.active { display: block; }
+
+    /* Window close (back-to-home) button */
+    .window { position: relative; }
+    .window-close {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 26px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #c0c0c0;
+        border: 2px solid #000;
+        cursor: pointer;
+        font-family: 'VT323', monospace;
+        font-size: 14px;
+        z-index: 50;
+        border-radius: 3px;
+    }
+    /* Hide close button on the home/about profiler window */
+    #about-window .window-close { display: none; }
     .sidebar {
         display: flex;
         flex-direction: row;
@@ -433,6 +501,53 @@
             background-color: #000;
             width: 3px;
         }
+
+        /* Photos Window Styles */
+        .photos-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 15px;
+            overflow-y: auto;
+            max-height: 600px;
+        }
+
+        .photo-item {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #000;
+            background-color: #fff;
+        }
+
+        .photo-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            background-color: #c0c0c0;
+            border-bottom: 1px solid #000;
+        }
+
+        .photo-date {
+            padding: 5px 8px;
+            font-size: 12px;
+            color: #666;
+            font-family: 'VT323', monospace;
+            text-align: right;
+            background-color: #fff;
+        }
+
+        .photos-loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .photos-error {
+            color: #c00;
+            padding: 15px;
+            border: 1px solid #c00;
+            background-color: #fff;
+        }
         
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -446,6 +561,10 @@
             
             .graph-container, .stats-container {
                 grid-template-columns: 1fr;
+            }
+
+            .photos-feed {
+                max-height: 400px;
             }
         }
     </style>
@@ -483,6 +602,10 @@
                     <div class="icon">📊</div>
                     <div>Skills</div>
                 </div>
+                <div class="icon-container" data-tab="photos">
+                    <div class="icon">🖼️</div>
+                    <div>Photos</div>
+                </div>
                 <div class="icon-container" data-tab="contact">
                     <div class="icon">✉️</div>
                     <div>Contact</div>
@@ -494,6 +617,33 @@
                 <!-- Dashboard / About -->
                 <div class="window" id="about-window">
                     <div class="window-title">Profiler</div>
+                    <!-- Mobile quick-access tiles (visible on small screens) -->
+                    <div class="mobile-tile-container" aria-hidden="true">
+                        <div class="mobile-tile" data-tab="projects" title="Projects">
+                            <div class="icon">📁</div>
+                            <div class="label">Projects</div>
+                        </div>
+                        <div class="mobile-tile" data-tab="experience" title="Experience">
+                            <div class="icon">💼</div>
+                            <div class="label">Experience</div>
+                        </div>
+                        <div class="mobile-tile" data-tab="skills" title="Skills">
+                            <div class="icon">📊</div>
+                            <div class="label">Skills</div>
+                        </div>
+                        <div class="mobile-tile" data-tab="contact" title="Contact">
+                            <div class="icon">✉️</div>
+                            <div class="label">Contact</div>
+                        </div>
+                        <div class="mobile-tile" data-url="https://github.com/arkanemystic" title="GitHub">
+                            <div class="icon">🐙</div>
+                            <div class="label">GitHub</div>
+                        </div>
+                        <div class="mobile-tile" data-id="books-icon" title="Books">
+                            <div class="icon">📚</div>
+                            <div class="label">Books</div>
+                        </div>
+                    </div>
                     <div class="tab-container">
                         <div class="tab active" data-tab="applications">Applications</div>
                         <div class="tab" data-tab="processes">Processes</div>
@@ -1328,6 +1478,16 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
                     </div>
                 </div>
+                
+                <!-- Photos Window -->
+                <div class="window" id="photos-window" style="display: none;">
+                    <div class="window-title">Photos</div>
+                    <div class="window-content active">
+                        <div class="photos-loading" id="photos-loading">Loading photos...</div>
+                        <div class="photos-feed" id="photos-feed"></div>
+                        <div class="photos-error" id="photos-error" style="display: none;"></div>
+                    </div>
+                </div>
             </div>
             
             <!-- Right Sidebar -->
@@ -1339,11 +1499,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="icon">📚</div>
                 <div>Books</div>
             </div>
-                <div class="icon-container">
+                <div class="icon-container" id="printer-icon">
                     <div class="icon">🖨️</div>
                     <div>Printer</div>
                 </div>
-                <div class="icon-container">
+                <div class="icon-container" id="trash-icon">
                     <div class="icon">🗑️</div>
                     <div>Trash</div>
                 </div>
@@ -1403,7 +1563,153 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Show selected window
                 document.getElementById(tabName + '-window').style.display = 'block';
             });
+
+        // Mobile tile click handlers (reuses existing icon handlers)
+        const mobileTiles = document.querySelectorAll('.mobile-tile');
+        mobileTiles.forEach(tile => {
+            tile.addEventListener('click', () => {
+                const tab = tile.dataset.tab;
+                const url = tile.dataset.url;
+                const id = tile.dataset.id;
+
+                if (tab) {
+                    // trigger the same sidebar icon click if present
+                    const el = document.querySelector(`.icon-container[data-tab="${tab}"]`);
+                    if (el) return el.click();
+                }
+
+                if (id) {
+                    const el = document.getElementById(id);
+                    if (el) return el.click();
+                }
+
+                if (url) {
+                    window.open(url, '_blank');
+                }
+            });
         });
+
+        // Toggle mobile tiles visibility based on screen size
+        const mtContainer = document.querySelector('.mobile-tile-container');
+        const mobileQuery = window.matchMedia('(max-width: 768px)');
+        function updateMobileTiles(e) {
+            if (!mtContainer) return;
+            const show = (e && typeof e.matches === 'boolean') ? e.matches : mobileQuery.matches;
+            mtContainer.setAttribute('aria-hidden', show ? 'false' : 'true');
+        }
+        updateMobileTiles(mobileQuery);
+        if (mobileQuery.addEventListener) {
+            mobileQuery.addEventListener('change', updateMobileTiles);
+        } else if (mobileQuery.addListener) {
+            mobileQuery.addListener(updateMobileTiles);
+        }
+
+        // Add an X close button to each window that returns user to the home Profiler
+        document.querySelectorAll('.window').forEach(win => {
+            // Don't add a close button to the about/home window
+            if (win.id === 'about-window') return;
+            if (win.querySelector('.window-close')) return;
+            const btn = document.createElement('div');
+            btn.className = 'window-close';
+            btn.tabIndex = 0;
+            btn.title = 'Back to Home';
+            btn.innerText = '✕';
+            win.appendChild(btn);
+            const goHome = () => {
+                document.querySelectorAll('.window').forEach(w => w.style.display = 'none');
+                const about = document.getElementById('about-window');
+                if (about) about.style.display = 'block';
+                const aboutTabs = document.querySelectorAll('#about-window .tab');
+                aboutTabs.forEach(t => t.classList.remove('active'));
+                const firstTab = document.querySelector('#about-window .tab[data-tab="applications"]');
+                if (firstTab) firstTab.classList.add('active');
+                const contents = document.querySelectorAll('#about-window .window-content');
+                contents.forEach(c => c.classList.remove('active'));
+                const defaultContent = document.getElementById('applications-content');
+                if (defaultContent) defaultContent.classList.add('active');
+                updateMobileTiles(mobileQuery);
+            };
+            btn.addEventListener('click', goHome);
+            btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goHome(); } });
+        });
+        });
+
+        // Cloudinary Photos fetcher
+        async function fetchCloudinaryPhotos() {
+            const feedContainer = document.getElementById('photos-feed');
+            const loadingDiv = document.getElementById('photos-loading');
+            const errorDiv = document.getElementById('photos-error');
+
+            try {
+                // Fetch from local static JSON file (no CORS issues!)
+                const response = await fetch('./photos-data.json');
+
+                if (!response.ok) {
+                    throw new Error(`Failed to load photos data (${response.status})`);
+                }
+
+                const data = await response.json();
+                const resources = data.resources || [];
+
+                if (resources.length === 0) {
+                    feedContainer.innerHTML = '<div class="photos-loading">No photos found.</div>';
+                    loadingDiv.style.display = 'none';
+                    return;
+                }
+
+                // Sort by creation date (newest first)
+                resources.sort((a, b) => new Date(b.photo_date) - new Date(a.photo_date));
+
+                // Clear loading message
+                loadingDiv.style.display = 'none';
+                feedContainer.innerHTML = '';
+
+                // Render photos
+                resources.forEach(photo => {
+                    const photoItem = document.createElement('div');
+                    photoItem.className = 'photo-item';
+
+                    // Format photo metadata date
+                    const photoDate = new Date(photo.photo_date);
+                    const dateString = photoDate.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+
+                    photoItem.innerHTML = `
+                        <img src="${photo.secure_url}" alt="Photo" class="photo-image" loading="lazy">
+                        <div class="photo-date">${dateString}</div>
+                    `;
+
+                    feedContainer.appendChild(photoItem);
+                });
+
+            } catch (error) {
+                console.error('Error fetching photos:', error);
+                loadingDiv.style.display = 'none';
+                errorDiv.style.display = 'block';
+                errorDiv.innerHTML = `<strong>Error:</strong> ${error.message}<br><small>Check browser console (F12) for details.</small>`;
+            }
+        }
+
+        // Load photos when the Photos window is opened
+        const photosWindow = document.getElementById('photos-window');
+        if (photosWindow) {
+            let photosLoaded = false;
+
+            // Intercept the click on the Photos icon
+            document.addEventListener('click', (e) => {
+                const target = e.target.closest('.icon-container, .mobile-tile');
+                if (!target) return;
+
+                const tab = target.getAttribute('data-tab');
+                if (tab === 'photos' && !photosLoaded) {
+                    photosLoaded = true;
+                    fetchCloudinaryPhotos();
+                }
+            });
+        }
     </script>
 </body>
 </html>
