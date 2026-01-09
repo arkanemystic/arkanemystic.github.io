@@ -504,12 +504,13 @@
 
         /* Photos Window Styles */
         .photos-feed {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 8px;
             padding: 15px;
             overflow-y: auto;
             max-height: 600px;
+            grid-auto-rows: 150px;
         }
 
         .photo-item {
@@ -517,29 +518,53 @@
             flex-direction: column;
             border: 1px solid #000;
             background-color: #fff;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+
+        .photo-item:hover {
+            background-color: #e0e0e0;
+        }
+
+        .photo-item:active {
+            background-color: #c0c0c0;
         }
 
         .photo-image {
             width: 100%;
-            height: auto;
+            height: 100%;
             display: block;
             background-color: #c0c0c0;
-            border-bottom: 1px solid #000;
+            object-fit: cover;
+            object-position: center;
+            flex: 1;
         }
 
         .photo-date {
-            padding: 5px 8px;
-            font-size: 12px;
-            color: #666;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            padding: 3px 5px;
+            font-size: 10px;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.7);
             font-family: 'VT323', monospace;
             text-align: right;
-            background-color: #fff;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .photo-item:hover .photo-date {
+            opacity: 1;
         }
 
         .photos-loading {
             text-align: center;
             padding: 20px;
             color: #666;
+            grid-column: 1 / -1;
         }
 
         .photos-error {
@@ -547,6 +572,79 @@
             padding: 15px;
             border: 1px solid #c00;
             background-color: #fff;
+            grid-column: 1 / -1;
+        }
+
+        /* Photo lightbox modal */
+        .photo-lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .photo-lightbox.active {
+            display: flex;
+        }
+
+        .photo-lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .photo-lightbox-image {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border: 2px solid #fff;
+            background-color: #000;
+        }
+
+        .photo-lightbox-date {
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            font-family: 'VT323', monospace;
+            font-size: 12px;
+            border-top: 1px solid #fff;
+            margin-top: 10px;
+        }
+
+        .photo-lightbox-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background-color: #000;
+            border: 2px solid #fff;
+            color: #fff;
+            font-size: 24px;
+            font-family: 'VT323', monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.1s;
+        }
+
+        .photo-lightbox-close:hover {
+            background-color: #333;
+        }
+
+        .photo-lightbox-close:active {
+            background-color: #555;
         }
         
         /* Responsive adjustments */
@@ -564,6 +662,8 @@
             }
 
             .photos-feed {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                grid-auto-rows: 120px;
                 max-height: 400px;
             }
         }
@@ -642,6 +742,10 @@
                         <div class="mobile-tile" data-id="books-icon" title="Books">
                             <div class="icon">📚</div>
                             <div class="label">Books</div>
+                        </div>
+                        <div class="mobile-tile" data-tab="photos" title="Photos">
+                            <div class="icon">🖼️</div>
+                            <div class="label">Photos</div>
                         </div>
                     </div>
                     <div class="tab-container">
@@ -749,69 +853,71 @@
                     
                     <!-- Processes Tab -->
                     <div class="window-content" id="processes-content">
-                        <div class="stats-box" style="width: 100%;">
+                        <div class="stats-box" style="width: 100%; margin-bottom: 15px;">
                             <div class="stats-title">About Me</div>
-                            <p style="margin-bottom: 10px;">I am a dedicated computer science and theoretical math student with a passion for AI/ML, blockchain security, and software development. As a researcher and developer, I enjoy solving complex problems, building innovative solutions, and applying my skills to real-world applications in medicine, fintech, and beyond.
-
-
-
-
-
-
-
-                            </p>
-                            <p>In my spare time, I enjoy singing as part of my universities A Capella team, reading books (currently on Siddhartha), and hitting the gym for a fresh pump!</p>
+                            <div class="stats-row">
+                                <div class="stats-label">Background:</div>
+                                <div>Dedicated CS & theoretical math student with passion for AI/ML, blockchain security, and software development</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Focus:</div>
+                                <div>Solving complex problems, building innovative solutions for medicine, fintech, and beyond</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Interests:</div>
+                                <div>Singing (A Capella team), reading, fitness</div>
+                            </div>
                         </div>
                         
-                        <div class="stats-container" style="margin-top: 15px;">
-                            <div class="stats-box">
-                                <div class="stats-title">Education</div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Degree:</div>
-                                    <div>BS Computer Science Engineering & Applied Math (Physics)</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">University:</div>
-                                    <div>The Ohio State University, Main Campus</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Year:</div>
-                                    <div>2027</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">GPA:</div>
-                                    <div>4.0</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Coursework:</div>
-                                    <div>Foundation of Higher Math, Tensor Calculus, Intro Analysis 1</div>
-                                </div>
+                        <div class="stats-box" style="width: 100%; margin-bottom: 15px;">
+                            <div class="stats-title">Education</div>
+                            <div class="stats-row">
+                                <div class="stats-label">Degree:</div>
+                                <div>BS Computer Science Engineering & Applied Math</div>
                             </div>
-                            <div class="stats-box">
-                                <div class="stats-title">Extracurricular / Leadership</div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Dhadkan:</div>
-                                    <div>Member — performed cross-cultural vocal sets in multiple cities</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Kappa Theta Pi:</div>
-                                    <div>Blockchain Technology Lead — mentored projects and coordinated events</div>
-                                </div>
+                            <div class="stats-row">
+                                <div class="stats-label">University:</div>
+                                <div>The Ohio State University, Main Campus</div>
                             </div>
-                            <div class="stats-box">
-                                <div class="stats-title">Fun Stats</div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Coffee Consumed:</div>
-                                    <div>∞ cups</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Bugs Squashed:</div>
-                                    <div>🐛 x 404</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">I'm proud of you son:</div>
-                                    <div>0</div>
-                                </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Graduation:</div>
+                                <div>2027</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">GPA:</div>
+                                <div>4.0</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Coursework:</div>
+                                <div>Higher Math, Tensor Calculus, Analysis I</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-box" style="width: 100%; margin-bottom: 15px;">
+                            <div class="stats-title">Extracurricular / Leadership</div>
+                            <div class="stats-row">
+                                <div class="stats-label">Dhadkan:</div>
+                                <div>Member — cross-cultural vocal performances</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Kappa Theta Pi:</div>
+                                <div>Blockchain Technology Lead — mentorship & events</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-box" style="width: 100%;">
+                            <div class="stats-title">Fun Stats</div>
+                            <div class="stats-row">
+                                <div class="stats-label">Coffee Consumed:</div>
+                                <div>∞ cups</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Bugs Squashed:</div>
+                                <div>🐛 x 404</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Pride Level:</div>
+                                <div>9000</div>
                             </div>
                         </div>
                     </div>
@@ -864,73 +970,83 @@
                 <div class="window" id="projects-window" style="display: none;">
                     <div class="window-title">Latest Projects</div>
                     <div class="window-content active">
-                        <div class="projects-list">
-                            <div class="project-item">
-                                <div class="project-title">POSEidon</div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Type:</div>
-                                    <div>Mobile Application</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Tech:</div>
-                                    <div>React Native, Vision Processing(MediaPipe Pose), On-Device AI(Quantized Phi-2 LLM, ONNX Runtime, Piper TTS), Firebase</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Status:</div>
-                                    <div>In Progress</div>
-                                </div>
-                                <p style="margin-top: 10px;">A smart fitness coaching app powered by computer vision and AI to perfect your form and track your progress.</p>
+                        <div class="stats-box" style="width: 100%; margin-bottom: 15px;">
+                            <div class="stats-title">POSEidon</div>
+                            <div class="stats-row">
+                                <div class="stats-label">Type:</div>
+                                <div>Mobile Application</div>
                             </div>
-                            
-                            <div class="project-item">
-                                <div class="project-title">Parking Detection Vision AI</div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Type:</div>
-                                    <div>Python Application</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Tech:</div>
-                                    <div>Python, OpenCV, NumPy</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Status:</div>
-                                    <div>Completed</div>
-                                </div>
-                                <p style="margin-top: 10px;">A smart parking detection system using OpenCV that tracks parking space occupancy in real-time with advanced image processing.</p>
+                            <div class="stats-row">
+                                <div class="stats-label">Tech:</div>
+                                <div>React Native, Vision Processing, On-Device AI</div>
                             </div>
-                            
-                            <div class="project-item">
-                                <div class="project-title">Penny: Smart Blockchain Accountant</div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Type:</div>
-                                    <div>Web App + Command Line Tool</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Tech:</div>
-                                    <div>Python, ChromaDB, LLM, csv2api (CLI & Subprocess), Structured Logging</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Status:</div>
-                                    <div>Completed</div>
-                                </div>
-                                <p style="margin-top: 10px;">A crypto accounting assistant that I built for Pennyworks with a conversational interface for blockchain CSV analysis, local LLM support, and a custom CLI tool for batch transaction routing—streamlining API generation for crypto bookkeeping.</p>
+                            <div class="stats-row">
+                                <div class="stats-label">Status:</div>
+                                <div>In Progress</div>
                             </div>
-                            
-                            <div class="project-item">
-                                <div class="project-title">Jane Street Puzzles Solutions</div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Type:</div>
-                                    <div>Algorithmic Research</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Tech:</div>
-                                    <div>Python, Monte Carlo Simulations, Manim</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Status:</div>
-                                    <div>In Progress</div>
-                                </div>
-                                <p style="margin-top: 10px;">Developed algorithmic solutions for probability and combinatorics puzzles; implemented Monte Carlo simulations in Python and visualized results using Manim.</p>
+                            <div class="stats-row">
+                                <div class="stats-label">Description:</div>
+                                <div>Smart fitness coaching app powered by computer vision and AI to perfect your form.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-box" style="width: 100%; margin-bottom: 15px;">
+                            <div class="stats-title">Parking Detection Vision AI</div>
+                            <div class="stats-row">
+                                <div class="stats-label">Type:</div>
+                                <div>Python Application</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Tech:</div>
+                                <div>Python, OpenCV, NumPy</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Status:</div>
+                                <div>Completed</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Description:</div>
+                                <div>Smart parking detection system using OpenCV for real-time occupancy tracking.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-box" style="width: 100%; margin-bottom: 15px;">
+                            <div class="stats-title">Penny: Smart Blockchain Accountant</div>
+                            <div class="stats-row">
+                                <div class="stats-label">Type:</div>
+                                <div>Web App + CLI Tool</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Tech:</div>
+                                <div>Python, ChromaDB, LLM, csv2api</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Status:</div>
+                                <div>Completed</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Description:</div>
+                                <div>Crypto accounting assistant for blockchain CSV analysis and batch transaction routing.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-box" style="width: 100%;">
+                            <div class="stats-title">Jane Street Puzzles Solutions</div>
+                            <div class="stats-row">
+                                <div class="stats-label">Type:</div>
+                                <div>Algorithmic Research</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Tech:</div>
+                                <div>Python, Monte Carlo Simulations, Manim</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Status:</div>
+                                <div>In Progress</div>
+                            </div>
+                            <div class="stats-row">
+                                <div class="stats-label">Description:</div>
+                                <div>Algorithmic solutions for probability and combinatorics puzzles with visualizations.</div>
                             </div>
                         </div>
                     </div>
@@ -1488,6 +1604,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="photos-error" id="photos-error" style="display: none;"></div>
                     </div>
                 </div>
+
+                <!-- Photo Lightbox Modal -->
+                <div class="photo-lightbox" id="photo-lightbox">
+                    <div class="photo-lightbox-content">
+                        <div class="photo-lightbox-close" onclick="closeLightbox()">✕</div>
+                        <img id="lightbox-image" class="photo-lightbox-image" src="" alt="Photo">
+                        <div class="photo-lightbox-date" id="lightbox-date"></div>
+                    </div>
+                </div>
             </div>
             
             <!-- Right Sidebar -->
@@ -1682,6 +1807,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="photo-date">${dateString}</div>
                     `;
 
+                    // Add click handler to open lightbox
+                    photoItem.addEventListener('click', () => {
+                        openLightbox(photo.secure_url, dateString);
+                    });
+
                     feedContainer.appendChild(photoItem);
                 });
 
@@ -1709,6 +1839,46 @@ document.addEventListener('DOMContentLoaded', () => {
                     fetchCloudinaryPhotos();
                 }
             });
+        }
+
+        // Lightbox functions
+        function openLightbox(imageUrl, dateString) {
+            const lightbox = document.getElementById('photo-lightbox');
+            const lightboxImage = document.getElementById('lightbox-image');
+            const lightboxDate = document.getElementById('lightbox-date');
+
+            lightboxImage.src = imageUrl;
+            lightboxDate.textContent = dateString;
+            lightbox.classList.add('active');
+
+            // Close on Escape key
+            document.addEventListener('keydown', handleEscapeKey);
+
+            // Close on background click
+            lightbox.addEventListener('click', handleBackgroundClick);
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('photo-lightbox');
+            lightbox.classList.remove('active');
+
+            // Remove event listeners
+            document.removeEventListener('keydown', handleEscapeKey);
+            lightbox.removeEventListener('click', handleBackgroundClick);
+        }
+
+        function handleEscapeKey(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        }
+
+        function handleBackgroundClick(e) {
+            const lightbox = document.getElementById('photo-lightbox');
+            const content = document.querySelector('.photo-lightbox-content');
+            if (e.target === lightbox && !content.contains(e.target)) {
+                closeLightbox();
+            }
         }
     </script>
 </body>
