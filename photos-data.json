@@ -1,6 +1,11 @@
 {
   "resources": [
     {
+      "public_id": "IMG_6078.HEIC_oiw9cw",
+      "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/f_jpg,q_auto/v1768393536/IMG_6078.HEIC_oiw9cw.heic",
+      "photo_date": "2026-01-14T18:02:24Z"
+    },
+    {
       "public_id": "20260102_144452_rkcz5s",
       "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/v1767940675/20260102_144452_rkcz5s.jpg",
       "photo_date": "2026-01-02T14:44:52Z"
@@ -9,6 +14,11 @@
       "public_id": "20251225_161437_gvbgqe",
       "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/v1767940674/20251225_161437_gvbgqe.jpg",
       "photo_date": "2025-12-25T16:14:37Z"
+    },
+    {
+      "public_id": "IMG_20251213_000732_512_fzwxi8",
+      "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/v1768393533/IMG_20251213_000732_512_fzwxi8.jpg",
+      "photo_date": "2025-12-13T00:07:32Z"
     },
     {
       "public_id": "20251125_141451_imil57",
@@ -21,9 +31,24 @@
       "photo_date": "2025-11-22T01:04:03Z"
     },
     {
+      "public_id": "IMG-20251115-WA0011_kiy2me",
+      "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/v1768393535/IMG-20251115-WA0011_kiy2me.jpg",
+      "photo_date": "2025-11-15T00:00:00Z"
+    },
+    {
       "public_id": "IMG_20251109_210938_004_emcwwv",
       "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/v1767940672/IMG_20251109_210938_004_emcwwv.jpg",
       "photo_date": "2025-11-09T21:09:38Z"
+    },
+    {
+      "public_id": "20251102_185103_yldfwk",
+      "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/v1768393537/20251102_185103_yldfwk.jpg",
+      "photo_date": "2025-11-02T18:51:03Z"
+    },
+    {
+      "public_id": "20251101_111627_avwb1n",
+      "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/v1768393536/20251101_111627_avwb1n.jpg",
+      "photo_date": "2025-11-01T11:16:27Z"
     },
     {
       "public_id": "20251025_134918_x5bklf",
@@ -31,9 +56,19 @@
       "photo_date": "2025-10-25T13:49:18Z"
     },
     {
+      "public_id": "IMG_20251017_211834_pzbmxg",
+      "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/f_jpg,q_auto/v1768393536/IMG_20251017_211834_pzbmxg.heic",
+      "photo_date": "2025-10-17T21:18:34Z"
+    },
+    {
       "public_id": "IMG-20250928-WA0010_ccaxps",
       "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/v1767938991/IMG-20250928-WA0010_ccaxps.jpg",
       "photo_date": "2025-09-28T00:00:00Z"
+    },
+    {
+      "public_id": "20250830_124304_u8reof",
+      "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/v1768393537/20250830_124304_u8reof.jpg",
+      "photo_date": "2025-08-30T12:43:04Z"
     },
     {
       "public_id": "20250812_183611_zv9gvr",
@@ -41,14 +76,14 @@
       "photo_date": "2025-08-12T18:36:11Z"
     },
     {
+      "public_id": "20250806_225801_rcha7m",
+      "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/v1768392974/20250806_225801_rcha7m.jpg",
+      "photo_date": "2025-08-06T22:58:01Z"
+    },
+    {
       "public_id": "20250802_152012_znh7mf",
       "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/v1767918166/20250802_152012_znh7mf.jpg",
       "photo_date": "2025-08-02T15:20:12Z"
-    },
-    {
-      "public_id": "IMG_5888.HEIC_1_zfvyua",
-      "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/f_jpg,q_auto/v1767918164/IMG_5888.HEIC_1_zfvyua.heic",
-      "photo_date": "2025-07-15T00:00:00Z"
     },
     {
       "public_id": "IMG_5761.HEIC_s8hnqx",
@@ -69,6 +104,11 @@
       "public_id": "20250613_122821_dmmtvh",
       "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/v1767940674/20250613_122821_dmmtvh.jpg",
       "photo_date": "2025-06-13T12:28:21Z"
+    },
+    {
+      "public_id": "20250426_200901_rmxcgn",
+      "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/v1768393536/20250426_200901_rmxcgn.jpg",
+      "photo_date": "2025-04-26T20:09:01Z"
     },
     {
       "public_id": "20240719_120021_apdnbv",
