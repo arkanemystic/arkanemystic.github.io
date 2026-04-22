@@ -5,1877 +5,1264 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Devakh Rashie</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'VT323', monospace;
+        /* ═══════════════════════════════════════
+           TOKENS
+        ═══════════════════════════════════════ */
+        :root {
+            --g0: #111;
+            --g1: #2a2a2a;
+            --g2: #444;
+            --g3: #686868;
+            --g4: #888;
+            --g5: #a8a8a8;
+            --g6: #c0c0c0;
+            --g7: #d4d4d4;
+            --g8: #e8e8e8;
+            --g9: #f5f5f5;
+            --white: #fff;
+
+            --border:       2px solid var(--g0);
+            --border-light: 1px solid var(--g5);
+
+            --gap:   14px;
+            --pad:   14px;
+            --rad:   0;          /* keep retro — no border-radius */
+
+            /* Label column width used across all key-value tables */
+            --lw: 88px;
         }
-        
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'VT323', monospace; }
+        html { scroll-behavior: smooth; }
+
         body {
-            background-color: #c0c0c0;
-            color: #000;
-            line-height: 1.2;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            background: var(--g6);
+            color: var(--g0);
+            line-height: 1.35;
+            font-size: 17px;
         }
-        
-        .system-container {
-            width: 100%;
-            max-width: 800px;
-            background-color: #c0c0c0;
-            border: 2px solid #000;
-            box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-        }
-        
+
+        /* ═══════════════════════════════════════
+           MENU BAR
+        ═══════════════════════════════════════ */
         .menu-bar {
-            display: flex;
-            background-color: #fff;
-            border-bottom: 2px solid #000;
-            padding: 5px 10px;
+            position: sticky; top: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(180deg, var(--g9) 0%, var(--g8) 100%);
+            border-bottom: var(--border);
+            padding: 5px 16px;
             font-size: 18px;
-            justify-content: space-between;
         }
-        
-        .menu-items {
-            display: flex;
-            gap: 15px;
+        .menu-nav { display: flex; }
+        .menu-nav a {
+            color: var(--g0); text-decoration: none;
+            padding: 2px 13px;
+            border-right: var(--border-light);
+            transition: background 0.1s;
         }
-        
-        .time-display {
-            font-weight: bold;
+        .menu-nav a:first-child { border-left: var(--border-light); }
+        .menu-nav a:hover { background: var(--g7); }
+        #time-display { font-weight: bold; min-width: 44px; text-align: right; }
+
+        /* ═══════════════════════════════════════
+           PAGE SHELL
+        ═══════════════════════════════════════ */
+        .page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px 16px 72px;
+            display: flex; flex-direction: column; gap: 20px;
         }
-        
-        .desktop-container {
+
+        /* ═══════════════════════════════════════
+           WINDOW CHROME  (reusable shell)
+           Usage:
+             <section class="window" id="foo">
+               <div class="window-title"><span>Title</span><div class="wt-dots">…</div></div>
+               <div class="window-body [ --cols-N ]">…</div>
+             </section>
+        ═══════════════════════════════════════ */
+        .window {
+            border: var(--border);
+            background: var(--g8);
+            box-shadow: 4px 4px 0 rgba(0,0,0,.22);
+        }
+        .window-title {
+            background: linear-gradient(90deg, var(--g0) 0%, var(--g2) 100%);
+            color: var(--white);
+            padding: 5px 12px;
+            font-size: 18px; letter-spacing: .06em;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .wt-dots { display: flex; gap: 5px; }
+        .wt-dot {
+            width: 10px; height: 10px;
+            border: 1px solid var(--g4); display: inline-block;
+        }
+        .wt-dot:nth-child(1) { background: var(--g5); }
+        .wt-dot:nth-child(2) { background: var(--g3); }
+        .wt-dot:nth-child(3) { background: var(--g1); }
+
+        /* Window body grid helpers — add class to .window-body */
+        .window-body          { padding: var(--pad); }
+        .window-body.cols-2   { display: grid; grid-template-columns: 1fr 1fr;         gap: var(--gap); }
+        .window-body.cols-3   { display: grid; grid-template-columns: 1fr 1fr 1fr;     gap: var(--gap); }
+        .window-body.profiler { display: grid; grid-template-columns: 156px 1fr 1fr;   gap: var(--gap); padding: 10px; }
+
+        /* ═══════════════════════════════════════
+           PANEL  (white card inside a window)
+           Usage:
+             <div class="panel">
+               <div class="panel-title">Label</div>
+               …content…
+             </div>
+        ═══════════════════════════════════════ */
+        .panel {
+            background: var(--white);
+            border: var(--border);
+        }
+        .panel-title {
+            background: var(--g9);
+            border-bottom: var(--border-light);
+            padding: 4px 10px;
+            font-size: 16px; font-weight: bold; letter-spacing: .04em;
+            color: var(--g1);
+        }
+        .panel-body { padding: 10px; }
+
+        /* ═══════════════════════════════════════
+           KV TABLE  (key-value rows)
+           Usage:
+             <dl class="kv">
+               <div class="kv-row">
+                 <dt>Label</dt><dd>Value</dd>
+               </div>
+             </dl>
+        ═══════════════════════════════════════ */
+        .kv { display: flex; flex-direction: column; gap: 0; }
+
+        .kv-row {
             display: grid;
-            grid-template-columns: 70px 1fr 70px;
-            min-height: 500px;
+            grid-template-columns: var(--lw) 1fr;
+            gap: 0 8px;
+            padding: 4px 10px;
+            font-size: 16px;
         }
-        
-        .sidebar {
-            background-color: #c0c0c0;
-            border-right: 2px solid #000;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
+        .kv-row:nth-child(even) { background: var(--g9); }
+
+        .kv-row dt { color: var(--g3); font-weight: bold; white-space: nowrap; }
+        .kv-row dd { color: var(--g0); }
+
+        /* Stacked kv for narrow panels (3-col grid) */
+        .window-body.cols-3 .kv-row,
+        .window-body.profiler .panel .kv-row {
+            grid-template-columns: 1fr;
+            gap: 0;
+            padding: 2px 10px 1px;
         }
-        
-        .sidebar.right {
-            border-right: none;
-            border-left: 2px solid #000;
+        .window-body.cols-3 .kv-row dt,
+        .window-body.profiler .panel .kv-row dt {
+            font-size: 11px;
         }
-        
-        .icon-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            text-align: center;
-            font-size: 14px;
+        .window-body.cols-3 .kv-row dd,
+        .window-body.profiler .panel .kv-row dd {
+            font-size: 15px;
+            padding-bottom: 1px;
         }
-        
-        .icon {
-            width: 40px;
-            height: 40px;
-            background-color: #fff;
-            border: 2px solid #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 5px;
-            font-size: 24px;
+
+        /* Divider inside a panel */
+        .panel-divider {
+            border: none; border-top: var(--border-light);
+            margin: 8px 10px;
         }
-        
-        .main-content {
-            background-color: #fff;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-y: auto;
+
+        /* ═══════════════════════════════════════
+           PROFILER GRAPHS
+        ═══════════════════════════════════════ */
+        .graph-stack { display: flex; flex-direction: column; gap: 10px; }
+
+        .graph-block {
+            border: var(--border);
+            padding: 8px 10px;
+            background: var(--g9);
         }
-        
-    .window {
-        width: 100%;
-        border: 2px solid #000;
-        margin-bottom: 20px;
-        position: relative;
-    }
-    
-    .window-title {
-        background-color: #000;
-        color: #fff;
-        padding: 5px 10px;
-        text-align: center;
-        font-size: 18px;
-        border-bottom: 2px solid #000;
-    }        .tab-container {
-            display: flex;
-            border-bottom: 2px solid #000;
-        }
-        
-        .tab {
-            padding: 5px 10px;
-            cursor: pointer;
-            border-right: 2px solid #000;
-            background-color: #c0c0c0;
-        }
-        
-        .tab.active {
-            background-color: #fff;
-            border-bottom: 2px solid #fff;
-            margin-bottom: -2px;
-        }
-        
-        .window-content {
-            padding: 15px;
-            display: none;
-        }
-        
-        .window-content.active {
-            display: block;
-        }
-        
-        .graph-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .graph {
-            border: 2px solid #000;
-            padding: 10px;
-        }
-        
         .graph-title {
-            text-align: center;
-            margin-bottom: 5px;
-            font-weight: bold;
+            text-align: center; font-size: 14px; font-weight: bold;
+            color: var(--g2); margin-bottom: 5px;
         }
-        
         .graph-visual {
-            height: 100px;
-            border: 2px solid #000;
-            position: relative;
-            background-color: #fff;
-            overflow: hidden;
-            display: flex;
-            gap: 2px;
-            padding: 2px;
+            height: 72px; border: var(--border);
+            background: var(--white);
+            display: flex; gap: 2px; padding: 2px; overflow: hidden;
         }
-        
         .graph-bar {
-            flex: 1;
-            background-color: #000;
-            transition: height 0.2s ease;
-            align-self: flex-end;
-            min-width: 4px;
+            flex: 1; background: var(--g1);
+            align-self: flex-end; min-width: 4px;
+            transition: height .4s ease;
         }
 
-        .stats-container {
+        /* ═══════════════════════════════════════
+           EXPERIENCE ITEMS
+           Usage:
+             <article class="exp-item">
+               <header class="exp-header">
+                 <span class="exp-org">Company</span>
+                 <span class="exp-date">Date</span>
+               </header>
+               <div class="exp-role">Role title</div>
+               <p class="exp-desc">Description</p>
+             </article>
+        ═══════════════════════════════════════ */
+        .exp-list { display: flex; flex-direction: column; gap: var(--gap); }
+
+        .exp-item {
+            border: var(--border);
+            background: var(--white);
+        }
+        .exp-item:nth-child(even) { background: var(--g9); }
+
+        .exp-header {
+            display: flex; justify-content: space-between; align-items: baseline;
+            padding: 6px 12px;
+            background: var(--g8);
+            border-bottom: var(--border-light);
+            gap: 8px;
+        }
+        .exp-org  { font-size: 18px; font-weight: bold; color: var(--g0); }
+        .exp-date { font-size: 14px; color: var(--g3); white-space: nowrap; }
+        .exp-role { padding: 4px 12px; font-size: 15px; color: var(--g2); border-bottom: var(--border-light); }
+        .exp-desc { padding: 8px 12px; font-size: 15px; line-height: 1.4; color: var(--g1); }
+
+        /* ═══════════════════════════════════════
+           PROJECT CARDS
+           Usage:
+             <article class="project-card">
+               <header class="pc-header">
+                 <span class="pc-name">Name</span>
+                 <div class="pc-badges">…badges…</div>
+               </header>
+               <p class="pc-desc">Description</p>
+               <footer class="pc-tech">…badges…</footer>
+             </article>
+        ═══════════════════════════════════════ */
+        .projects-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        
-        .stats-box {
-            border: 2px solid #000;
-            padding: 10px;
-        }
-        
-        .stats-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-            text-align: center;
-            border-bottom: 1px solid #000;
-        }
-        
-        .stats-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-        }
-        
-        .stats-label {
-            font-weight: bold;
-        }
-        
-        .projects-list, .skills-list, .contact-form {
-            width: 100%;
-        }
-        
-        .project-item, .skill-item {
-            border: 2px solid #000;
-            margin-bottom: 10px;
-            padding: 10px;
-        }
-        
-        .project-title, .skill-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .skill-bar {
-            width: 100%;
-            height: 20px;
-            background-color: #c0c0c0;
-            border: 2px solid #000;
-            margin-top: 5px;
-        }
-        
-        .skill-progress {
-            height: 100%;
-            background-color: #000;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
+            gap: var(--gap);
         }
 
-    /* Default: hide tiles on desktop completely */
-    .mobile-tile-container {
-        display: none !important;
-        pointer-events: none;
-    }
+        .project-card {
+            border: var(--border);
+            background: var(--white);
+            display: flex; flex-direction: column;
+        }
+        .project-card:nth-child(2n) { background: var(--g9); }
 
-    /* Existing media query improvements */
-@media (max-width: 768px) {
-    .desktop-container {
-        grid-template-columns: 1fr;
-    }
-    
-    /* Mobile tile styles - responsive grid layout */
-    .mobile-tile-container {
-        display: grid !important;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 6px;
-        padding: 8px;
-        background-color: #c0c0c0;
-        border-bottom: 2px solid #000;
-        pointer-events: auto;
-        max-width: 100%;
-        overflow: hidden;
-    }
-    .mobile-tile {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 65px;
-        background-color: #c0c0c0;
-        border: 2px solid #000;
-        cursor: pointer;
-        border-radius: 3px;
-        font-family: 'VT323', monospace;
-        text-align: center;
-        padding: 3px;
-        box-sizing: border-box;
-    }
-    .mobile-tile:active {
-        background-color: #a0a0a0;
-        border-style: inset;
-    }
-    .mobile-tile .icon { font-size: 18px; line-height: 1; }
-    .mobile-tile .label { font-size: 8px; margin-top: 2px; word-break: break-word; line-height: 1.1; }
-    
-    /* Hide tabs on mobile to save space */
-    .tab-container { display: none; }
-    
-    /* Show first window content by default on mobile */
-    .window-content { display: none; }
-    .window-content.active { display: block; }
-
-    /* Window close (back-to-home) button */
-    .window { position: relative; }
-    .window-close {
-        position: absolute;
-        top: 6px;
-        left: 6px;
-        width: 26px;
-        height: 26px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #c0c0c0;
-        border: 2px solid #000;
-        cursor: pointer;
-        font-family: 'VT323', monospace;
-        font-size: 14px;
-        z-index: 50;
-        border-radius: 3px;
-    }
-    /* Hide close button on the home/about profiler window */
-    #about-window .window-close { display: none; }
-    .sidebar {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        border-right: none;
-        border-bottom: 2px solid #000;
-        padding: 10px;
-    }
-    
-    .sidebar.left {
-        order: 1;
-        border-bottom: 2px solid #000;
-    }
-    
-    .sidebar.right {
-        order: 3;
-        border-top: 2px solid #000;
-        border-left: none;
-    }
-    
-    .main-content {
-        order: 2;
-        width: 100%;
-    }
-    
-    .icon-container {
-        margin: 0 10px;
-    }
-    
-    .graph-container, 
-    .stats-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .window {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-    
-    .projects-list,
-    .skills-list {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .project-item,
-    .skill-item {
-        width: 100%;
-        margin-bottom: 15px;
-    }
-    
-    .contact-form {
-        width: 100%;
-        padding: 0 10px;
-    }
-    
-    .form-group {
-        margin-bottom: 10px;
-    }
-    
-    input, 
-    textarea {
-        width: 100%;
-        padding: 8px;
-    }
-    
-    .tab-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    .tab {
-        flex-grow: 1;
-        text-align: center;
-        border-bottom: 2px solid #000;
-    }
-    
-    .stats-row {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    
-    .stats-label {
-        margin-bottom: 5px;
-    }
-}
-
-@media (max-width: 768px) {
-    .desktop-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .sidebar {
-        display: none; /* Hide sidebars on mobile */
-    }
-    
-    .main-content {
-        width: 100%;
-    }
-    
-    .window {
-        display: none; /* Initially hide all windows */
-    }
-    
-    /* Show About window by default */
-    #about-window {
-        display: block;
-    }
-    
-    .graph-container, 
-    .stats-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .projects-list,
-    .skills-list {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .project-item,
-    .skill-item {
-        width: 100%;
-        margin-bottom: 15px;
-    }
-    
-    .contact-form {
-        width: 100%;
-        padding: 0 10px;
-    }
-    
-    .form-group {
-        margin-bottom: 10px;
-    }
-    
-    input, 
-    textarea {
-        width: 100%;
-        padding: 8px;
-    }
-}
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #000;
-            background-color: #fff;
-            font-family: 'VT323', monospace;
-            font-size: 16px;
-        }
-        
-        textarea {
-            height: 100px;
-            resize: vertical;
-        }
-        
-        button {
-            background-color: #000;
-            color: #fff;
-            border: 2px solid #000;
-            padding: 8px 15px;
-            cursor: pointer;
-            font-family: 'VT323', monospace;
-            font-size: 16px;
-        }
-        
-        button:hover {
-            background-color: #333;
-        }
-        
-        /* Pixelated effect for charts */
-        .chart-line {
-            position: absolute;
-            height: 1px;
-            background-color: #000;
-            width: 3px;
-        }
-
-        /* Photos Window Styles */
-        .photos-feed {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        .pc-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
             gap: 8px;
-            padding: 15px;
-            overflow-y: auto;
-            max-height: 600px;
-            grid-auto-rows: 150px;
+            padding: 8px 10px;
+            border-bottom: var(--border-light);
+            background: var(--g8);
         }
+        .pc-name  { font-size: 18px; font-weight: bold; line-height: 1.2; }
+        .pc-badges { display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; flex-shrink: 0; }
 
-        .photo-item {
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #000;
-            background-color: #fff;
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
-            transition: background-color 0.1s;
-        }
-
-        .photo-item:hover {
-            background-color: #e0e0e0;
-        }
-
-        .photo-item:active {
-            background-color: #c0c0c0;
-        }
-
-        .photo-image {
-            width: 100%;
-            height: 100%;
-            display: block;
-            background-color: #c0c0c0;
-            object-fit: cover;
-            object-position: center;
+        .pc-desc {
             flex: 1;
+            padding: 8px 10px;
+            font-size: 15px; line-height: 1.4; color: var(--g1);
         }
 
+        .pc-tech {
+            padding: 6px 10px;
+            border-top: var(--border-light);
+            background: var(--g9);
+            display: flex; flex-wrap: wrap; gap: 4px;
+        }
+
+        /* ═══════════════════════════════════════
+           BADGES
+        ═══════════════════════════════════════ */
+        .badge {
+            display: inline-block;
+            font-size: 13px; padding: 1px 7px;
+            white-space: nowrap;
+        }
+        .badge-solid   { background: var(--g1); color: var(--white); }
+        .badge-outline { background: var(--g8); color: var(--g1); border: 1px solid var(--g3); }
+        .badge-dim     { background: var(--g7); color: var(--g2); border: 1px solid var(--g5); }
+
+        /* ═══════════════════════════════════════
+           SKILL BLOCKS
+           Usage:
+             <div class="skill-block">
+               <div class="panel-title">Category</div>
+               <div class="skill-list">
+                 <div class="skill-row">
+                   <div class="skill-label"><span>Name</span><span>80%</span></div>
+                   <div class="skill-bar"><div class="skill-fill" style="--pct:80%"></div></div>
+                 </div>
+               </div>
+             </div>
+        ═══════════════════════════════════════ */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: var(--gap);
+        }
+
+        .skill-block {
+            border: var(--border);
+            background: var(--white);
+        }
+
+        .skill-list { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+
+        .skill-label {
+            display: flex; justify-content: space-between;
+            font-size: 15px; color: var(--g1); margin-bottom: 3px;
+        }
+        .skill-label span:last-child { color: var(--g3); }
+
+        .skill-bar  { height: 12px; background: var(--g7); border: 1px solid var(--g5); }
+        .skill-fill { height: 100%; background: var(--g1); width: var(--pct, 0%); }
+
+        /* ═══════════════════════════════════════
+           CONTACT
+        ═══════════════════════════════════════ */
+        .contact-link {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 0 8px;
+            padding: 5px 10px;
+            font-size: 16px;
+            border-bottom: var(--border-light);
+        }
+        .contact-link:last-child { border-bottom: none; }
+        .contact-link dt { font-weight: bold; color: var(--g3); }
+        .contact-link dd a { color: var(--g0); text-decoration: underline; }
+
+        form { display: flex; flex-direction: column; gap: 10px; }
+
+        .form-group { display: flex; flex-direction: column; gap: 3px; }
+        .form-group label { font-size: 15px; font-weight: bold; color: var(--g2); }
+
+        form input, form textarea {
+            width: 100%; padding: 5px 8px;
+            border: var(--border); background: var(--g9);
+            font-family: 'VT323', monospace; font-size: 16px;
+        }
+        form textarea { height: 88px; resize: vertical; }
+
+        .btn-primary {
+            align-self: flex-start;
+            background: var(--g1); color: var(--white);
+            border: var(--border); padding: 5px 20px;
+            cursor: pointer; font-family: 'VT323', monospace; font-size: 16px;
+            transition: background .1s;
+        }
+        .btn-primary:hover { background: var(--g2); }
+
+        .form-status {
+            display: none; padding: 6px 10px;
+            border: var(--border); background: var(--g9);
+            font-size: 15px;
+        }
+        .form-status.error { border-color: #c00; color: #c00; background: var(--white); }
+
+        /* ═══════════════════════════════════════
+           FOOTER TASKBAR
+        ═══════════════════════════════════════ */
+        .footer-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(180deg, var(--g7) 0%, var(--g6) 100%);
+            border-top: var(--border);
+            display: flex; align-items: center; gap: 4px;
+            padding: 4px 14px;
+            font-size: 16px;
+        }
+        .footer-btn {
+            display: flex; align-items: center; gap: 5px;
+            padding: 3px 11px;
+            border: 1px solid var(--g4);
+            cursor: pointer; background: var(--g8);
+            text-decoration: none; color: var(--g0);
+            font-family: 'VT323', monospace; font-size: 16px;
+            transition: background .1s;
+        }
+        .footer-btn:hover  { background: var(--g9); }
+        .footer-btn:active { background: var(--g6); box-shadow: inset 1px 1px 0 var(--g5); }
+        .footer-sep { width: 1px; height: 20px; background: var(--g4); margin: 0 3px; }
+
+        /* ═══════════════════════════════════════
+           MODALS
+        ═══════════════════════════════════════ */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,.65); z-index: 1000;
+            justify-content: center; align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal-box {
+            background: var(--g7); border: var(--border);
+            box-shadow: 5px 5px 0 rgba(0,0,0,.28);
+            max-width: 600px; width: 92%; max-height: 88vh; overflow-y: auto;
+        }
+        .modal-box.wide { max-width: 720px; }
+
+        .modal-title {
+            position: sticky; top: 0;
+            background: linear-gradient(90deg, var(--g0) 0%, var(--g2) 100%);
+            color: var(--white); padding: 5px 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 17px;
+        }
+        .modal-close {
+            cursor: pointer; font-size: 18px;
+            background: none; border: none; color: var(--white);
+            font-family: 'VT323', monospace; line-height: 1;
+        }
+        .modal-body { padding: 14px; }
+
+        /* ═══════════════════════════════════════
+           PHOTOS (inside modal)
+        ═══════════════════════════════════════ */
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 6px;
+        }
+        .photo-item {
+            position: relative; aspect-ratio: 1;
+            border: 2px solid var(--g5); overflow: hidden;
+            cursor: pointer; background: var(--g7);
+        }
+        .photo-item:hover { border-color: var(--g0); }
+        .photo-item img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+            transition: opacity .2s;
+        }
+        .photo-item:hover img { opacity: .85; }
         .photo-date {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            padding: 3px 5px;
-            font-size: 10px;
-            color: #fff;
-            background-color: rgba(0, 0, 0, 0.7);
-            font-family: 'VT323', monospace;
-            text-align: right;
-            opacity: 0;
-            transition: opacity 0.2s;
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: rgba(0,0,0,.65); color: var(--white);
+            font-size: 11px; padding: 2px 5px;
+            opacity: 0; transition: opacity .2s;
+        }
+        .photo-item:hover .photo-date { opacity: 1; }
+        .photos-status { text-align: center; padding: 28px; color: var(--g3); font-size: 17px; }
+
+        /* ═══════════════════════════════════════
+           LIGHTBOX
+        ═══════════════════════════════════════ */
+        .lightbox {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,.93); z-index: 9000;
+            justify-content: center; align-items: center;
+        }
+        .lightbox.active { display: flex; }
+        .lightbox-inner {
+            position: relative; max-width: 92vw; max-height: 92vh;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .lightbox-inner img {
+            max-width: 100%; max-height: 80vh;
+            object-fit: contain; border: 2px solid var(--white);
+        }
+        .lightbox-date {
+            color: var(--white); font-size: 14px; margin-top: 8px;
+            border-top: var(--border-light); padding-top: 6px;
+            width: 100%; text-align: center;
+        }
+        .lightbox-close {
+            position: absolute; top: -36px; right: 0;
+            background: none; border: none; color: var(--white);
+            font-size: 28px; cursor: pointer;
+            font-family: 'VT323', monospace; line-height: 1;
         }
 
-        .photo-item:hover .photo-date {
-            opacity: 1;
+        /* ═══════════════════════════════════════
+           BSOD
+        ═══════════════════════════════════════ */
+        #bsod {
+            display: none; position: fixed; inset: 0;
+            background: #00a; color: #fff;
+            font-family: 'VT323', monospace; font-size: 22px;
+            padding: 48px; z-index: 9999; cursor: pointer; overflow: hidden;
         }
 
-        .photos-loading {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            grid-column: 1 / -1;
+        /* ═══════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════ */
+        @media (max-width: 700px) {
+            .window-body.profiler { grid-template-columns: 1fr; }
+            .window-body.cols-3   { grid-template-columns: 1fr; }
+            .window-body.cols-2   { grid-template-columns: 1fr; }
+            .projects-grid        { grid-template-columns: 1fr; }
+            .skills-grid          { grid-template-columns: 1fr 1fr; }
+            .menu-nav a           { padding: 2px 8px; font-size: 15px; }
+        }
+        @media (max-width: 420px) {
+            .skills-grid { grid-template-columns: 1fr; }
         }
 
-        .photos-error {
-            color: #c00;
-            padding: 15px;
-            border: 1px solid #c00;
-            background-color: #fff;
-            grid-column: 1 / -1;
-        }
+        /* ═══════════════════════════════════════
+           BLOG (inside modal)
+        ═══════════════════════════════════════ */
+        .blog-list { display: flex; flex-direction: column; gap: var(--gap); }
 
-        /* Photo lightbox modal */
-        .photo-lightbox {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .photo-lightbox.active {
-            display: flex;
-        }
-
-        .photo-lightbox-content {
-            position: relative;
-            max-width: 90%;
-            max-height: 90%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .photo-lightbox-image {
-            max-width: 100%;
-            max-height: 80vh;
-            object-fit: contain;
-            border: 2px solid #fff;
-            background-color: #000;
-        }
-
-        .photo-lightbox-date {
-            color: #fff;
-            padding: 10px 0;
-            text-align: center;
-            font-family: 'VT323', monospace;
-            font-size: 12px;
-            border-top: 1px solid #fff;
-            margin-top: 10px;
-        }
-
-        .photo-lightbox-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 35px;
-            height: 35px;
-            background-color: #000;
-            border: 2px solid #fff;
-            color: #fff;
-            font-size: 24px;
-            font-family: 'VT323', monospace;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .blog-post-item {
+            border: var(--border);
+            background: var(--white);
             cursor: pointer;
-            user-select: none;
-            transition: background-color 0.1s;
+            transition: background .1s;
         }
+        .blog-post-item:nth-child(even) { background: var(--g9); }
+        .blog-post-item:hover { background: var(--g7); }
 
-        .photo-lightbox-close:hover {
-            background-color: #333;
+        .blog-post-header {
+            display: flex; justify-content: space-between; align-items: baseline;
+            padding: 6px 12px;
+            background: var(--g8);
+            border-bottom: var(--border-light);
+            gap: 8px;
         }
+        .blog-post-title { font-size: 18px; font-weight: bold; color: var(--g0); }
+        .blog-post-date  { font-size: 14px; color: var(--g3); white-space: nowrap; flex-shrink: 0; }
+        .blog-post-excerpt { padding: 8px 12px; font-size: 15px; color: var(--g2); line-height: 1.4; }
 
-        .photo-lightbox-close:active {
-            background-color: #555;
+        /* Post content view */
+        .blog-content {
+            display: none;
+            font-size: 15px; line-height: 1.6; color: var(--g1);
         }
-        
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .desktop-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .sidebar {
-                display: none;
-            }
-            
-            .graph-container, .stats-container {
-                grid-template-columns: 1fr;
-            }
+        .blog-content.active { display: block; }
+        .blog-back {
+            display: inline-flex; align-items: center; gap: 4px;
+            margin-bottom: 12px; padding: 3px 10px;
+            border: var(--border); background: var(--g8);
+            cursor: pointer; font-family: 'VT323', monospace; font-size: 16px;
+            transition: background .1s;
+        }
+        .blog-back:hover { background: var(--g7); }
 
-            .photos-feed {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                grid-auto-rows: 120px;
-                max-height: 400px;
-            }
+        /* Rendered markdown styles */
+        .blog-rendered h1, .blog-rendered h2, .blog-rendered h3 {
+            margin: 16px 0 8px; color: var(--g0); font-size: 20px;
+            border-bottom: var(--border-light); padding-bottom: 4px;
         }
+        .blog-rendered h1 { font-size: 24px; }
+        .blog-rendered h2 { font-size: 20px; }
+        .blog-rendered h3 { font-size: 17px; border-bottom: none; }
+        .blog-rendered p  { margin-bottom: 10px; }
+        .blog-rendered ul, .blog-rendered ol { margin: 8px 0 10px 20px; }
+        .blog-rendered li { margin-bottom: 4px; }
+        .blog-rendered code {
+            background: var(--g8); border: 1px solid var(--g5);
+            padding: 1px 5px; font-size: 14px;
+        }
+        .blog-rendered pre {
+            background: var(--g1); color: var(--g9);
+            padding: 12px; margin: 10px 0; overflow-x: auto;
+            border: var(--border);
+        }
+        .blog-rendered pre code { background: none; border: none; color: inherit; }
+        .blog-rendered blockquote {
+            border-left: 3px solid var(--g4);
+            padding: 4px 12px; margin: 10px 0;
+            background: var(--g9); color: var(--g2);
+        }
+        .blog-rendered a { color: var(--g1); }
+        .blog-rendered hr { border: none; border-top: var(--border-light); margin: 14px 0; }
+        .blog-rendered img { max-width: 100%; border: var(--border); }
+        .blog-rendered strong { color: var(--g0); }
     </style>
 </head>
 <body>
-    <div class="system-container">
-        <div class="menu-bar">
-            <div class="menu-items">
-                <div>Profiler</div>
-                <div>File</div>
-                <div>Edit</div>
-                <div>View</div>
-                <div>Window</div>
-                <div>Help</div>
+
+<!-- ══════════════════════════════════════════
+     MENU BAR
+══════════════════════════════════════════ -->
+<header class="menu-bar">
+    <nav class="menu-nav">
+        <a href="#about">Profiler</a>
+        <a href="#bio">About</a>
+        <a href="#experience">Experience</a>
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+    </nav>
+    <span id="time-display">00:00</span>
+</header>
+
+<div class="page">
+
+<!-- ══════════════════════════════════════════
+     PROFILER
+══════════════════════════════════════════ -->
+<section class="window" id="about">
+    <div class="window-title">
+        <span>Profiler</span>
+        <div class="wt-dots"><span class="wt-dot"></span><span class="wt-dot"></span><span class="wt-dot"></span></div>
+    </div>
+    <div class="window-body profiler">
+
+        <!-- Graphs column -->
+        <div class="graph-stack">
+            <div class="graph-block">
+                <div class="graph-title">CPU</div>
+                <div class="graph-visual" id="cpu-graph">
+                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
+                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
+                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
+                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
+                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
+                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
+                    <div class="graph-bar"></div><div class="graph-bar"></div>
+                </div>
             </div>
-            <div class="time-display" id="time-display">00:00</div>
-        </div>
-        
-        <div class="desktop-container">
-            <!-- Left Sidebar -->
-            <div class="sidebar left">
-                <div class="icon-container" data-tab="about">
-                    <div class="icon">👤</div>
-                    <div>HDD1</div>
-                </div>
-                <div class="icon-container" data-tab="projects">
-                    <div class="icon">📁</div>
-                    <div>Projects</div>
-                </div>
-                <div class="icon-container" data-tab="experience">
-                    <div class="icon">💼</div>
-                    <div>Experience</div>
-                </div>
-                <div class="icon-container" data-tab="skills">
-                    <div class="icon">📊</div>
-                    <div>Skills</div>
-                </div>
-                <div class="icon-container" data-tab="photos">
-                    <div class="icon">🖼️</div>
-                    <div>Photos</div>
-                </div>
-                <div class="icon-container" data-tab="contact">
-                    <div class="icon">✉️</div>
-                    <div>Contact</div>
+            <div class="graph-block">
+                <div class="graph-title">Memory</div>
+                <div class="graph-visual" id="memory-graph">
+                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
+                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
+                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
+                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
+                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
+                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
+                    <div class="graph-bar"></div><div class="graph-bar"></div>
                 </div>
             </div>
-            
-            <!-- Main Content -->
-            <div class="main-content" id="main-content">
-                <!-- Dashboard / About -->
-                <div class="window" id="about-window">
-                    <div class="window-title">Profiler</div>
-                    <!-- Mobile quick-access tiles (visible on small screens) -->
-                    <div class="mobile-tile-container" aria-hidden="true">
-                        <div class="mobile-tile" data-tab="projects" title="Projects">
-                            <div class="icon">📁</div>
-                            <div class="label">Projects</div>
-                        </div>
-                        <div class="mobile-tile" data-tab="experience" title="Experience">
-                            <div class="icon">💼</div>
-                            <div class="label">Experience</div>
-                        </div>
-                        <div class="mobile-tile" data-tab="skills" title="Skills">
-                            <div class="icon">📊</div>
-                            <div class="label">Skills</div>
-                        </div>
-                        <div class="mobile-tile" data-tab="contact" title="Contact">
-                            <div class="icon">✉️</div>
-                            <div class="label">Contact</div>
-                        </div>
-                        <div class="mobile-tile" data-url="https://github.com/arkanemystic" title="GitHub">
-                            <div class="icon">🐙</div>
-                            <div class="label">GitHub</div>
-                        </div>
-                        <div class="mobile-tile" data-id="books-icon" title="Books">
-                            <div class="icon">📚</div>
-                            <div class="label">Books</div>
-                        </div>
-                        <div class="mobile-tile" data-tab="photos" title="Photos">
-                            <div class="icon">🖼️</div>
-                            <div class="label">Photos</div>
-                        </div>
+        </div>
+
+        <!-- Profile panel -->
+        <div class="panel">
+            <div class="panel-title">Profile</div>
+            <dl class="kv">
+                <div class="kv-row"><dt>Name</dt><dd>Devakh Rashie</dd></div>
+                <div class="kv-row"><dt>Title</dt><dd>Independent Developer</dd></div>
+                <div class="kv-row"><dt>Experience</dt><dd>4 Years</dd></div>
+                <div class="kv-row"><dt>Status</dt><dd>Available ✓</dd></div>
+                <div class="kv-row"><dt>Uptime</dt><dd>20 Years, 4 Months</dd></div>
+            </dl>
+        </div>
+
+        <!-- Resources panel -->
+        <div class="panel">
+            <div class="panel-title">Resources (KB)</div>
+            <dl class="kv">
+                <div class="kv-row"><dt>Creativity</dt><dd>876</dd></div>
+                <div class="kv-row"><dt>Logic</dt><dd>925</dd></div>
+                <div class="kv-row"><dt>Coffee</dt><dd>∞</dd></div>
+                <div class="kv-row"><dt>Bugs Squashed</dt><dd>🐛 × 404</dd></div>
+                <div class="kv-row"><dt>Free</dt><dd>154</dd></div>
+            </dl>
+        </div>
+
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     ABOUT
+══════════════════════════════════════════ -->
+<section class="window" id="bio">
+    <div class="window-title">
+        <span>About</span>
+        <div class="wt-dots"><span class="wt-dot"></span><span class="wt-dot"></span><span class="wt-dot"></span></div>
+    </div>
+    <div class="window-body cols-3">
+
+        <div class="panel">
+            <div class="panel-title">Background</div>
+            <dl class="kv">
+                <div class="kv-row"><dt>Focus</dt><dd>AI/ML, blockchain security, software dev</dd></div>
+                <div class="kv-row"><dt>Mission</dt><dd>Complex problems in medicine &amp; fintech</dd></div>
+                <div class="kv-row"><dt>Interests</dt><dd>A Capella, reading, fitness</dd></div>
+                <div class="kv-row"><dt>Languages</dt><dd>English, Malayalam</dd></div>
+                <div class="kv-row"><dt>Location</dt><dd>Centreville, VA</dd></div>
+                <div class="kv-row"><dt>Availability</dt><dd>Full-time, Remote/Hybrid</dd></div>
+            </dl>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">Education</div>
+            <dl class="kv">
+                <div class="kv-row"><dt>Degree</dt><dd>BS Computer Science &amp; Applied Math</dd></div>
+                <div class="kv-row"><dt>University</dt><dd>The Ohio State University</dd></div>
+                <div class="kv-row"><dt>Graduation</dt><dd>2027</dd></div>
+                <div class="kv-row"><dt>Coursework</dt><dd>Vector Analysis, Probability, Combinatorics</dd></div>
+            </dl>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">Leadership &amp; System</div>
+            <dl class="kv">
+                <div class="kv-row"><dt>Dhadkan</dt><dd>Member — cross-cultural vocal performer</dd></div>
+                <div class="kv-row"><dt>Kappa Θ Pi</dt><dd>Blockchain Technology Lead</dd></div>
+            </dl>
+            <hr class="panel-divider">
+            <dl class="kv">
+                <div class="kv-row"><dt>OS</dt><dd>Human 1.0</dd></div>
+                <div class="kv-row"><dt>Primary Lang</dt><dd>Java 23.0.2</dd></div>
+                <div class="kv-row"><dt>Secondary</dt><dd>Python 3.12.0</dd></div>
+            </dl>
+        </div>
+
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     EXPERIENCE
+══════════════════════════════════════════ -->
+<section class="window" id="experience">
+    <div class="window-title">
+        <span>Experience</span>
+        <div class="wt-dots"><span class="wt-dot"></span><span class="wt-dot"></span><span class="wt-dot"></span></div>
+    </div>
+    <div class="window-body">
+        <div class="exp-list">
+
+            <article class="exp-item">
+                <header class="exp-header">
+                    <span class="exp-org">Pennyworks</span>
+                    <span class="exp-date">Jun 2025 — Sep 2025</span>
+                </header>
+                <div class="exp-role">Full-Stack Engineering Intern</div>
+                <p class="exp-desc">Developed <strong>Penny</strong>, a crypto accounting assistant with conversational interface and local LLM support; built a Python CLI tool (<strong>csv2api-router</strong>) for multi-chain CSV processing and automated API generation.</p>
+            </article>
+
+            <article class="exp-item">
+                <header class="exp-header">
+                    <span class="exp-org">The Ohio State University</span>
+                    <span class="exp-date">Sep 2024 — Present</span>
+                </header>
+                <div class="exp-role">Blockchain Research Assistant</div>
+                <p class="exp-desc">Built replay-attack detection systems for blockchains and developed secure cross-chain transaction validation DApps.</p>
+            </article>
+
+            <article class="exp-item">
+                <header class="exp-header">
+                    <span class="exp-org">Radus Software</span>
+                    <span class="exp-date">Jun 2022 — Sep 2022</span>
+                </header>
+                <div class="exp-role">Software Engineering Intern</div>
+                <p class="exp-desc">Built a full-stack intranet using Node.js and AWS, implemented two-factor authentication, and improved frontend and backend security.</p>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     PROJECTS
+══════════════════════════════════════════ -->
+<section class="window" id="projects">
+    <div class="window-title">
+        <span>Projects</span>
+        <div class="wt-dots"><span class="wt-dot"></span><span class="wt-dot"></span><span class="wt-dot"></span></div>
+    </div>
+    <div class="window-body">
+        <div class="projects-grid">
+
+            <article class="project-card">
+                <header class="pc-header">
+                    <span class="pc-name">POSEidon</span>
+                    <div class="pc-badges">
+                        <span class="badge badge-dim">In Progress</span>
+                        <span class="badge badge-dim">Mobile App</span>
                     </div>
-                    <div class="tab-container">
-                        <div class="tab active" data-tab="applications">Applications</div>
-                        <div class="tab" data-tab="processes">Processes</div>
-                        <div class="tab" data-tab="monitor">Monitor</div>
+                </header>
+                <p class="pc-desc">Smart fitness coaching app powered by computer vision and on-device AI to perfect your form.</p>
+                <footer class="pc-tech">
+                    <span class="badge badge-solid">React Native</span>
+                    <span class="badge badge-solid">Vision AI</span>
+                    <span class="badge badge-solid">On-Device AI</span>
+                </footer>
+            </article>
+
+            <article class="project-card">
+                <header class="pc-header">
+                    <span class="pc-name">Parking Detection Vision AI</span>
+                    <div class="pc-badges">
+                        <span class="badge badge-outline">Completed</span>
+                        <span class="badge badge-dim">Python</span>
                     </div>
-                    
-                    <!-- Applications Tab -->
-                    <div class="window-content active" id="applications-content">
-                        <div class="graph-container">
-                            <div class="graph">
-                                <div class="graph-title">CPU</div>
-                                <div class="graph-visual" id="cpu-graph">
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                </div>
-                            </div>
-                            <div class="graph">
-                                <div class="graph-title">Memory</div>
-                                <div class="graph-visual" id="memory-graph">
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                    <div class="graph-bar"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="stats-container">
-                            <div class="stats-box">
-                                <div class="stats-title">Profile</div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Name:</div>
-                                    <div>Devakh Rashie</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Title:</div>
-                                    <div>Independent Developer</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Experience:</div>
-                                    <div>4 Years</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Status:</div>
-                                    <div>Available</div>
-                                </div>
-                            </div>
-                            <div class="stats-box">
-                                <div class="stats-title">Resources (KB)</div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Creativity:</div>
-                                    <div>876</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Logic:</div>
-                                    <div>925</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Coffee:</div>
-                                    <div>487</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Free:</div>
-                                    <div>154</div>
-                                </div>
-                            </div>
-                        </div>
+                </header>
+                <p class="pc-desc">Smart parking detection system using OpenCV for real-time occupancy tracking.</p>
+                <footer class="pc-tech">
+                    <span class="badge badge-solid">Python</span>
+                    <span class="badge badge-solid">OpenCV</span>
+                    <span class="badge badge-solid">NumPy</span>
+                </footer>
+            </article>
+
+            <article class="project-card">
+                <header class="pc-header">
+                    <span class="pc-name">Penny: Blockchain Accountant</span>
+                    <div class="pc-badges">
+                        <span class="badge badge-outline">Completed</span>
+                        <span class="badge badge-dim">Web + CLI</span>
                     </div>
-                    
-                    <!-- Processes Tab -->
-                    <div class="window-content" id="processes-content">
-                        <div class="stats-box" style="width: 100%; margin-bottom: 15px;">
-                            <div class="stats-title">About Me</div>
-                            <div class="stats-row">
-                                <div class="stats-label">Background:</div>
-                                <div>Dedicated CS & theoretical math student with passion for AI/ML, blockchain security, and software development</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Focus:</div>
-                                <div>Solving complex problems, building innovative solutions for medicine, fintech, and beyond</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Interests:</div>
-                                <div>Singing (A Capella team), reading, fitness</div>
-                            </div>
-                        </div>
-                        
-                        <div class="stats-box" style="width: 100%; margin-bottom: 15px;">
-                            <div class="stats-title">Education</div>
-                            <div class="stats-row">
-                                <div class="stats-label">Degree:</div>
-                                <div>BS Computer Science Engineering & Applied Math</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">University:</div>
-                                <div>The Ohio State University, Main Campus</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Graduation:</div>
-                                <div>2027</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Coursework:</div>
-                                <div>Vector Analysis, Probability Theory, Combinatorics</div>
-                            </div>
-                        </div>
-                        
-                        <div class="stats-box" style="width: 100%; margin-bottom: 15px;">
-                            <div class="stats-title">Extracurricular / Leadership</div>
-                            <div class="stats-row">
-                                <div class="stats-label">Dhadkan:</div>
-                                <div>Member — cross-cultural vocal performist</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Kappa Theta Pi:</div>
-                                <div>Blockchain Technology Lead — mentorship & events</div>
-                            </div>
-                        </div>
-                        
-                        <div class="stats-box" style="width: 100%;">
-                            <div class="stats-title">Fun Stats</div>
-                            <div class="stats-row">
-                                <div class="stats-label">Coffee Consumed:</div>
-                                <div>∞ cups</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Bugs Squashed:</div>
-                                <div>🐛 x 404</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Pride Level:</div>
-                                <div>9000</div>
-                            </div>
-                        </div>
+                </header>
+                <p class="pc-desc">Crypto accounting assistant for blockchain CSV analysis and batch transaction routing.</p>
+                <footer class="pc-tech">
+                    <span class="badge badge-solid">Python</span>
+                    <span class="badge badge-solid">ChromaDB</span>
+                    <span class="badge badge-solid">LLM</span>
+                </footer>
+            </article>
+
+            <article class="project-card">
+                <header class="pc-header">
+                    <span class="pc-name">Jane Street Puzzle Solutions</span>
+                    <div class="pc-badges">
+                        <span class="badge badge-dim">In Progress</span>
+                        <span class="badge badge-dim">Research</span>
                     </div>
-                    
-                    <!-- Monitor Tab -->
-                    <div class="window-content" id="monitor-content">
-                        <div class="stats-box" style="width: 100%; margin-bottom: 15px;">
-                            <div class="stats-title">System Information</div>
-                            <div class="stats-row">
-                                <div class="stats-label">Operating System:</div>
-                                <div>Human 1.0</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Primary Language:</div>
-                                <div>Java 23.0.2</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Secondary Language:</div>
-                                <div>Python 3.12.0</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">System Uptime:</div>
-                                <div>20 Years, 4 Months</div>
-                            </div>
-                        </div>
-                        
-                        <div class="stats-box" style="width: 100%;">
-                            <div class="stats-title">Personal Information</div>
-                            <div class="stats-row">
-                                <div class="stats-label">Location:</div>
-                                <div>Centreville, VA</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Interests:</div>
-                                <div>Coding, Fitness, <a href="https://www.youtube.com/watch?v=lAYkMKqB4ws&pp=ygUOc3BhcnRhbiBzaXRhcmE%3D">Singing</a></div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Languages:</div>
-                                <div>English, Malayalam</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Availability:</div>
-                                <div>Full-time, Remote/Hybrid</div>
-                            </div>
-                        </div>
+                </header>
+                <p class="pc-desc">Algorithmic solutions for probability and combinatorics puzzles with visualizations.</p>
+                <footer class="pc-tech">
+                    <span class="badge badge-solid">Python</span>
+                    <span class="badge badge-solid">Monte Carlo</span>
+                    <span class="badge badge-solid">Manim</span>
+                </footer>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     SKILLS
+══════════════════════════════════════════ -->
+<section class="window" id="skills">
+    <div class="window-title">
+        <span>Skills</span>
+        <div class="wt-dots"><span class="wt-dot"></span><span class="wt-dot"></span><span class="wt-dot"></span></div>
+    </div>
+    <div class="window-body" style="background:var(--g8)">
+        <div class="skills-grid">
+
+            <div class="skill-block">
+                <div class="panel-title">Frontend</div>
+                <div class="skill-list">
+                    <div class="skill-row">
+                        <div class="skill-label"><span>HTML / CSS</span><span>80%</span></div>
+                        <div class="skill-bar"><div class="skill-fill" style="--pct:80%"></div></div>
+                    </div>
+                    <div class="skill-row">
+                        <div class="skill-label"><span>JavaScript</span><span>70%</span></div>
+                        <div class="skill-bar"><div class="skill-fill" style="--pct:70%"></div></div>
+                    </div>
+                    <div class="skill-row">
+                        <div class="skill-label"><span>React</span><span>60%</span></div>
+                        <div class="skill-bar"><div class="skill-fill" style="--pct:60%"></div></div>
                     </div>
                 </div>
-                
-                <!-- Projects Window -->
-                <div class="window" id="projects-window" style="display: none;">
-                    <div class="window-title">Latest Projects</div>
-                    <div class="window-content active">
-                        <div class="stats-box" style="width: 100%; margin-bottom: 15px;">
-                            <div class="stats-title">POSEidon</div>
-                            <div class="stats-row">
-                                <div class="stats-label">Type:</div>
-                                <div>Mobile Application</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Tech:</div>
-                                <div>React Native, Vision Processing, On-Device AI</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Status:</div>
-                                <div>In Progress</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Description:</div>
-                                <div>Smart fitness coaching app powered by computer vision and AI to perfect your form.</div>
-                            </div>
-                        </div>
-                        
-                        <div class="stats-box" style="width: 100%; margin-bottom: 15px;">
-                            <div class="stats-title">Parking Detection Vision AI</div>
-                            <div class="stats-row">
-                                <div class="stats-label">Type:</div>
-                                <div>Python Application</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Tech:</div>
-                                <div>Python, OpenCV, NumPy</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Status:</div>
-                                <div>Completed</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Description:</div>
-                                <div>Smart parking detection system using OpenCV for real-time occupancy tracking.</div>
-                            </div>
-                        </div>
-                        
-                        <div class="stats-box" style="width: 100%; margin-bottom: 15px;">
-                            <div class="stats-title">Penny: Smart Blockchain Accountant</div>
-                            <div class="stats-row">
-                                <div class="stats-label">Type:</div>
-                                <div>Web App + CLI Tool</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Tech:</div>
-                                <div>Python, ChromaDB, LLM, csv2api</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Status:</div>
-                                <div>Completed</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Description:</div>
-                                <div>Crypto accounting assistant for blockchain CSV analysis and batch transaction routing.</div>
-                            </div>
-                        </div>
-                        
-                        <div class="stats-box" style="width: 100%;">
-                            <div class="stats-title">Jane Street Puzzles Solutions</div>
-                            <div class="stats-row">
-                                <div class="stats-label">Type:</div>
-                                <div>Algorithmic Research</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Tech:</div>
-                                <div>Python, Monte Carlo Simulations, Manim</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Status:</div>
-                                <div>In Progress</div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Description:</div>
-                                <div>Algorithmic solutions for probability and combinatorics puzzles with visualizations.</div>
-                            </div>
-                        </div>
+            </div>
+
+            <div class="skill-block">
+                <div class="panel-title">Backend</div>
+                <div class="skill-list">
+                    <div class="skill-row">
+                        <div class="skill-label"><span>Python</span><span>80%</span></div>
+                        <div class="skill-bar"><div class="skill-fill" style="--pct:80%"></div></div>
+                    </div>
+                    <div class="skill-row">
+                        <div class="skill-label"><span>Java</span><span>80%</span></div>
+                        <div class="skill-bar"><div class="skill-fill" style="--pct:80%"></div></div>
+                    </div>
+                    <div class="skill-row">
+                        <div class="skill-label"><span>Node.js</span><span>60%</span></div>
+                        <div class="skill-bar"><div class="skill-fill" style="--pct:60%"></div></div>
                     </div>
                 </div>
-                
-                <!-- Experience Window -->
-                <div class="window" id="experience-window" style="display: none;">
-                    <div class="window-title">Experience</div>
-                    <div class="window-content active">
-                        <div class="projects-list">
-                            <div class="project-item">
-                                <div class="project-title">Pennyworks</div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Role:</div>
-                                    <div>Full-Stack Engineering Intern</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Dates:</div>
-                                    <div>Jun 2025 -- Sep 2025</div>
-                                </div>
-                                <p style="margin-top: 10px;">Developed <strong>Penny</strong>, a crypto accounting assistant with a conversational interface and local LLM support; built a Python CLI tool (<strong>csv2api-router</strong>) for multi-chain CSV processing and automated API generation.</p>
-                            </div>
+            </div>
 
-                            <div class="project-item">
-                                <div class="project-title">The Ohio State University</div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Role:</div>
-                                    <div>Blockchain Research Assistant</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Dates:</div>
-                                    <div>Sep 2024 -- Present</div>
-                                </div>
-                                <p style="margin-top: 10px;">Built replay-attack detection systems for blockchains and developed secure cross-chain transaction validation DApps.</p>
-                            </div>
-
-                            <div class="project-item">
-                                <div class="project-title">Radus Software</div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Role:</div>
-                                    <div>Software Engineering Intern</div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Dates:</div>
-                                    <div>Jun 2022 -- Sep 2022</div>
-                                </div>
-                                <p style="margin-top: 10px;">Built a full-stack intranet using Node.js and AWS, implemented two-factor authentication, and improved frontend and backend security features.</p>
-                            </div>
-                        </div>
+            <div class="skill-block">
+                <div class="panel-title">Data &amp; DevOps</div>
+                <div class="skill-list">
+                    <div class="skill-row">
+                        <div class="skill-label"><span>MongoDB</span><span>50%</span></div>
+                        <div class="skill-bar"><div class="skill-fill" style="--pct:50%"></div></div>
+                    </div>
+                    <div class="skill-row">
+                        <div class="skill-label"><span>Firebase</span><span>60%</span></div>
+                        <div class="skill-bar"><div class="skill-fill" style="--pct:60%"></div></div>
+                    </div>
+                    <div class="skill-row">
+                        <div class="skill-label"><span>AWS</span><span>50%</span></div>
+                        <div class="skill-bar"><div class="skill-fill" style="--pct:50%"></div></div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Skills Window -->
-                <div class="window" id="skills-window" style="display: none;">
-                    <div class="window-title">Skills</div>
-                    <div class="window-content active">
-                        <div class="skills-list">
-                            <div class="skill-item">
-                                <div class="skill-title">Frontend Development</div>
-                                <div class="stats-row">
-                                    <div class="stats-label">HTML/CSS:</div>
-                                    <div class="skill-bar">
-                                        <div class="skill-progress" style="width: 80%;"></div>
-                                    </div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">JavaScript:</div>
-                                    <div class="skill-bar">
-                                        <div class="skill-progress" style="width: 70%;"></div>
-                                    </div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">React:</div>
-                                    <div class="skill-bar">
-                                        <div class="skill-progress" style="width: 60%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="skill-item">
-                                <div class="skill-title">Backend Development</div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Node.js:</div>
-                                    <div class="skill-bar">
-                                        <div class="skill-progress" style="width: 60%;"></div>
-                                    </div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Python:</div>
-                                    <div class="skill-bar">
-                                        <div class="skill-progress" style="width: 80%;"></div>
-                                    </div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Java:</div>
-                                    <div class="skill-bar">
-                                        <div class="skill-progress" style="width: 80%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="skill-item">
-                                <div class="skill-title">Databases & DevOps</div>
-                                <div class="stats-row">
-                                    <div class="stats-label">MongoDB:</div>
-                                    <div class="skill-bar">
-                                        <div class="skill-progress" style="width: 50%;"></div>
-                                    </div>
-                                </div>
-                                <div class="stats-row">
-                                    <div class="stats-label">Firebase:</div>
-                                    <div class="skill-bar">
-                                        <div class="skill-progress" style="width: 60%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Contact Window -->
-                <div class="window" id="contact-window" style="display: none;">
-                    <div class="window-title">Contact</div>
-                    <div class="window-content active">
-                        <div class="stats-box" style="width: 100%; margin-bottom: 20px;">
-                            <div class="stats-title">Contact Information</div>
-                            <div class="stats-row">
-                                <div class="stats-label">Email:</div>
-                                <div><a href="mailto:devrashie@gmail.com">devrashie@gmail.com</a></div>
-                            </div>
+        </div>
+    </div>
+</section>
 
-                            <div class="stats-row">
-                                <div class="stats-label">LinkedIn:</div>
-                                <div><a href="https://linkedin.com/in/devrashie">linkedin.com/devrashie</a></div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">Website:</div>
-                                <div><a href="https://devrashie.space">devrashie.space</a></div>
-                            </div>
-                            <div class="stats-row">
-                                <div class="stats-label">GitHub:</div>
-                                <div><a href="https://github.com/arkanemystic">arkanemystic</a></div>
-                            </div>
-                        </div>
-                        
-                        <!-- Replace the existing contact form in your HTML with this code -->
-<div class="contact-form">
-    <form id="contactForm" action="https://formspree.io/f/mrbpyqvp" method="POST">
-        <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
+<!-- ══════════════════════════════════════════
+     CONTACT
+══════════════════════════════════════════ -->
+<section class="window" id="contact">
+    <div class="window-title">
+        <span>Contact</span>
+        <div class="wt-dots"><span class="wt-dot"></span><span class="wt-dot"></span><span class="wt-dot"></span></div>
+    </div>
+    <div class="window-body cols-2">
+
+        <div class="panel">
+            <div class="panel-title">Get In Touch</div>
+            <dl>
+                <div class="contact-link"><dt>Email</dt><dd><a href="mailto:devrashie@gmail.com">devrashie@gmail.com</a></dd></div>
+                <div class="contact-link"><dt>LinkedIn</dt><dd><a href="https://linkedin.com/in/devrashie" target="_blank">linkedin.com/in/devrashie</a></dd></div>
+                <div class="contact-link"><dt>GitHub</dt><dd><a href="https://github.com/arkanemystic" target="_blank">arkanemystic</a></dd></div>
+                <div class="contact-link"><dt>Website</dt><dd><a href="https://devrashie.space" target="_blank">devrashie.space</a></dd></div>
+            </dl>
         </div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-            <label for="subject">Subject:</label>
-            <input type="text" id="subject" name="subject">
-        </div>
-        <div class="form-group">
-            <label for="message">Message:</label>
-            <textarea id="message" name="message" required></textarea>
-        </div>
-        <button type="submit" id="submitBtn">Send Message</button>
-        <div id="formStatus" style="margin-top: 10px; display: none;"></div>
-    </form>
+
+        <form id="contactForm" action="https://formspree.io/f/mrbpyqvp" method="POST">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject">
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <button type="submit" class="btn-primary" id="submitBtn">Send Message</button>
+            <div class="form-status" id="formStatus"></div>
+        </form>
+
+    </div>
+</section>
+
+</div><!-- /.page -->
+
+<!-- ══════════════════════════════════════════
+     LIGHTBOX
+══════════════════════════════════════════ -->
+<div class="lightbox" id="lightbox">
+    <div class="lightbox-inner">
+        <button class="lightbox-close" id="lightbox-close">✕</button>
+        <img id="lightbox-img" src="" alt="Photo">
+        <div class="lightbox-date" id="lightbox-date"></div>
+    </div>
 </div>
 
-<!-- Add this JavaScript to handle form submission with status messages -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const contactForm = document.getElementById('contactForm');
-        const formStatus = document.getElementById('formStatus');
-        const submitBtn = document.getElementById('submitBtn');
-        
-        if (contactForm) {
-            contactForm.addEventListener('submit', function(event) {
-                event.preventDefault();
-                
-                // Disable button and show loading state
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Sending...';
-                
-                // Get form data
-                const formData = new FormData(contactForm);
-                
-                // Send form data using fetch
-                fetch(contactForm.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    throw new Error('Network response was not ok');
-                })
-                .then(data => {
-                    // Success message
-                    formStatus.style.display = 'block';
-                    formStatus.textContent = 'Message sent successfully!';
-                    formStatus.style.color = '#000';
-                    formStatus.style.backgroundColor = '#c0c0c0';
-                    formStatus.style.padding = '10px';
-                    formStatus.style.border = '2px solid #000';
-                    
-                    // Reset form
-                    contactForm.reset();
-                    
-                    // Reset button
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Send Message';
-                    
-                    // Hide success message after 5 seconds
-                    setTimeout(() => {
-                        formStatus.style.display = 'none';
-                    }, 5000);
-                })
-                .catch(error => {
-                    // Error message
-                    formStatus.style.display = 'block';
-                    formStatus.textContent = 'There was an error sending your message. Please try again.';
-                    formStatus.style.color = '#fff';
-                    formStatus.style.backgroundColor = '#ff0000';
-                    formStatus.style.padding = '10px';
-                    formStatus.style.border = '2px solid #000';
-                    
-                    // Reset button
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Send Message';
-                    
-                    console.error('Error:', error);
-                });
-            });
-        }
-    });
+<!-- ══════════════════════════════════════════
+     FOOTER TASKBAR
+══════════════════════════════════════════ -->
+<footer class="footer-bar">
+    <a class="footer-btn" href="https://github.com/arkanemystic" target="_blank">🐙 GitHub</a>
+    <div class="footer-sep"></div>
+    <button class="footer-btn" id="books-btn">📚 Books</button>
+    <div class="footer-sep"></div>
+    <button class="footer-btn" id="blog-btn">📝 Blog</button>
+    <div class="footer-sep"></div>
+    <button class="footer-btn" id="photos-btn">🖼️ Photos</button>
+    <div class="footer-sep"></div>
+    <button class="footer-btn" id="printer-btn">🖨️ Printer</button>
+    <div class="footer-sep"></div>
+    <button class="footer-btn" id="trash-btn">🗑️ Trash</button>
+    <div class="footer-sep"></div>
+    <a class="footer-btn" href="resume2526 (2).pdf" target="_blank">📄 Resume</a>
+</footer>
 
-    // Add this script at the end of your existing JavaScript code
-document.addEventListener('DOMContentLoaded', () => {
-    // Add CPU/Memory gauge animation
-    function updateGauges() {
-        const cpuBars = document.querySelectorAll('#cpu-graph .graph-bar');
-        const memoryBars = document.querySelectorAll('#memory-graph .graph-bar');
-        
-        // Update CPU bars
-        cpuBars.forEach(bar => {
-            // Random height between 20% and 100%
-            const height = Math.random() * 80 + 20;
-            bar.style.height = height + '%';
-        });
-        
-        // Update Memory bars
-        memoryBars.forEach(bar => {
-            // Random height between 20% and 100%
-            const height = Math.random() * 80 + 20;
-            bar.style.height = height + '%';
-        });
-    }
-    
-    // Update gauges every 2 seconds
-    updateGauges();
-    setInterval(updateGauges, 2000);
-    
-    // Printer icon animation
-    const printerIcon = document.querySelector('.sidebar.right .icon-container:nth-child(3)');
-    if (printerIcon) {
-        printerIcon.addEventListener('click', () => {
-            // Create a printing animation overlay
-            const printingOverlay = document.createElement('div');
-            printingOverlay.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background-color: #c0c0c0;
-                border: 2px solid #000;
-                padding: 20px;
-                z-index: 1001;
-                text-align: center;
-                width: 300px;
-            `;
-            
-            printingOverlay.innerHTML = `
-                <div style="font-size: 18px; margin-bottom: 10px;">PRINTING...</div>
-                <div class="progress-bar" style="width: 100%; height: 20px; border: 2px solid #000; position: relative; overflow: hidden;">
-                    <div class="progress" style="height: 100%; width: 0%; background-color: #000;"></div>
-                </div>
-                <div class="print-message" style="margin-top: 15px; font-style: italic;">Initializing printer...</div>
-            `;
-            
-            document.body.appendChild(printingOverlay);
-            
-            // Funny printing messages
-            const printMessages = [
-                "Initializing printer...",
-                "Loading paper...",
-                "Detecting ink levels...",
-                "Ink not found! Have you checked behind the refrigerator?",
-                "Converting caffeine to code...",
-                "Please wait while I pretend to print...",
-                "ERROR: PC LOAD LETTER. What does that even mean?!",
-                "Looking for printer... Still looking...",
-                "Have you tried turning it off and on again?",
-                "Is this my purpose? Just to print your documents?",
-                "Printer jam... Applying butter...",
-                "Printer out of ink. Attempting to use tears instead...",
-                "Successfully printed to the wrong printer!",
-                "Print complete! Just kidding, nothing happened."
-            ];
-            
-            const messageElement = printingOverlay.querySelector('.print-message');
-            const progressBar = printingOverlay.querySelector('.progress');
-            
-            // Animate the progress bar and messages
-            let progress = 0;
-            let messageIndex = 0;
-            
-            const progressInterval = setInterval(() => {
-                progress += 5;
-                progressBar.style.width = `${progress}%`;
-                
-                if (progress % 20 === 0) {
-                    messageIndex = (messageIndex + 1) % printMessages.length;
-                    messageElement.textContent = printMessages[messageIndex];
-                }
-                
-                if (progress >= 100) {
-                    clearInterval(progressInterval);
-                    messageElement.textContent = "Print failed successfully!";
-                    
-                    // Add printer sounds
-                    const printerSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2877/2877-preview.mp3");
-                    printerSound.volume = 0.3;
-                    printerSound.play();
-                    
-                    // Remove overlay after a delay
-                    setTimeout(() => {
-                        document.body.removeChild(printingOverlay);
-                    }, 3000);
-                }
-            }, 150);
-        });
-    }
-    
-    // Trash icon animation
-    const trashIcon = document.querySelector('.sidebar.right .icon-container:nth-child(4)');
-    if (trashIcon) {
-        trashIcon.addEventListener('click', () => {
-            // First ask what to delete
-            const deletePrompt = document.createElement('div');
-            deletePrompt.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background-color: #c0c0c0;
-                border: 2px solid #000;
-                padding: 20px;
-                z-index: 1001;
-                width: 300px;
-            `;
-            
-            deletePrompt.innerHTML = `
-                <div style="font-size: 18px; margin-bottom: 15px; text-align: center;">Delete System32?</div>
-                <div style="display: flex; justify-content: space-around;">
-                    <button id="yes-delete" style="background-color: #000; color: #fff; border: 2px solid #000; padding: 5px 15px; cursor: pointer;">Yes</button>
-                    <button id="no-delete" style="background-color: #c0c0c0; border: 2px solid #000; padding: 5px 15px; cursor: pointer;">No</button>
-                </div>
-            `;
-            
-            document.body.appendChild(deletePrompt);
-            
-            // No button - just close the prompt
-            const noButton = document.getElementById('no-delete');
-            noButton.addEventListener('click', () => {
-                document.body.removeChild(deletePrompt);
-            });
-            
-            // Yes button - fun animation
-            const yesButton = document.getElementById('yes-delete');
-            yesButton.addEventListener('click', () => {
-                document.body.removeChild(deletePrompt);
-                
-                // Create deletion animation
-                const deletionScreen = document.createElement('div');
-                deletionScreen.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background-color: #0000aa;
-                    color: #ffffff;
-                    font-family: 'VT323', monospace;
-                    font-size: 24px;
-                    padding: 40px;
-                    z-index: 2000;
-                    overflow: hidden;
-                `;
-                
-                deletionScreen.innerHTML = `
-                    <div style="margin-bottom: 20px;">WINDOWS</div>
-                    <div id="error-message">A fatal exception 0E has occurred at 0028:C0011E36.</div>
-                    <div id="deletion-text" style="margin-top: 20px;"></div>
-                    <div style="position: absolute; bottom: 40px;">
-                        Press any key to continue_
-                    </div>
-                `;
-                
-                document.body.appendChild(deletionScreen);
-                
-                // Typewriter effect for deletion messages
-                const deletionMessages = [
-                    "The current application will be terminated.",
-                    "",
-                    "* Deleting System32...",
-                    "* Deleting important files...",
-                    "* Corrupting hard drive...",
-                    "* Downloading more RAM...",
-                    "* Contacting Russian hackers...",
-                    "* Selling your data to advertisers...",
-                    "* Subscribing you to cat facts...",
-                    "* Applying for credit cards in your name...",
-                    "* Just kidding! Your portfolio is safe.",
-                    "",
-                    "Click anywhere to return to portfolio."
-                ];
-                
-                const deletionText = document.getElementById('deletion-text');
-                let messageIndex = 0;
-                let charIndex = 0;
-                
-                function typeWriter() {
-                    if (messageIndex < deletionMessages.length) {
-                        if (charIndex < deletionMessages[messageIndex].length) {
-                            deletionText.innerHTML += deletionMessages[messageIndex].charAt(charIndex);
-                            charIndex++;
-                            setTimeout(typeWriter, 50);
-                        } else {
-                            deletionText.innerHTML += '<br>';
-                            messageIndex++;
-                            charIndex = 0;
-                            setTimeout(typeWriter, 500);
-                        }
-                    }
-                }
-                
-                typeWriter();
-                
-                // Add classic error sound
-                const errorSound = new Audio("https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3");
-                errorSound.volume = 0.3;
-                errorSound.play();
-                
-                // Click anywhere to return
-                deletionScreen.addEventListener('click', () => {
-                    document.body.removeChild(deletionScreen);
-                });
-            });
-        });
-    }
-    
-    // Books icon functionality
-    const booksIcon = document.getElementById('books-icon');
-    if (booksIcon) {
-        booksIcon.addEventListener('click', () => {
-            // Create a modal window for the books
-            const modalOverlay = document.createElement('div');
-            modalOverlay.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.7);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 1001;
-            `;
-            
-            // Create a books window
-            const booksWindow = document.createElement('div');
-            booksWindow.style.cssText = `
-                width: 80%;
-                max-width: 700px;
-                background-color: #c0c0c0;
-                border: 2px solid #000;
-                box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.2);
-                max-height: 90vh;
-                overflow-y: auto;
-            `;
-            
-            booksWindow.innerHTML = `
-                <div style="background-color: #000; color: #fff; padding: 5px 10px; display: flex; justify-content: space-between; align-items: center;">
-                    <span>READING_LIST.TXT</span>
-                    <span class="close-button" style="cursor: pointer;">✕</span>
-                </div>
-                <div style="padding: 20px; font-family: 'VT323', monospace;">
-                    <h2 style="text-align: center; margin-bottom: 15px;">Important Books</h2>
-                    
-                    <div class="book-section" style="margin-bottom: 20px;">
-                        <h3 style="border-bottom: 1px solid #000; margin-bottom: 10px;">My Essential Reads</h3>
-                        <div class="book-item" style="margin-bottom: 15px;">
-                            <p><strong>Siddhartha</strong> by Hermann Hesse</p>
-                        </div>
-                        
-                        <div class="book-item" style="margin-bottom: 15px;">
-                            <p><strong>A River in Darkness</strong> by Masaji Ishikawa</p>
-                        </div>
-                        
-                        <div class="book-item" style="margin-bottom: 15px;">
-                            <p><strong>Into the Wild</strong> by Jon Krakauer</p>
-                        </div>
-                        
-                        <div class="book-item" style="margin-bottom: 15px;">
-                            <p><strong>The Stoker</strong> by Franz Kafka</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            modalOverlay.appendChild(booksWindow);
-            document.body.appendChild(modalOverlay);
-            
-            // Close button functionality
-            const closeButton = booksWindow.querySelector('.close-button');
-            closeButton.addEventListener('click', () => {
-                modalOverlay.remove();
-            });
-            
-            // Close modal when clicking outside
-            modalOverlay.addEventListener('click', (e) => {
-                if (e.target === modalOverlay) {
-                    modalOverlay.remove();
-                }
-            });
-        });
-    }
-});
-</script>
-                    </div>
-                </div>
-                
-                <!-- Photos Window -->
-                <div class="window" id="photos-window" style="display: none;">
-                    <div class="window-title">Photos</div>
-                    <div class="window-content active">
-                        <div class="photos-loading" id="photos-loading">Loading photos...</div>
-                        <div class="photos-feed" id="photos-feed"></div>
-                        <div class="photos-error" id="photos-error" style="display: none;"></div>
-                    </div>
-                </div>
+<!-- ══════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════ -->
 
-                <!-- Photo Lightbox Modal -->
-                <div class="photo-lightbox" id="photo-lightbox">
-                    <div class="photo-lightbox-content">
-                        <div class="photo-lightbox-close" onclick="closeLightbox()">✕</div>
-                        <img id="lightbox-image" class="photo-lightbox-image" src="" alt="Photo">
-                        <div class="photo-lightbox-date" id="lightbox-date"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Right Sidebar -->
-            <div class="sidebar right">
-                <div class="icon-container" onclick="window.open('https://github.com/arkanemystic', '_blank')">
-                    <div class="icon">🐙</div>
-                    <div>GitHub</div>
-                </div>            <div class="icon-container" id="books-icon">
-                <div class="icon">📚</div>
-                <div>Books</div>
-            </div>
-                <div class="icon-container" id="printer-icon">
-                    <div class="icon">🖨️</div>
-                    <div>Printer</div>
-                </div>
-                <div class="icon-container" id="trash-icon">
-                    <div class="icon">🗑️</div>
-                    <div>Trash</div>
-                </div>
+<!-- Books -->
+<div class="modal-overlay" id="books-modal">
+    <div class="modal-box">
+        <div class="modal-title">
+            <span>READING_LIST.TXT</span>
+            <button class="modal-close" data-close="books-modal">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="exp-list">
+                <article class="exp-item">
+                    <header class="exp-header"><span class="exp-org">Siddhartha</span></header>
+                    <div class="exp-role">Hermann Hesse</div>
+                </article>
+                <article class="exp-item">
+                    <header class="exp-header"><span class="exp-org">A River in Darkness</span></header>
+                    <div class="exp-role">Masaji Ishikawa</div>
+                </article>
+                <article class="exp-item">
+                    <header class="exp-header"><span class="exp-org">Into the Wild</span></header>
+                    <div class="exp-role">Jon Krakauer</div>
+                </article>
+                <article class="exp-item">
+                    <header class="exp-header"><span class="exp-org">The Stoker</span></header>
+                    <div class="exp-role">Franz Kafka</div>
+                </article>
             </div>
         </div>
     </div>
-    
-    <script>
-        // Update time display
-        function updateTime() {
-            const now = new Date();
-            let hours = now.getHours();
-            if (hours < 10) hours = '0' + hours;
-            let minutes = now.getMinutes();
-            if (minutes < 10) minutes = '0' + minutes;
-            document.getElementById('time-display').textContent = hours + ':' + minutes;
-        }
-        
-        updateTime();
-        setInterval(updateTime, 60000);
-        
-        // Tab navigation for About window tabs
-        const aboutTabs = document.querySelectorAll('#about-window .tab');
-        aboutTabs.forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                e.stopPropagation();
-                
-                // Remove active class from all tabs in About window
-                aboutTabs.forEach(t => t.classList.remove('active'));
-                
-                // Add active class to clicked tab
-                tab.classList.add('active');
-                
-                // Hide all content in About window
-                const contents = document.querySelectorAll('#about-window .window-content');
-                contents.forEach(content => content.classList.remove('active'));
-                
-                // Show selected content
-                const tabName = tab.getAttribute('data-tab');
-                document.getElementById(tabName + '-content').classList.add('active');
+</div>
+
+<!-- Blog -->
+<div class="modal-overlay" id="blog-modal">
+    <div class="modal-box wide">
+        <div class="modal-title">
+            <span id="blog-modal-title">BLOG.TXT</span>
+            <button class="modal-close" data-close="blog-modal">✕</button>
+        </div>
+        <div class="modal-body">
+            <!-- List view -->
+            <div id="blog-list-view">
+                <div id="blog-status" class="photos-status">Loading posts...</div>
+                <div class="blog-list" id="blog-list"></div>
+            </div>
+            <!-- Post view -->
+            <div class="blog-content" id="blog-post-view">
+                <button class="blog-back" id="blog-back">← Back to posts</button>
+                <div class="blog-rendered" id="blog-rendered"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Photos -->
+<div class="modal-overlay" id="photos-modal">
+    <div class="modal-box wide">
+        <div class="modal-title">
+            <span>PHOTOS</span>
+            <button class="modal-close" data-close="photos-modal">✕</button>
+        </div>
+        <div class="modal-body">
+            <div id="photos-status" class="photos-status">Loading photos...</div>
+            <div class="photos-grid" id="photos-grid"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Printer -->
+<div class="modal-overlay" id="printer-modal">
+    <div class="modal-box" style="max-width:380px">
+        <div class="modal-title">
+            <span>PRINTING...</span>
+            <button class="modal-close" data-close="printer-modal">✕</button>
+        </div>
+        <div class="modal-body" style="text-align:center">
+            <div style="margin-bottom:12px;font-size:20px">PRINTING...</div>
+            <div style="border:var(--border);height:18px;overflow:hidden;margin-bottom:12px;background:var(--g9)">
+                <div id="print-progress" style="height:100%;width:0%;background:var(--g1);transition:width .15s linear"></div>
+            </div>
+            <div id="print-message" style="font-style:italic;font-size:15px;color:var(--g2)">Initializing printer...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Trash -->
+<div class="modal-overlay" id="trash-modal">
+    <div class="modal-box" style="max-width:340px">
+        <div class="modal-title">
+            <span>Confirm Delete</span>
+            <button class="modal-close" data-close="trash-modal">✕</button>
+        </div>
+        <div class="modal-body" style="text-align:center">
+            <p style="font-size:20px;margin-bottom:20px">Delete System32?</p>
+            <div style="display:flex;justify-content:center;gap:20px">
+                <button id="yes-delete" class="btn-primary">Yes</button>
+                <button id="no-delete" style="background:var(--g7);border:var(--border);padding:5px 24px;cursor:pointer;font-family:'VT323',monospace;font-size:16px">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BSOD -->
+<div id="bsod">
+    <div style="margin-bottom:20px">WINDOWS</div>
+    <div>A fatal exception 0E has occurred at 0028:C0011E36.</div>
+    <div id="bsod-text" style="margin-top:20px;white-space:pre-wrap"></div>
+    <div style="position:absolute;bottom:48px">Press any key to continue_</div>
+</div>
+
+<script>
+/* ── TIME ── */
+function updateTime() {
+    const n = new Date();
+    document.getElementById('time-display').textContent =
+        String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+}
+updateTime(); setInterval(updateTime, 30000);
+
+/* ── GRAPHS ── */
+function updateGraphs() {
+    ['cpu-graph','memory-graph'].forEach(id =>
+        document.querySelectorAll('#'+id+' .graph-bar').forEach(b =>
+            b.style.height = (Math.random()*75+20)+'%'));
+}
+updateGraphs(); setInterval(updateGraphs, 2200);
+
+/* ── MODALS ── */
+const openModal  = id => document.getElementById(id).classList.add('active');
+const closeModal = id => document.getElementById(id).classList.remove('active');
+
+document.querySelectorAll('[data-close]').forEach(b =>
+    b.addEventListener('click', () => closeModal(b.dataset.close)));
+document.querySelectorAll('.modal-overlay').forEach(o =>
+    o.addEventListener('click', e => { if(e.target===o) o.classList.remove('active'); }));
+
+document.getElementById('books-btn').addEventListener('click', () => openModal('books-modal'));
+
+/* ── PHOTOS ── */
+let photosLoaded = false;
+document.getElementById('photos-btn').addEventListener('click', () => {
+    openModal('photos-modal');
+    if (photosLoaded) return;
+    photosLoaded = true;
+    (async () => {
+        const grid   = document.getElementById('photos-grid');
+        const status = document.getElementById('photos-status');
+        try {
+            const res   = await fetch('./photos-data.json');
+            if (!res.ok) throw new Error('photos-data.json not found');
+            const data  = await res.json();
+            const items = (data.resources||[]).sort((a,b)=>new Date(b.photo_date)-new Date(a.photo_date));
+            if (!items.length) { status.textContent='No photos found.'; return; }
+            status.style.display = 'none';
+            items.forEach(p => {
+                const d = new Date(p.photo_date).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
+                const el = document.createElement('div');
+                el.className = 'photo-item';
+                el.innerHTML = `<img src="${p.secure_url}" alt="Photo" loading="lazy"><div class="photo-date">${d}</div>`;
+                el.addEventListener('click', () => openLightbox(p.secure_url, d));
+                grid.appendChild(el);
             });
-        });
-        
-        // Window navigation for main sections
-        const iconContainers = document.querySelectorAll('.sidebar.left .icon-container');
-        iconContainers.forEach(icon => {
-            icon.addEventListener('click', () => {
-                const tabName = icon.getAttribute('data-tab');
-                if (!tabName) return;
-                
-                // Hide all windows
-                const windows = document.querySelectorAll('.window');
-                windows.forEach(window => {
-                    window.style.display = 'none';
-                });
-                
-                // Show selected window
-                document.getElementById(tabName + '-window').style.display = 'block';
+        } catch(e) { status.textContent = 'Could not load photos. ('+e.message+')'; }
+    })();
+});
+
+/* ── BLOG ── */
+let blogPosts = null;
+document.getElementById('blog-btn').addEventListener('click', () => {
+    openModal('blog-modal');
+    if (blogPosts !== null) return;
+    (async () => {
+        const listEl  = document.getElementById('blog-list');
+        const status  = document.getElementById('blog-status');
+        try {
+            const res  = await fetch('./blog-index.json');
+            if (!res.ok) throw new Error('blog-index.json not found');
+            const data = await res.json();
+            blogPosts  = data.posts || [];
+            if (!blogPosts.length) { status.textContent = 'No posts yet.'; return; }
+            status.style.display = 'none';
+            blogPosts.forEach((post, i) => {
+                const el = document.createElement('div');
+                el.className = 'blog-post-item';
+                el.innerHTML = `
+                    <div class="blog-post-header">
+                        <span class="blog-post-title">${post.title}</span>
+                        <span class="blog-post-date">${post.dateFormatted || post.date || ''}</span>
+                    </div>
+                    <div class="blog-post-excerpt">${post.excerpt || ''}</div>`;
+                el.addEventListener('click', () => openBlogPost(i));
+                listEl.appendChild(el);
             });
+        } catch(e) { status.textContent = 'Could not load posts. (' + e.message + ')'; }
+    })();
+});
 
-        // Mobile tile click handlers (reuses existing icon handlers)
-        const mobileTiles = document.querySelectorAll('.mobile-tile');
-        mobileTiles.forEach(tile => {
-            tile.addEventListener('click', () => {
-                const tab = tile.dataset.tab;
-                const url = tile.dataset.url;
-                const id = tile.dataset.id;
+function openBlogPost(i) {
+    const post = blogPosts[i];
+    document.getElementById('blog-modal-title').textContent = post.title;
+    document.getElementById('blog-rendered').innerHTML = post.html || '';
+    document.getElementById('blog-list-view').style.display  = 'none';
+    document.getElementById('blog-post-view').classList.add('active');
+    document.querySelector('#blog-modal .modal-box').scrollTop = 0;
+}
 
-                if (tab) {
-                    // trigger the same sidebar icon click if present
-                    const el = document.querySelector(`.icon-container[data-tab="${tab}"]`);
-                    if (el) return el.click();
-                }
+document.getElementById('blog-back').addEventListener('click', () => {
+    document.getElementById('blog-modal-title').textContent = 'BLOG.TXT';
+    document.getElementById('blog-list-view').style.display  = '';
+    document.getElementById('blog-post-view').classList.remove('active');
+});
 
-                if (id) {
-                    const el = document.getElementById(id);
-                    if (el) return el.click();
-                }
+/* ── PRINTER ── */
+const printMsgs = [
+    'Initializing printer...','Loading paper...','Detecting ink levels...',
+    'Ink not found! Have you checked behind the refrigerator?',
+    'Converting caffeine to code...','ERROR: PC LOAD LETTER. What does that even mean?!',
+    'Have you tried turning it off and on again?',
+    'Printer jam... Applying butter...','Downloading more RAM...',
+    'Printer out of ink. Attempting to use tears instead...',
+    'Successfully printed to the wrong printer!','Print failed successfully!'
+];
+document.getElementById('printer-btn').addEventListener('click', () => {
+    openModal('printer-modal');
+    const bar = document.getElementById('print-progress');
+    const msg = document.getElementById('print-message');
+    bar.style.width='0%'; msg.textContent=printMsgs[0];
+    let pct=0, mi=0;
+    const iv = setInterval(()=>{
+        pct+=5; bar.style.width=pct+'%';
+        if(pct%20===0){ mi=(mi+1)%printMsgs.length; msg.textContent=printMsgs[mi]; }
+        if(pct>=100){ clearInterval(iv); setTimeout(()=>closeModal('printer-modal'),1800); }
+    },150);
+});
 
-                if (url) {
-                    window.open(url, '_blank');
-                }
-            });
-        });
+/* ── TRASH / BSOD ── */
+document.getElementById('trash-btn').addEventListener('click', ()=>openModal('trash-modal'));
+document.getElementById('no-delete').addEventListener('click', ()=>closeModal('trash-modal'));
+document.getElementById('yes-delete').addEventListener('click', ()=>{
+    closeModal('trash-modal');
+    const bsod = document.getElementById('bsod');
+    const tel  = document.getElementById('bsod-text');
+    bsod.style.display='block'; tel.textContent='';
+    const lines = [
+        'The current application will be terminated.','',
+        '* Deleting System32...','* Deleting important files...',
+        '* Corrupting hard drive...','* Downloading more RAM...',
+        '* Contacting Russian hackers...','* Selling your data to advertisers...',
+        '* Subscribing you to cat facts...',
+        '* Just kidding! Your portfolio is safe.','','Click anywhere to return.'
+    ];
+    let li=0, ci=0;
+    function type(){ if(li>=lines.length)return; if(ci<lines[li].length){tel.textContent+=lines[li][ci++];setTimeout(type,40);}else{tel.textContent+='\n';li++;ci=0;setTimeout(type,400);} }
+    type();
+    bsod.addEventListener('click',()=>{bsod.style.display='none';},{once:true});
+});
 
-        // Toggle mobile tiles visibility based on screen size
-        const mtContainer = document.querySelector('.mobile-tile-container');
-        const mobileQuery = window.matchMedia('(max-width: 768px)');
-        function updateMobileTiles(e) {
-            if (!mtContainer) return;
-            const show = (e && typeof e.matches === 'boolean') ? e.matches : mobileQuery.matches;
-            mtContainer.setAttribute('aria-hidden', show ? 'false' : 'true');
-        }
-        updateMobileTiles(mobileQuery);
-        if (mobileQuery.addEventListener) {
-            mobileQuery.addEventListener('change', updateMobileTiles);
-        } else if (mobileQuery.addListener) {
-            mobileQuery.addListener(updateMobileTiles);
-        }
+/* ── LIGHTBOX ── */
+function openLightbox(src, date) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox-date').textContent = date;
+    document.getElementById('lightbox').classList.add('active');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
+document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+document.getElementById('lightbox').addEventListener('click', e=>{ if(e.target===document.getElementById('lightbox')) closeLightbox(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeLightbox(); });
 
-        // Add an X close button to each window that returns user to the home Profiler
-        document.querySelectorAll('.window').forEach(win => {
-            // Don't add a close button to the about/home window
-            if (win.id === 'about-window') return;
-            if (win.querySelector('.window-close')) return;
-            const btn = document.createElement('div');
-            btn.className = 'window-close';
-            btn.tabIndex = 0;
-            btn.title = 'Back to Home';
-            btn.innerText = '✕';
-            win.appendChild(btn);
-            const goHome = () => {
-                document.querySelectorAll('.window').forEach(w => w.style.display = 'none');
-                const about = document.getElementById('about-window');
-                if (about) about.style.display = 'block';
-                const aboutTabs = document.querySelectorAll('#about-window .tab');
-                aboutTabs.forEach(t => t.classList.remove('active'));
-                const firstTab = document.querySelector('#about-window .tab[data-tab="applications"]');
-                if (firstTab) firstTab.classList.add('active');
-                const contents = document.querySelectorAll('#about-window .window-content');
-                contents.forEach(c => c.classList.remove('active'));
-                const defaultContent = document.getElementById('applications-content');
-                if (defaultContent) defaultContent.classList.add('active');
-                updateMobileTiles(mobileQuery);
-            };
-            btn.addEventListener('click', goHome);
-            btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goHome(); } });
-        });
-        });
-
-        // Cloudinary Photos fetcher
-        async function fetchCloudinaryPhotos() {
-            const feedContainer = document.getElementById('photos-feed');
-            const loadingDiv = document.getElementById('photos-loading');
-            const errorDiv = document.getElementById('photos-error');
-
-            try {
-                // Fetch from local static JSON file (no CORS issues!)
-                const response = await fetch('./photos-data.json');
-
-                if (!response.ok) {
-                    throw new Error(`Failed to load photos data (${response.status})`);
-                }
-
-                const data = await response.json();
-                const resources = data.resources || [];
-
-                if (resources.length === 0) {
-                    feedContainer.innerHTML = '<div class="photos-loading">No photos found.</div>';
-                    loadingDiv.style.display = 'none';
-                    return;
-                }
-
-                // Sort by creation date (newest first)
-                resources.sort((a, b) => new Date(b.photo_date) - new Date(a.photo_date));
-
-                // Clear loading message
-                loadingDiv.style.display = 'none';
-                feedContainer.innerHTML = '';
-
-                // Render photos
-                resources.forEach(photo => {
-                    const photoItem = document.createElement('div');
-                    photoItem.className = 'photo-item';
-
-                    // Format photo metadata date
-                    const photoDate = new Date(photo.photo_date);
-                    const dateString = photoDate.toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                    });
-
-                    photoItem.innerHTML = `
-                        <img src="${photo.secure_url}" alt="Photo" class="photo-image" loading="lazy">
-                        <div class="photo-date">${dateString}</div>
-                    `;
-
-                    // Add click handler to open lightbox
-                    photoItem.addEventListener('click', () => {
-                        openLightbox(photo.secure_url, dateString);
-                    });
-
-                    feedContainer.appendChild(photoItem);
-                });
-
-            } catch (error) {
-                console.error('Error fetching photos:', error);
-                loadingDiv.style.display = 'none';
-                errorDiv.style.display = 'block';
-                errorDiv.innerHTML = `<strong>Error:</strong> ${error.message}<br><small>Check browser console (F12) for details.</small>`;
-            }
-        }
-
-        // Load photos when the Photos window is opened
-        const photosWindow = document.getElementById('photos-window');
-        if (photosWindow) {
-            let photosLoaded = false;
-
-            // Intercept the click on the Photos icon
-            document.addEventListener('click', (e) => {
-                const target = e.target.closest('.icon-container, .mobile-tile');
-                if (!target) return;
-
-                const tab = target.getAttribute('data-tab');
-                if (tab === 'photos' && !photosLoaded) {
-                    photosLoaded = true;
-                    fetchCloudinaryPhotos();
-                }
-            });
-        }
-
-        // Lightbox functions
-        function openLightbox(imageUrl, dateString) {
-            const lightbox = document.getElementById('photo-lightbox');
-            const lightboxImage = document.getElementById('lightbox-image');
-            const lightboxDate = document.getElementById('lightbox-date');
-
-            lightboxImage.src = imageUrl;
-            lightboxDate.textContent = dateString;
-            lightbox.classList.add('active');
-
-            // Close on Escape key
-            document.addEventListener('keydown', handleEscapeKey);
-
-            // Close on background click
-            lightbox.addEventListener('click', handleBackgroundClick);
-        }
-
-        function closeLightbox() {
-            const lightbox = document.getElementById('photo-lightbox');
-            lightbox.classList.remove('active');
-
-            // Remove event listeners
-            document.removeEventListener('keydown', handleEscapeKey);
-            lightbox.removeEventListener('click', handleBackgroundClick);
-        }
-
-        function handleEscapeKey(e) {
-            if (e.key === 'Escape') {
-                closeLightbox();
-            }
-        }
-
-        function handleBackgroundClick(e) {
-            const lightbox = document.getElementById('photo-lightbox');
-            const content = document.querySelector('.photo-lightbox-content');
-            if (e.target === lightbox && !content.contains(e.target)) {
-                closeLightbox();
-            }
-        }
-    </script>
+/* ── CONTACT FORM ── */
+document.getElementById('contactForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const st  = document.getElementById('formStatus');
+    btn.disabled=true; btn.textContent='Sending...';
+    fetch(this.action,{method:'POST',body:new FormData(this),headers:{'Accept':'application/json'}})
+        .then(r=>{ if(r.ok){ st.className='form-status'; st.style.display='block'; st.textContent='Message sent successfully!'; this.reset(); } else throw new Error(); })
+        .catch(()=>{ st.className='form-status error'; st.style.display='block'; st.textContent='Error sending. Please try again.'; })
+        .finally(()=>{ btn.disabled=false; btn.textContent='Send Message'; setTimeout(()=>{st.style.display='none';},5000); });
+});
+</script>
 </body>
 </html>

@@ -1,0 +1,12 @@
+{
+  "posts": [
+    {
+      "title": "Hello World",
+      "slug": "hello-world",
+      "date": "2026-04-22T00:00:00.000Z",
+      "dateFormatted": "April 21, 2026",
+      "excerpt": "First post — a quick note on how this blog works and what to expect.",
+      "html": "<h1>Hello World</h1>\n<p>This is the first post on my personal blog. I'll use this space to share thoughts on things I'm building, reading, or thinking about — no particular cadence, just whenever something is worth writing down.</p>\n<h2>What to expect</h2>\n<p>Mostly technical writing: projects I'm working on, problems I ran into and how I solved them, and the occasional rabbit hole. Sometimes non-technical: books, ideas, things that stuck with me.</p>\n<h2>How this works</h2>\n<p>Posts are written in Markdown and live in the <code>blog/</code> folder of this repo. Running <code>node scripts/update.js</code> regenerates the index and makes everything show up here. Simple, no CMS required.</p>\n<p>More soon.</p>\n"
+    }
+  ]
+}

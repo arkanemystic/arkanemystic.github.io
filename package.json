@@ -8,7 +8,10 @@
     "sanitize-html": "^2.11.0"
   },
   "scripts": {
-    "build:blog": "node ./scripts/generate.js --src journal/entries --out docs/blog"
+    "build:blog": "node ./scripts/generate.js --src journal/entries --out docs/blog",
+    "update": "node scripts/update.js",
+    "update:blog": "node scripts/update.js --blog",
+    "update:photos": "node scripts/update.js --photos"
   },
   "dependencies": {
     "cloudinary": "^2.8.0"
