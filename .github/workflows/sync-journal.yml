@@ -41,6 +41,14 @@ jobs:
         run: |
           node ./scripts/generate.js --src journal/entries --out docs/blog
 
+      - name: Update photos data from Cloudinary
+        env:
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+        run: |
+          node ./scripts/update.js --photos
+
       - name: Commit generated blog
         run: |
           git config user.name "github-actions[bot]"
