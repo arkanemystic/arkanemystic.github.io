@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog — Devakh Rashie</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════
+           TOKENS
+        ═══════════════════════════════════════ */
+        :root {
+            --g0: #111;
+            --g1: #2a2a2a;
+            --g2: #444;
+            --g3: #686868;
+            --g4: #888;
+            --g5: #a8a8a8;
+            --g6: #c0c0c0;
+            --g7: #d4d4d4;
+            --g8: #e8e8e8;
+            --g9: #f5f5f5;
+            --white: #fff;
+
+            --border:       2px solid var(--g0);
+            --border-light: 1px solid var(--g5);
+
+            --gap:   14px;
+            --pad:   14px;
+            --rad:   0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'VT323', monospace; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--g6);
+            color: var(--g0);
+            line-height: 1.35;
+            font-size: 17px;
+        }
+
+        /* ═══════════════════════════════════════
+           MENU BAR
+        ═══════════════════════════════════════ */
+        .menu-bar {
+            position: sticky; top: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(180deg, var(--g9) 0%, var(--g8) 100%);
+            border-bottom: var(--border);
+            padding: 5px 16px;
+            font-size: 18px;
+        }
+        .menu-nav { display: flex; }
+        .menu-nav a {
+            color: var(--g0); text-decoration: none;
+            padding: 2px 13px;
+            border-right: var(--border-light);
+            transition: background 0.1s;
+        }
+        .menu-nav a:first-child { border-left: var(--border-light); }
+        .menu-nav a:hover { background: var(--g7); }
+        #time-display { font-weight: bold; min-width: 44px; text-align: right; }
+
+        /* ═══════════════════════════════════════
+           PAGE SHELL
+        ═══════════════════════════════════════ */
+        .page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px 16px 72px;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        /* ═══════════════════════════════════════
+           WINDOW CHROME
+        ═══════════════════════════════════════ */
+        .window {
+            border: var(--border);
+            background: var(--g8);
+            box-shadow: 4px 4px 0 rgba(0,0,0,.22);
+        }
+        .window-title {
+            background: linear-gradient(90deg, var(--g0) 0%, var(--g2) 100%);
+            color: var(--white);
+            padding: 5px 12px;
+            font-size: 18px; letter-spacing: .06em;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .wt-dots { display: flex; gap: 5px; }
+        .wt-dot {
+            width: 10px; height: 10px;
+            border: 1px solid var(--g4); display: inline-block;
+        }
+        .wt-dot:nth-child(1) { background: var(--g5); }
+        .wt-dot:nth-child(2) { background: var(--g3); }
+        .wt-dot:nth-child(3) { background: var(--g1); }
+
+        .window-body { padding: var(--pad); }
+
+        /* ═══════════════════════════════════════
+           BLOG STYLES
+        ═══════════════════════════════════════ */
+        .blog-list { display: flex; flex-direction: column; gap: var(--gap); }
+
+        .blog-post-item {
+            border: var(--border);
+            background: var(--white);
+            cursor: pointer;
+            transition: background .1s;
+        }
+        .blog-post-item:nth-child(even) { background: var(--g9); }
+        .blog-post-item:hover { background: var(--g7); }
+
+        .blog-post-header {
+            display: flex; justify-content: space-between; align-items: baseline;
+            padding: 6px 12px;
+            background: var(--g8);
+            border-bottom: var(--border-light);
+            gap: 8px;
+        }
+        .blog-post-title { font-size: 18px; font-weight: bold; color: var(--g0); }
+        .blog-post-date  { font-size: 14px; color: var(--g3); white-space: nowrap; flex-shrink: 0; }
+        .blog-post-excerpt { padding: 8px 12px; font-size: 15px; color: var(--g2); line-height: 1.4; }
+
+        /* Post content view */
+        .blog-content {
+            display: none;
+        }
+        .blog-content.active { display: block; }
+        .blog-back {
+            display: inline-flex; align-items: center; gap: 4px;
+            margin-bottom: 12px; padding: 3px 10px;
+            border: var(--border); background: var(--g8);
+            cursor: pointer; font-family: 'VT323', monospace; font-size: 16px;
+            transition: background .1s;
+        }
+        .blog-back:hover { background: var(--g7); }
+
+        .blog-footer {
+            margin-top: 20px; padding-top: 12px;
+            border-top: var(--border-light);
+            display: flex; gap: 8px; align-items: center;
+        }
+        .blog-share-btn {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 10px;
+            border: var(--border); background: var(--g8);
+            cursor: pointer; font-family: 'VT323', monospace; font-size: 16px;
+            transition: background .1s;
+        }
+        .blog-share-btn:hover { background: var(--g7); }
+
+        /* Rendered markdown styles */
+        .blog-rendered {
+            font-size: 15px; line-height: 1.6; color: var(--g1);
+        }
+        .blog-rendered h1, .blog-rendered h2, .blog-rendered h3 {
+            margin: 16px 0 8px; color: var(--g0); font-size: 20px;
+            border-bottom: var(--border-light); padding-bottom: 4px;
+        }
+        .blog-rendered h1 { font-size: 24px; }
+        .blog-rendered h2 { font-size: 20px; }
+        .blog-rendered h3 { font-size: 17px; border-bottom: none; }
+        .blog-rendered p  { margin-bottom: 10px; }
+        .blog-rendered ul, .blog-rendered ol { margin: 8px 0 10px 20px; }
+        .blog-rendered li { margin-bottom: 4px; }
+        .blog-rendered code {
+            background: var(--g8); border: 1px solid var(--g5);
+            padding: 1px 5px; font-size: 14px;
+        }
+        .blog-rendered pre {
+            background: var(--g1); color: var(--g9);
+            padding: 12px; margin: 10px 0; overflow-x: auto;
+            border: var(--border);
+        }
+        .blog-rendered pre code { background: none; border: none; color: inherit; }
+        .blog-rendered blockquote {
+            border-left: 3px solid var(--g4);
+            padding: 4px 12px; margin: 10px 0;
+            background: var(--g9); color: var(--g2);
+        }
+        .blog-rendered a { color: var(--g1); }
+        .blog-rendered hr { border: none; border-top: var(--border-light); margin: 14px 0; }
+        .blog-rendered img { max-width: 100%; border: var(--border); }
+        .blog-rendered strong { color: var(--g0); }
+
+        .photos-status { text-align: center; padding: 28px; color: var(--g3); font-size: 17px; }
+
+        /* ═══════════════════════════════════════
+           FOOTER TASKBAR
+        ═══════════════════════════════════════ */
+        .footer-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(180deg, var(--g7) 0%, var(--g6) 100%);
+            border-top: var(--border);
+            display: flex; align-items: center; gap: 4px;
+            padding: 4px 14px;
+            font-size: 16px;
+        }
+        .footer-btn {
+            display: flex; align-items: center; gap: 5px;
+            padding: 3px 11px;
+            border: 1px solid var(--g4);
+            cursor: pointer; background: var(--g8);
+            text-decoration: none; color: var(--g0);
+            font-family: 'VT323', monospace; font-size: 16px;
+            transition: background .1s;
+        }
+        .footer-btn:hover  { background: var(--g9); }
+        .footer-btn:active { background: var(--g6); box-shadow: inset 1px 1px 0 var(--g5); }
+        .footer-sep { width: 1px; height: 20px; background: var(--g4); margin: 0 3px; }
+
+        /* ═══════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════ */
+        @media (max-width: 700px) {
+            .menu-nav a { padding: 2px 8px; font-size: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     MENU BAR
+══════════════════════════════════════════ -->
+<header class="menu-bar">
+    <nav class="menu-nav">
+        <a href="index.html">← Home</a>
+        <a href="blog.html">Blog</a>
+    </nav>
+    <span id="time-display">00:00</span>
+</header>
+
+<div class="page">
+
+<!-- ══════════════════════════════════════════
+     BLOG
+══════════════════════════════════════════ -->
+<section class="window" id="blog">
+    <div class="window-title">
+        <span id="blog-modal-title">BLOG.TXT</span>
+        <div class="wt-dots"><span class="wt-dot"></span><span class="wt-dot"></span><span class="wt-dot"></span></div>
+    </div>
+    <div class="window-body">
+        <!-- List view -->
+        <div id="blog-list-view">
+            <div id="blog-status" class="photos-status">Loading posts...</div>
+            <div class="blog-list" id="blog-list"></div>
+        </div>
+        <!-- Post view -->
+        <div class="blog-content" id="blog-post-view">
+            <button class="blog-back" id="blog-back">← Back to posts</button>
+            <div class="blog-rendered" id="blog-rendered"></div>
+        </div>
+    </div>
+</section>
+
+</div><!-- /.page -->
+
+<!-- ══════════════════════════════════════════
+     FOOTER TASKBAR
+══════════════════════════════════════════ -->
+<footer class="footer-bar">
+    <a class="footer-btn" href="index.html">← Back to Home</a>
+    <div class="footer-sep"></div>
+    <a class="footer-btn" href="https://github.com/arkanemystic" target="_blank">🐙 GitHub</a>
+</footer>
+
+<script>
+/* ── TIME ── */
+function updateTime() {
+    const n = new Date();
+    document.getElementById('time-display').textContent =
+        String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+}
+updateTime(); setInterval(updateTime, 30000);
+
+/* ── BLOG ── */
+let blogPosts = null;
+
+(async () => {
+    const listEl  = document.getElementById('blog-list');
+    const status  = document.getElementById('blog-status');
+    try {
+        const res  = await fetch('./blog-index.json');
+        if (!res.ok) throw new Error('blog-index.json not found');
+        const data = await res.json();
+        blogPosts  = data.posts || [];
+        if (!blogPosts.length) { status.textContent = 'No posts yet.'; return; }
+        status.style.display = 'none';
+        blogPosts.forEach((post, i) => {
+            const el = document.createElement('div');
+            el.className = 'blog-post-item';
+            el.innerHTML = `
+                <div class="blog-post-header">
+                    <span class="blog-post-title">${post.title}</span>
+                    <span class="blog-post-date">${post.dateFormatted || post.date || ''}</span>
+                </div>
+                <div class="blog-post-excerpt">${post.excerpt || ''}</div>`;
+            el.addEventListener('click', () => openBlogPost(i));
+            listEl.appendChild(el);
+        });
+        // Check if URL has a fragment pointing to a post
+        const hash = window.location.hash.slice(1);
+        if (hash) {
+            const postIndex = blogPosts.findIndex(p => p.slug === hash);
+            if (postIndex !== -1) {
+                openBlogPost(postIndex);
+            }
+        }
+    } catch(e) { status.textContent = 'Could not load posts. (' + e.message + ')'; }
+})();
+
+function openBlogPost(i) {
+    const post = blogPosts[i];
+    document.getElementById('blog-modal-title').textContent = post.title;
+    const shareLink = `${window.location.origin}${window.location.pathname}#${post.slug}`;
+    document.getElementById('blog-rendered').innerHTML = post.html + `
+        <div class="blog-footer">
+            <button class="blog-share-btn" data-share-link="${shareLink}">🔗 Share Post</button>
+            <span id="share-feedback" style="display:none;font-size:14px;color:var(--g3)">Copied!</span>
+        </div>`;
+    document.getElementById('blog-list-view').style.display  = 'none';
+    document.getElementById('blog-post-view').classList.add('active');
+    window.history.replaceState(null, '', `#${post.slug}`);
+    document.querySelector('.page').scrollTop = 0;
+    window.scrollTo(0, 0);
+    // Attach share button handler
+    document.querySelector('.blog-share-btn').addEventListener('click', sharePost);
+}
+
+function sharePost(e) {
+    const shareLink = e.target.closest('.blog-share-btn').dataset.shareLink;
+    navigator.clipboard.writeText(shareLink).then(() => {
+        const feedback = document.getElementById('share-feedback');
+        feedback.style.display = 'inline';
+        setTimeout(() => { feedback.style.display = 'none'; }, 2000);
+    });
+}
+
+document.getElementById('blog-back').addEventListener('click', () => {
+    document.getElementById('blog-modal-title').textContent = 'BLOG.TXT';
+    document.getElementById('blog-list-view').style.display  = '';
+    document.getElementById('blog-post-view').classList.remove('active');
+    window.history.replaceState(null, '', window.location.pathname);
+});
+</script>
+
+</body>
+</html>
