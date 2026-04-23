@@ -283,6 +283,14 @@
             background: var(--g9);
             display: flex; flex-wrap: wrap; gap: 4px;
         }
+        .pc-tech a {
+            color: var(--g0);
+            text-decoration: underline;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        .pc-tech a:hover { color: var(--g2); }
 
         /* ═══════════════════════════════════════
            BADGES
@@ -771,65 +779,86 @@
 
             <article class="project-card">
                 <header class="pc-header">
-                    <span class="pc-name">POSEidon</span>
-                    <div class="pc-badges">
-                        <span class="badge badge-dim">In Progress</span>
-                        <span class="badge badge-dim">Mobile App</span>
-                    </div>
+                    <span class="pc-name">Axiom Protocol</span>
                 </header>
-                <p class="pc-desc">Smart fitness coaching app powered by computer vision and on-device AI to perfect your form.</p>
+                <p class="pc-desc">Formalized AI guardrails for financial agents that replace probabilistic filters with Lean 4 mathematical proofs, ensuring only provably compliant actions execute.</p>
                 <footer class="pc-tech">
-                    <span class="badge badge-solid">React Native</span>
-                    <span class="badge badge-solid">Vision AI</span>
-                    <span class="badge badge-solid">On-Device AI</span>
+                    <span class="badge badge-solid">TypeScript</span>
+                    <span class="badge badge-solid">Lean 4</span>
+                    <span class="badge badge-solid">Formal Methods</span>
+                    <span class="badge badge-solid">AI Safety</span>
+                    <a href="https://axiom.devrashie.space" target="_blank">Demo</a>
+                    <a href="https://arxiv.org/abs/2604.01483" target="_blank">Paper</a>
+                    <a href="https://github.com/arkanemystic/lean-agent-protocol" target="_blank">GitHub</a>
                 </footer>
             </article>
 
             <article class="project-card">
                 <header class="pc-header">
-                    <span class="pc-name">Parking Detection Vision AI</span>
-                    <div class="pc-badges">
-                        <span class="badge badge-outline">Completed</span>
-                        <span class="badge badge-dim">Python</span>
-                    </div>
+                    <span class="pc-name">EventLoop</span>
                 </header>
-                <p class="pc-desc">Smart parking detection system using OpenCV for real-time occupancy tracking.</p>
+                <p class="pc-desc">Full-stack ride-sharing SaaS for event transportation with smart driver dispatch and real-time tracking.</p>
                 <footer class="pc-tech">
-                    <span class="badge badge-solid">Python</span>
-                    <span class="badge badge-solid">OpenCV</span>
-                    <span class="badge badge-solid">NumPy</span>
+                    <span class="badge badge-solid">JavaScript</span>
+                    <span class="badge badge-solid">Next.js</span>
+                    <span class="badge badge-solid">PostgreSQL</span>
+                    <span class="badge badge-solid">Real-time</span>
+                    <a href="https://github.com/arkanemystic/event-loop" target="_blank">GitHub</a>
                 </footer>
             </article>
 
             <article class="project-card">
                 <header class="pc-header">
-                    <span class="pc-name">Penny: Blockchain Accountant</span>
-                    <div class="pc-badges">
-                        <span class="badge badge-outline">Completed</span>
-                        <span class="badge badge-dim">Web + CLI</span>
-                    </div>
+                    <span class="pc-name">csv2api-router</span>
                 </header>
-                <p class="pc-desc">Crypto accounting assistant for blockchain CSV analysis and batch transaction routing.</p>
+                <p class="pc-desc">Modular Python pipeline using heuristics and local LLMs to parse CSVs and unstructured text, understand natural language instructions, and generate targeted API calls dynamically.</p>
                 <footer class="pc-tech">
                     <span class="badge badge-solid">Python</span>
-                    <span class="badge badge-solid">ChromaDB</span>
                     <span class="badge badge-solid">LLM</span>
+                    <span class="badge badge-solid">NLP</span>
+                    <span class="badge badge-solid">Automation</span>
+                    <a href="https://github.com/arkanemystic/csv2api-router" target="_blank">GitHub</a>
+                </footer>
+            </article>
+
+            <article class="project-card">
+                <header class="pc-header">
+                    <span class="pc-name">Crypto Accountant Core</span>
+                </header>
+                <p class="pc-desc">Modular Streamlit chatbot for crypto accounting that ingests CSVs, uses a local LLM to extract insights, and dynamically routes to csv2api subprocesses with persona control and vector storage.</p>
+                <footer class="pc-tech">
+                    <span class="badge badge-solid">Python</span>
+                    <span class="badge badge-solid">Streamlit</span>
+                    <span class="badge badge-solid">LLM</span>
+                    <span class="badge badge-solid">Crypto</span>
+                    <a href="https://github.com/arkanemystic/Crypto-Accountant-Core" target="_blank">GitHub</a>
+                </footer>
+            </article>
+
+            <article class="project-card">
+                <header class="pc-header">
+                    <span class="pc-name">Semiconductor Geopolitics Ops</span>
+                </header>
+                <p class="pc-desc">Data science project analyzing semiconductor geopolitics using NLP, sentiment analysis, and network graphs to map evolving media narratives.</p>
+                <footer class="pc-tech">
+                    <span class="badge badge-solid">Python</span>
+                    <span class="badge badge-solid">NLP</span>
+                    <span class="badge badge-solid">Data Science</span>
+                    <span class="badge badge-solid">Geopolitics</span>
+                    <a href="https://github.com/arkanemystic/semiconductor-geopolitics-ops" target="_blank">GitHub</a>
                 </footer>
             </article>
 
             <article class="project-card">
                 <header class="pc-header">
                     <span class="pc-name">Jane Street Puzzle Solutions</span>
-                    <div class="pc-badges">
-                        <span class="badge badge-dim">In Progress</span>
-                        <span class="badge badge-dim">Research</span>
-                    </div>
                 </header>
                 <p class="pc-desc">Algorithmic solutions for probability and combinatorics puzzles with visualizations.</p>
                 <footer class="pc-tech">
                     <span class="badge badge-solid">Python</span>
                     <span class="badge badge-solid">Monte Carlo</span>
                     <span class="badge badge-solid">Manim</span>
+                    <a href="https://github.com/arkanemystic/janestreetpuzzles" target="_blank">GitHub</a>
                 </footer>
             </article>
 
