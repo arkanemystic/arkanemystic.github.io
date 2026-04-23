@@ -103,7 +103,7 @@ async function updatePhotos() {
   const cloudName  = process.env.CLOUDINARY_CLOUD_NAME;
   const apiKey     = process.env.CLOUDINARY_API_KEY;
   const apiSecret  = process.env.CLOUDINARY_API_SECRET;
-  const folder     = process.env.CLOUDINARY_FOLDER || 'photos';
+  const folder     = process.env.CLOUDINARY_FOLDER === undefined ? 'photos' : process.env.CLOUDINARY_FOLDER;
 
   if (!cloudName || !apiKey || !apiSecret) {
     console.error(
@@ -122,7 +122,8 @@ async function updatePhotos() {
   let nextCursor;
 
   do {
-    const opts = { type: 'upload', prefix: folder, max_results: 500 };
+    const opts = { type: 'upload', max_results: 500 };
+    if (folder) opts.prefix = folder;
     if (nextCursor) opts.next_cursor = nextCursor;
     const res = await cloudinary.api.resources(opts);
     resources = resources.concat(res.resources || []);
