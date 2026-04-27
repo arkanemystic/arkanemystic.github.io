@@ -1294,7 +1294,30 @@ document.getElementById('contactForm').addEventListener('submit', function(e){
 });
 </script>
 
-<script data-goatcounter="https://devrashie.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+<script>
+(function() {
+  const loadGoatCounter = (userState = null) => {
+    if (userState) {
+      window.goatcounter = {
+        path: function(p) {
+          const separator = p.includes('?') ? '&' : '?';
+          return p + separator + 'state=' + encodeURIComponent(userState);
+        }
+      };
+    }
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = '//gc.zgo.at/count.js';
+    script.setAttribute('data-goatcounter', 'https://devrashie.goatcounter.com/count');
+    document.body.appendChild(script);
+  };
+
+  fetch('https://ipapi.co/json/')
+    .then(r => r.json())
+    .then(data => { loadGoatCounter(data.region); })
+    .catch(() => { loadGoatCounter(); });
+})();
+</script>
 </body>
 </html>
