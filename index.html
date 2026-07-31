@@ -7,7 +7,13 @@
     <script>
         (function() {
             var saved = localStorage.getItem('theme');
-            var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            var theme;
+            if (saved) {
+                theme = saved;
+            } else {
+                var hour = new Date().getHours();
+                theme = (hour >= 19 || hour < 7) ? 'dark' : 'light'; // 7pm–7am = night
+            }
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
