@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Devakh Rashie</title>
+    <script>
+        (function() {
+            var saved = localStorage.getItem('theme');
+            var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
@@ -21,8 +28,10 @@
             --g8: #e8e8e8;
             --g9: #f5f5f5;
             --white: #fff;
+            --surface: #fff; /* panel/card surface — themeable, unlike --white */
+            --border-color: var(--g0); /* decoupled so dark mode can mute borders without dimming text */
 
-            --border:       2px solid var(--g0);
+            --border:       2px solid var(--border-color);
             --border-light: 1px solid var(--g5);
 
             --gap:   14px;
@@ -33,6 +42,38 @@
             --lw: 88px;
         }
 
+        /* Dark mode: layered elevation (canvas < window < row/label < card),
+           muted borders to kill halation, and boosted secondary-text contrast. */
+        :root[data-theme="dark"] {
+            --g0: #ededed;   /* primary text */
+            --g1: #d0d0d0;
+            --g2: #ababab;
+            --g3: #b0b0b0;   /* secondary text: dates, labels, subtitles */
+            --g4: #6b6b6b;
+            --g5: #4c4c4c;   /* subtle dividers */
+            --g6: #121212;   /* page / canvas background */
+            --g7: #1c1c1c;
+            --g8: #242424;   /* main window containers — a clear step up from canvas */
+            --g9: #202020;   /* alternating rows / label fills */
+            --surface: #282828; /* inner cards, sub-panels, tables */
+            --border-color: #a0a0a0; /* muted off-white — no glare against near-black */
+        }
+
+        /* Chrome accents (title bars, solid badges, buttons) always pair with
+           fixed white text, so they stay pinned dark regardless of theme. */
+        :root[data-theme="dark"] .window-title,
+        :root[data-theme="dark"] .modal-title {
+            background: linear-gradient(90deg, #000 0%, #2a2a2a 100%);
+        }
+        :root[data-theme="dark"] .badge-solid { background: #2a2a2a; }
+        :root[data-theme="dark"] .btn-primary { background: #2a2a2a; }
+        :root[data-theme="dark"] .btn-primary:hover { background: #444; }
+        :root[data-theme="dark"] .blog-rendered pre { background: #181818; color: var(--g0); }
+
+        /* Profiler chart bars/frame use a dedicated light gray, not raw white */
+        :root[data-theme="dark"] .graph-visual { border-color: #c0c0c0; }
+        :root[data-theme="dark"] .graph-bar { background: #c0c0c0; }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'VT323', monospace; }
         html { scroll-behavior: smooth; }
 
@@ -41,6 +82,7 @@
             color: var(--g0);
             line-height: 1.35;
             font-size: 17px;
+            transition: background-color .15s ease, color .15s ease;
         }
 
         /* MENU BAR */
@@ -62,8 +104,43 @@
         .menu-nav a:first-child { border-left: var(--border-light); }
         .menu-nav a:hover { background: var(--g7); }
         .menu-nav a.menu-home { display: flex; align-items: center; padding: 3px 15px; }
-        .menu-nav a.menu-home img { display: block; image-rendering: pixelated; border: 1px solid var(--g0); }
+        .menu-nav a.menu-home img { display: block; image-rendering: pixelated; border: 1px solid var(--border-color); }
         #time-display { font-weight: bold; min-width: 44px; text-align: right; }
+
+        .menu-right { display: flex; align-items: center; gap: 12px; }
+
+        /* Retro rocker switch — sun/moon toggle */
+        .theme-switch {
+            position: relative;
+            display: flex; align-items: center; justify-content: space-between;
+            width: 54px; height: 22px;
+            padding: 0 4px;
+            border: var(--border-light);
+            background: var(--g9);
+            cursor: pointer;
+            transition: background .1s;
+        }
+        .theme-switch:hover { background: var(--g7); }
+        .theme-icon {
+            position: relative; z-index: 1;
+            font-size: 13px; line-height: 1;
+            color: var(--g3);
+            transition: color .15s ease;
+        }
+        .theme-switch[aria-checked="false"] .theme-icon-sun,
+        .theme-switch[aria-checked="true"]  .theme-icon-moon {
+            color: var(--g0);
+        }
+        .theme-thumb {
+            position: absolute; top: 2px; left: 2px;
+            width: 20px; height: 16px;
+            background: var(--g1);
+            border: 1px solid var(--border-color);
+            transition: transform .15s ease;
+        }
+        .theme-switch[aria-checked="true"] .theme-thumb {
+            transform: translateX(28px);
+        }
 
         /* PAGE SHELL */
         .page {
@@ -112,7 +189,7 @@
            …content…
            </div> */
         .panel {
-            background: var(--white);
+            background: var(--surface);
             border: var(--border);
         }
         .panel-title {
@@ -173,7 +250,7 @@
         }
         .graph-visual {
             height: 72px; border: var(--border);
-            background: var(--white);
+            background: var(--surface);
             display: flex; gap: 2px; padding: 2px; overflow: hidden;
         }
         .graph-bar {
@@ -196,7 +273,7 @@
 
         .exp-item {
             border: var(--border);
-            background: var(--white);
+            background: var(--surface);
         }
         .exp-item:nth-child(even) { background: var(--g9); }
 
@@ -230,7 +307,7 @@
 
         .project-card {
             border: var(--border);
-            background: var(--white);
+            background: var(--surface);
             display: flex; flex-direction: column;
         }
         .project-card:nth-child(2n) { background: var(--g9); }
@@ -315,7 +392,7 @@
             border: var(--border); background: var(--g9);
             font-size: 15px;
         }
-        .form-status.error { border-color: #c00; color: #c00; background: var(--white); }
+        .form-status.error { border-color: #c00; color: #c00; background: var(--surface); }
 
         /* FOOTER TASKBAR */
         .footer-bar {
@@ -379,7 +456,7 @@
             border: 2px solid var(--g5); overflow: hidden;
             cursor: pointer; background: var(--g7);
         }
-        .photo-item:hover { border-color: var(--g0); }
+        .photo-item:hover { border-color: var(--border-color); }
         .photo-item img {
             width: 100%; height: 100%; object-fit: cover; display: block;
             transition: opacity .2s;
@@ -435,6 +512,7 @@
             .window-body.cols-2   { grid-template-columns: 1fr; }
             .projects-grid        { grid-template-columns: 1fr; }
             .menu-nav a           { padding: 2px 8px; font-size: 15px; }
+            .menu-right           { gap: 8px; }
         }
 
         /* BLOG (inside modal) */
@@ -442,7 +520,7 @@
 
         .blog-post-item {
             border: var(--border);
-            background: var(--white);
+            background: var(--surface);
             cursor: pointer;
             transition: background .1s;
         }
@@ -518,7 +596,14 @@
         <a href="#projects">Projects</a>
         <a href="#contact">Contact</a>
     </nav>
-    <span id="time-display">00:00</span>
+    <div class="menu-right">
+        <button type="button" id="theme-toggle" class="theme-switch" role="switch" aria-checked="false" aria-label="Toggle dark mode">
+            <span class="theme-icon theme-icon-sun" aria-hidden="true">&#9728;</span>
+            <span class="theme-thumb"></span>
+            <span class="theme-icon theme-icon-moon" aria-hidden="true">&#9790;</span>
+        </button>
+        <span id="time-display">00:00</span>
+    </div>
 </header>
 
 <div class="page">
@@ -893,6 +978,19 @@
 </div>
 
 <script>
+/* ── THEME ── */
+const themeToggle = document.getElementById('theme-toggle');
+function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    themeToggle.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
+}
+themeToggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    setTheme(current === 'dark' ? 'light' : 'dark');
+});
+setTheme(document.documentElement.getAttribute('data-theme') || 'light');
+
 /* ── TIME ── */
 function updateTime() {
     const n = new Date();
