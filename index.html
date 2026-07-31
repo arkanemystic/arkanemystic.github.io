@@ -101,7 +101,7 @@
         /* Window body grid helpers — add class to .window-body */
         .window-body          { padding: var(--pad); }
         .window-body.cols-2   { display: grid; grid-template-columns: 1fr 1fr;         gap: var(--gap); }
-        .window-body.profiler { display: grid; grid-template-columns: 156px 1fr;   gap: var(--gap); padding: 10px; }
+        .window-body.profiler { display: grid; grid-template-columns: 1fr 190px;   gap: var(--gap); padding: 10px; }
 
         /* PANEL  (white card inside a window)
            Usage:
@@ -533,27 +533,11 @@
         <div class="graph-stack">
             <div class="graph-block">
                 <div class="graph-title">CPU</div>
-                <div class="graph-visual" id="cpu-graph">
-                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
-                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
-                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
-                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
-                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
-                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
-                    <div class="graph-bar"></div><div class="graph-bar"></div>
-                </div>
+                <div class="graph-visual" id="cpu-graph"></div>
             </div>
             <div class="graph-block">
                 <div class="graph-title">Memory</div>
-                <div class="graph-visual" id="memory-graph">
-                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
-                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
-                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
-                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
-                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
-                    <div class="graph-bar"></div><div class="graph-bar"></div><div class="graph-bar"></div>
-                    <div class="graph-bar"></div><div class="graph-bar"></div>
-                </div>
+                <div class="graph-visual" id="memory-graph"></div>
             </div>
         </div>
 
@@ -918,11 +902,37 @@ function updateTime() {
 updateTime(); setInterval(updateTime, 30000);
 
 /* ── GRAPHS ── */
+const GRAPH_IDS = ['cpu-graph','memory-graph'];
+const BAR_TARGET_WIDTH = 5; // px, gap not included
+const BAR_GAP = 2;
+
+function populateGraphs() {
+    GRAPH_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        const usable = el.clientWidth - 4; // minus el's own padding
+        const count = Math.max(10, Math.floor((usable + BAR_GAP) / (BAR_TARGET_WIDTH + BAR_GAP)));
+        el.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'graph-bar';
+            el.appendChild(bar);
+        }
+    });
+}
+
 function updateGraphs() {
-    ['cpu-graph','memory-graph'].forEach(id =>
+    GRAPH_IDS.forEach(id =>
         document.querySelectorAll('#'+id+' .graph-bar').forEach(b =>
             b.style.height = (Math.random()*75+20)+'%'));
 }
+
+let resizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { populateGraphs(); updateGraphs(); }, 200);
+});
+
+populateGraphs();
 updateGraphs(); setInterval(updateGraphs, 2200);
 
 /* ── MODALS ── */
