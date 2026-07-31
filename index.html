@@ -8,9 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
-        /* ═══════════════════════════════════════
-           TOKENS
-        ═══════════════════════════════════════ */
+        /* TOKENS */
         :root {
             --g0: #111;
             --g1: #2a2a2a;
@@ -45,9 +43,7 @@
             font-size: 17px;
         }
 
-        /* ═══════════════════════════════════════
-           MENU BAR
-        ═══════════════════════════════════════ */
+        /* MENU BAR */
         .menu-bar {
             position: sticky; top: 0; z-index: 100;
             display: flex; justify-content: space-between; align-items: center;
@@ -67,9 +63,7 @@
         .menu-nav a:hover { background: var(--g7); }
         #time-display { font-weight: bold; min-width: 44px; text-align: right; }
 
-        /* ═══════════════════════════════════════
-           PAGE SHELL
-        ═══════════════════════════════════════ */
+        /* PAGE SHELL */
         .page {
             max-width: 900px;
             margin: 0 auto;
@@ -77,14 +71,12 @@
             display: flex; flex-direction: column; gap: 20px;
         }
 
-        /* ═══════════════════════════════════════
-           WINDOW CHROME  (reusable shell)
+        /* WINDOW CHROME  (reusable shell)
            Usage:
-             <section class="window" id="foo">
-               <div class="window-title"><span>Title</span><div class="wt-dots">…</div></div>
-               <div class="window-body [ --cols-N ]">…</div>
-             </section>
-        ═══════════════════════════════════════ */
+           <section class="window" id="foo">
+           <div class="window-title"><span>Title</span><div class="wt-dots">…</div></div>
+           <div class="window-body [ --cols-N ]">…</div>
+           </section> */
         .window {
             border: var(--border);
             background: var(--g8);
@@ -109,17 +101,14 @@
         /* Window body grid helpers — add class to .window-body */
         .window-body          { padding: var(--pad); }
         .window-body.cols-2   { display: grid; grid-template-columns: 1fr 1fr;         gap: var(--gap); }
-        .window-body.cols-3   { display: grid; grid-template-columns: 1fr 1fr 1fr;     gap: var(--gap); }
-        .window-body.profiler { display: grid; grid-template-columns: 156px 1fr 1fr;   gap: var(--gap); padding: 10px; }
+        .window-body.profiler { display: grid; grid-template-columns: 156px 1fr;   gap: var(--gap); padding: 10px; }
 
-        /* ═══════════════════════════════════════
-           PANEL  (white card inside a window)
+        /* PANEL  (white card inside a window)
            Usage:
-             <div class="panel">
-               <div class="panel-title">Label</div>
-               …content…
-             </div>
-        ═══════════════════════════════════════ */
+           <div class="panel">
+           <div class="panel-title">Label</div>
+           …content…
+           </div> */
         .panel {
             background: var(--white);
             border: var(--border);
@@ -133,15 +122,13 @@
         }
         .panel-body { padding: 10px; }
 
-        /* ═══════════════════════════════════════
-           KV TABLE  (key-value rows)
+        /* KV TABLE  (key-value rows)
            Usage:
-             <dl class="kv">
-               <div class="kv-row">
-                 <dt>Label</dt><dd>Value</dd>
-               </div>
-             </dl>
-        ═══════════════════════════════════════ */
+           <dl class="kv">
+           <div class="kv-row">
+           <dt>Label</dt><dd>Value</dd>
+           </div>
+           </dl> */
         .kv { display: flex; flex-direction: column; gap: 0; }
 
         .kv-row {
@@ -156,32 +143,21 @@
         .kv-row dt { color: var(--g3); font-weight: bold; white-space: nowrap; }
         .kv-row dd { color: var(--g0); }
 
-        /* Stacked kv for narrow panels (3-col grid) */
-        .window-body.cols-3 .kv-row,
+        /* Stacked kv for narrow profiler panels */
         .window-body.profiler .panel .kv-row {
             grid-template-columns: 1fr;
             gap: 0;
             padding: 2px 10px 1px;
         }
-        .window-body.cols-3 .kv-row dt,
         .window-body.profiler .panel .kv-row dt {
             font-size: 11px;
         }
-        .window-body.cols-3 .kv-row dd,
         .window-body.profiler .panel .kv-row dd {
             font-size: 15px;
             padding-bottom: 1px;
         }
 
-        /* Divider inside a panel */
-        .panel-divider {
-            border: none; border-top: var(--border-light);
-            margin: 8px 10px;
-        }
-
-        /* ═══════════════════════════════════════
-           PROFILER GRAPHS
-        ═══════════════════════════════════════ */
+        /* PROFILER GRAPHS */
         .graph-stack { display: flex; flex-direction: column; gap: 10px; }
 
         .graph-block {
@@ -204,18 +180,16 @@
             transition: height .4s ease;
         }
 
-        /* ═══════════════════════════════════════
-           EXPERIENCE ITEMS
+        /* EXPERIENCE ITEMS
            Usage:
-             <article class="exp-item">
-               <header class="exp-header">
-                 <span class="exp-org">Company</span>
-                 <span class="exp-date">Date</span>
-               </header>
-               <div class="exp-role">Role title</div>
-               <p class="exp-desc">Description</p>
-             </article>
-        ═══════════════════════════════════════ */
+           <article class="exp-item">
+           <header class="exp-header">
+           <span class="exp-org">Company</span>
+           <span class="exp-date">Date</span>
+           </header>
+           <div class="exp-role">Role title</div>
+           <p class="exp-desc">Description</p>
+           </article> */
         .exp-list { display: flex; flex-direction: column; gap: var(--gap); }
 
         .exp-item {
@@ -236,18 +210,16 @@
         .exp-role { padding: 4px 12px; font-size: 15px; color: var(--g2); border-bottom: var(--border-light); }
         .exp-desc { padding: 8px 12px; font-size: 15px; line-height: 1.4; color: var(--g1); }
 
-        /* ═══════════════════════════════════════
-           PROJECT CARDS
+        /* PROJECT CARDS
            Usage:
-             <article class="project-card">
-               <header class="pc-header">
-                 <span class="pc-name">Name</span>
-                 <div class="pc-badges">…badges…</div>
-               </header>
-               <p class="pc-desc">Description</p>
-               <footer class="pc-tech">…badges…</footer>
-             </article>
-        ═══════════════════════════════════════ */
+           <article class="project-card">
+           <header class="pc-header">
+           <span class="pc-name">Name</span>
+           <div class="pc-badges">…badges…</div>
+           </header>
+           <p class="pc-desc">Description</p>
+           <footer class="pc-tech">…badges…</footer>
+           </article> */
         .projects-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -292,9 +264,7 @@
         }
         .pc-tech a:hover { color: var(--g2); }
 
-        /* ═══════════════════════════════════════
-           BADGES
-        ═══════════════════════════════════════ */
+        /* BADGES */
         .badge {
             display: inline-block;
             font-size: 13px; padding: 1px 7px;
@@ -304,44 +274,7 @@
         .badge-outline { background: var(--g8); color: var(--g1); border: 1px solid var(--g3); }
         .badge-dim     { background: var(--g7); color: var(--g2); border: 1px solid var(--g5); }
 
-        /* ═══════════════════════════════════════
-           SKILL BLOCKS
-           Usage:
-             <div class="skill-block">
-               <div class="panel-title">Category</div>
-               <div class="skill-list">
-                 <div class="skill-row">
-                   <div class="skill-label"><span>Name</span><span>80%</span></div>
-                   <div class="skill-bar"><div class="skill-fill" style="--pct:80%"></div></div>
-                 </div>
-               </div>
-             </div>
-        ═══════════════════════════════════════ */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: var(--gap);
-        }
-
-        .skill-block {
-            border: var(--border);
-            background: var(--white);
-        }
-
-        .skill-list { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
-
-        .skill-label {
-            display: flex; justify-content: space-between;
-            font-size: 15px; color: var(--g1); margin-bottom: 3px;
-        }
-        .skill-label span:last-child { color: var(--g3); }
-
-        .skill-bar  { height: 12px; background: var(--g7); border: 1px solid var(--g5); }
-        .skill-fill { height: 100%; background: var(--g1); width: var(--pct, 0%); }
-
-        /* ═══════════════════════════════════════
-           CONTACT
-        ═══════════════════════════════════════ */
+        /* CONTACT */
         .contact-link {
             display: grid;
             grid-template-columns: 80px 1fr;
@@ -382,9 +315,7 @@
         }
         .form-status.error { border-color: #c00; color: #c00; background: var(--white); }
 
-        /* ═══════════════════════════════════════
-           FOOTER TASKBAR
-        ═══════════════════════════════════════ */
+        /* FOOTER TASKBAR */
         .footer-bar {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: linear-gradient(180deg, var(--g7) 0%, var(--g6) 100%);
@@ -406,9 +337,7 @@
         .footer-btn:active { background: var(--g6); box-shadow: inset 1px 1px 0 var(--g5); }
         .footer-sep { width: 1px; height: 20px; background: var(--g4); margin: 0 3px; }
 
-        /* ═══════════════════════════════════════
-           MODALS
-        ═══════════════════════════════════════ */
+        /* MODALS */
         .modal-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,.65); z-index: 1000;
@@ -437,9 +366,7 @@
         }
         .modal-body { padding: 14px; }
 
-        /* ═══════════════════════════════════════
-           PHOTOS (inside modal)
-        ═══════════════════════════════════════ */
+        /* PHOTOS (inside modal) */
         .photos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -465,9 +392,7 @@
         .photo-item:hover .photo-date { opacity: 1; }
         .photos-status { text-align: center; padding: 28px; color: var(--g3); font-size: 17px; }
 
-        /* ═══════════════════════════════════════
-           LIGHTBOX
-        ═══════════════════════════════════════ */
+        /* LIGHTBOX */
         .lightbox {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,.93); z-index: 9000;
@@ -494,9 +419,7 @@
             font-family: 'VT323', monospace; line-height: 1;
         }
 
-        /* ═══════════════════════════════════════
-           BSOD
-        ═══════════════════════════════════════ */
+        /* BSOD */
         #bsod {
             display: none; position: fixed; inset: 0;
             background: #00a; color: #fff;
@@ -504,24 +427,15 @@
             padding: 48px; z-index: 9999; cursor: pointer; overflow: hidden;
         }
 
-        /* ═══════════════════════════════════════
-           RESPONSIVE
-        ═══════════════════════════════════════ */
+        /* RESPONSIVE */
         @media (max-width: 700px) {
             .window-body.profiler { grid-template-columns: 1fr; }
-            .window-body.cols-3   { grid-template-columns: 1fr; }
             .window-body.cols-2   { grid-template-columns: 1fr; }
             .projects-grid        { grid-template-columns: 1fr; }
-            .skills-grid          { grid-template-columns: 1fr 1fr; }
             .menu-nav a           { padding: 2px 8px; font-size: 15px; }
         }
-        @media (max-width: 420px) {
-            .skills-grid { grid-template-columns: 1fr; }
-        }
 
-        /* ═══════════════════════════════════════
-           BLOG (inside modal)
-        ═══════════════════════════════════════ */
+        /* BLOG (inside modal) */
         .blog-list { display: flex; flex-direction: column; gap: var(--gap); }
 
         .blog-post-item {
@@ -593,16 +507,13 @@
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════
-     MENU BAR
-══════════════════════════════════════════ -->
+<!-- MENU BAR -->
 <header class="menu-bar">
     <nav class="menu-nav">
         <a href="#about">Profiler</a>
         <a href="#bio">About</a>
         <a href="#experience">Experience</a>
         <a href="#projects">Projects</a>
-        <a href="#skills">Skills</a>
         <a href="#contact">Contact</a>
     </nav>
     <span id="time-display">00:00</span>
@@ -610,9 +521,7 @@
 
 <div class="page">
 
-<!-- ══════════════════════════════════════════
-     PROFILER
-══════════════════════════════════════════ -->
+<!-- PROFILER -->
 <section class="window" id="about">
     <div class="window-title">
         <span>Profiler</span>
@@ -655,35 +564,20 @@
                 <div class="kv-row"><dt>Name</dt><dd>Devakh Rashie</dd></div>
                 <div class="kv-row"><dt>Title</dt><dd>Founding @ biject</dd></div>
                 <div class="kv-row"><dt>Experience</dt><dd>4 Years</dd></div>
-                <div class="kv-row"><dt>Status</dt><dd>Available ✓</dd></div>
-                <div class="kv-row"><dt>Uptime</dt><dd>20 Years, 4 Months</dd></div>
-            </dl>
-        </div>
-
-        <!-- Resources panel -->
-        <div class="panel">
-            <div class="panel-title">Resources (KB)</div>
-            <dl class="kv">
-                <div class="kv-row"><dt>Creativity</dt><dd>876</dd></div>
-                <div class="kv-row"><dt>Logic</dt><dd>925</dd></div>
-                <div class="kv-row"><dt>Coffee</dt><dd>∞</dd></div>
-                <div class="kv-row"><dt>Bugs Squashed</dt><dd>🐛 × 404</dd></div>
-                <div class="kv-row"><dt>Free</dt><dd>154</dd></div>
+                <div class="kv-row"><dt>Status</dt><dd>Available</dd></div>
             </dl>
         </div>
 
     </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     ABOUT
-══════════════════════════════════════════ -->
+<!-- ABOUT -->
 <section class="window" id="bio">
     <div class="window-title">
         <span>About</span>
         <div class="wt-dots"><span class="wt-dot"></span><span class="wt-dot"></span><span class="wt-dot"></span></div>
     </div>
-    <div class="window-body cols-3">
+    <div class="window-body cols-2">
 
         <div class="panel">
             <div class="panel-title">Background</div>
@@ -692,8 +586,6 @@
                 <div class="kv-row"><dt>Mission</dt><dd>Complex problems in medicine &amp; fintech</dd></div>
                 <div class="kv-row"><dt>Interests</dt><dd>A Capella, reading, fitness</dd></div>
                 <div class="kv-row"><dt>Languages</dt><dd>English, Malayalam</dd></div>
-                <div class="kv-row"><dt>Location</dt><dd>Centreville, VA</dd></div>
-                <div class="kv-row"><dt>Availability</dt><dd>Full-time, Remote/Hybrid</dd></div>
             </dl>
         </div>
 
@@ -707,26 +599,10 @@
             </dl>
         </div>
 
-        <div class="panel">
-            <div class="panel-title">Leadership &amp; System</div>
-            <dl class="kv">
-                <div class="kv-row"><dt>Dhadkan</dt><dd>Member — cross-cultural vocal performer</dd></div>
-                <div class="kv-row"><dt>Kappa Θ Pi</dt><dd>Blockchain Technology Lead</dd></div>
-            </dl>
-            <hr class="panel-divider">
-            <dl class="kv">
-                <div class="kv-row"><dt>OS</dt><dd>Human 1.0</dd></div>
-                <div class="kv-row"><dt>Primary Lang</dt><dd>Java 23.0.2</dd></div>
-                <div class="kv-row"><dt>Secondary</dt><dd>Python 3.12.0</dd></div>
-            </dl>
-        </div>
-
     </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     EXPERIENCE
-══════════════════════════════════════════ -->
+<!-- EXPERIENCE -->
 <section class="window" id="experience">
     <div class="window-title">
         <span>Experience</span>
@@ -766,9 +642,7 @@
     </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     PROJECTS
-══════════════════════════════════════════ -->
+<!-- PROJECTS -->
 <section class="window" id="projects">
     <div class="window-title">
         <span>Projects</span>
@@ -785,8 +659,6 @@
                 <footer class="pc-tech">
                     <span class="badge badge-solid">TypeScript</span>
                     <span class="badge badge-solid">Lean 4</span>
-                    <span class="badge badge-solid">Formal Methods</span>
-                    <span class="badge badge-solid">AI Safety</span>
                     <a href="https://axiom.devrashie.space" target="_blank">Demo</a>
                     <a href="https://arxiv.org/abs/2604.01483" target="_blank">Paper</a>
                     <a href="https://github.com/arkanemystic/lean-agent-protocol" target="_blank">GitHub</a>
@@ -799,10 +671,8 @@
                 </header>
                 <p class="pc-desc">Full-stack ride-sharing SaaS for event transportation with smart driver dispatch and real-time tracking.</p>
                 <footer class="pc-tech">
-                    <span class="badge badge-solid">JavaScript</span>
                     <span class="badge badge-solid">Next.js</span>
                     <span class="badge badge-solid">PostgreSQL</span>
-                    <span class="badge badge-solid">Real-time</span>
                     <a href="https://github.com/arkanemystic/event-loop" target="_blank">GitHub</a>
                 </footer>
             </article>
@@ -815,8 +685,6 @@
                 <footer class="pc-tech">
                     <span class="badge badge-solid">Python</span>
                     <span class="badge badge-solid">LLM</span>
-                    <span class="badge badge-solid">NLP</span>
-                    <span class="badge badge-solid">Automation</span>
                     <a href="https://github.com/arkanemystic/csv2api-router" target="_blank">GitHub</a>
                 </footer>
             </article>
@@ -827,10 +695,8 @@
                 </header>
                 <p class="pc-desc">Modular Streamlit chatbot for crypto accounting that ingests CSVs, uses a local LLM to extract insights, and dynamically routes to csv2api subprocesses with persona control and vector storage.</p>
                 <footer class="pc-tech">
-                    <span class="badge badge-solid">Python</span>
                     <span class="badge badge-solid">Streamlit</span>
                     <span class="badge badge-solid">LLM</span>
-                    <span class="badge badge-solid">Crypto</span>
                     <a href="https://github.com/arkanemystic/Crypto-Accountant-Core" target="_blank">GitHub</a>
                 </footer>
             </article>
@@ -843,8 +709,6 @@
                 <footer class="pc-tech">
                     <span class="badge badge-solid">Python</span>
                     <span class="badge badge-solid">NLP</span>
-                    <span class="badge badge-solid">Data Science</span>
-                    <span class="badge badge-solid">Geopolitics</span>
                     <a href="https://github.com/arkanemystic/semiconductor-geopolitics-ops" target="_blank">GitHub</a>
                 </footer>
             </article>
@@ -866,78 +730,7 @@
     </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SKILLS
-══════════════════════════════════════════ -->
-<section class="window" id="skills">
-    <div class="window-title">
-        <span>Skills</span>
-        <div class="wt-dots"><span class="wt-dot"></span><span class="wt-dot"></span><span class="wt-dot"></span></div>
-    </div>
-    <div class="window-body" style="background:var(--g8)">
-        <div class="skills-grid">
-
-            <div class="skill-block">
-                <div class="panel-title">Frontend</div>
-                <div class="skill-list">
-                    <div class="skill-row">
-                        <div class="skill-label"><span>HTML / CSS</span><span>80%</span></div>
-                        <div class="skill-bar"><div class="skill-fill" style="--pct:80%"></div></div>
-                    </div>
-                    <div class="skill-row">
-                        <div class="skill-label"><span>JavaScript</span><span>70%</span></div>
-                        <div class="skill-bar"><div class="skill-fill" style="--pct:70%"></div></div>
-                    </div>
-                    <div class="skill-row">
-                        <div class="skill-label"><span>React</span><span>60%</span></div>
-                        <div class="skill-bar"><div class="skill-fill" style="--pct:60%"></div></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="skill-block">
-                <div class="panel-title">Backend</div>
-                <div class="skill-list">
-                    <div class="skill-row">
-                        <div class="skill-label"><span>Python</span><span>80%</span></div>
-                        <div class="skill-bar"><div class="skill-fill" style="--pct:80%"></div></div>
-                    </div>
-                    <div class="skill-row">
-                        <div class="skill-label"><span>Java</span><span>80%</span></div>
-                        <div class="skill-bar"><div class="skill-fill" style="--pct:80%"></div></div>
-                    </div>
-                    <div class="skill-row">
-                        <div class="skill-label"><span>Node.js</span><span>60%</span></div>
-                        <div class="skill-bar"><div class="skill-fill" style="--pct:60%"></div></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="skill-block">
-                <div class="panel-title">Data &amp; DevOps</div>
-                <div class="skill-list">
-                    <div class="skill-row">
-                        <div class="skill-label"><span>MongoDB</span><span>50%</span></div>
-                        <div class="skill-bar"><div class="skill-fill" style="--pct:50%"></div></div>
-                    </div>
-                    <div class="skill-row">
-                        <div class="skill-label"><span>Firebase</span><span>60%</span></div>
-                        <div class="skill-bar"><div class="skill-fill" style="--pct:60%"></div></div>
-                    </div>
-                    <div class="skill-row">
-                        <div class="skill-label"><span>AWS</span><span>50%</span></div>
-                        <div class="skill-bar"><div class="skill-fill" style="--pct:50%"></div></div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     CONTACT
-══════════════════════════════════════════ -->
+<!-- CONTACT -->
 <section class="window" id="contact">
     <div class="window-title">
         <span>Contact</span>
@@ -951,7 +744,7 @@
                 <div class="contact-link"><dt>Email</dt><dd><a href="mailto:devrashie@gmail.com">devrashie@gmail.com</a></dd></div>
                 <div class="contact-link"><dt>LinkedIn</dt><dd><a href="https://linkedin.com/in/devrashie" target="_blank">linkedin.com/in/devrashie</a></dd></div>
                 <div class="contact-link"><dt>GitHub</dt><dd><a href="https://github.com/arkanemystic" target="_blank">arkanemystic</a></dd></div>
-                <div class="contact-link"><dt>Website</dt><dd><a href="https://devrashie.space" target="_blank">devrashie.space</a></dd></div>
+                <div class="contact-link"><dt>X</dt><dd><a href="https://x.com/devrashie" target="_blank">@devrashie</a></dd></div>
             </dl>
         </div>
 
@@ -981,9 +774,7 @@
 
 </div><!-- /.page -->
 
-<!-- ══════════════════════════════════════════
-     LIGHTBOX
-══════════════════════════════════════════ -->
+<!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
     <div class="lightbox-inner">
         <button class="lightbox-close" id="lightbox-close">✕</button>
@@ -992,26 +783,22 @@
     </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     FOOTER TASKBAR
-══════════════════════════════════════════ -->
+<!-- FOOTER TASKBAR -->
 <footer class="footer-bar">
-    <a class="footer-btn" href="https://github.com/arkanemystic" target="_blank">🐙 GitHub</a>
+    <a class="footer-btn" href="https://github.com/arkanemystic" target="_blank">GitHub</a>
     <div class="footer-sep"></div>
-    <button class="footer-btn" id="books-btn">📚 Books</button>
+    <button class="footer-btn" id="books-btn">Books</button>
     <div class="footer-sep"></div>
-    <button class="footer-btn" id="blog-btn">📝 Blog</button>
+    <button class="footer-btn" id="blog-btn">Blog</button>
     <div class="footer-sep"></div>
-    <button class="footer-btn" id="photos-btn">🖼️ Photos</button>
+    <button class="footer-btn" id="photos-btn">Photos</button>
     <div class="footer-sep"></div>
-    <button class="footer-btn" id="printer-btn">🖨️ Printer</button>
+    <button class="footer-btn" id="printer-btn">Printer</button>
     <div class="footer-sep"></div>
-    <button class="footer-btn" id="trash-btn">🗑️ Trash</button>
+    <button class="footer-btn" id="trash-btn">Trash</button>
 </footer>
 
-<!-- ══════════════════════════════════════════
-     MODALS
-══════════════════════════════════════════ -->
+<!-- MODALS -->
 
 <!-- Books -->
 <div class="modal-overlay" id="books-modal">

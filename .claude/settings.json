@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm \"/Users/devrashie/Documents/csProjects/arkanemystic.github.io/VERIFICATION_CHECKLIST.md\")"
+    ],
+    "additionalDirectories": [
+      "/Users/devrashie/Documents/csProjects/arkanemystic.github.io"
+    ]
+  }
+}
