@@ -1,1221 +1,622 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Devakh Rashie</title>
-    <script>
-        (function() {
-            var saved = localStorage.getItem('theme');
-            var theme;
-            if (saved) {
-                theme = saved;
-            } else {
-                var hour = new Date().getHours();
-                theme = (hour >= 19 || hour < 7) ? 'dark' : 'light'; // 7pm–7am = night
-            }
-            document.documentElement.setAttribute('data-theme', theme);
-        })();
-    </script>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-    <style>
-        /* TOKENS */
-        :root {
-            --g0: #111;
-            --g1: #2a2a2a;
-            --g2: #444;
-            --g3: #686868;
-            --g4: #888;
-            --g5: #a8a8a8;
-            --g6: #c0c0c0;
-            --g7: #d4d4d4;
-            --g8: #e8e8e8;
-            --g9: #f5f5f5;
-            --white: #fff;
-            --surface: #fff; /* panel/card surface — themeable, unlike --white */
-            --border-color: var(--g0); /* decoupled so dark mode can mute borders without dimming text */
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Devakh Rashie</title>
+<meta name="description" content="Devakh Rashie — formal methods, blockchain security, AI safety.">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta property="og:title" content="Devakh Rashie">
+<meta property="og:description" content="Formal methods, blockchain security, AI safety.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://devrashie.space/">
+<style>
+  :root {
+    --bg:    #ffffff;
+    --fg:    #000000;
+    --muted: #666666;
+    --rule:  #e0e0e0;
+    --epicycle-circle: rgba(0, 0, 0, .30);
+  }
 
-            --border:       2px solid var(--border-color);
-            --border-light: 1px solid var(--g5);
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:    #0d0d0d;
+      --fg:    #ededed;
+      --muted: #8c8c8c;
+      --rule:  #262626;
+      --epicycle-circle: rgba(237, 237, 237, .28);
+    }
+  }
 
-            --gap:   14px;
-            --pad:   14px;
-            --rad:   0;          /* keep retro — no border-radius */
+  * { box-sizing: border-box; }
 
-            /* Label column width used across all key-value tables */
-            --lw: 88px;
-        }
+  html { -webkit-text-size-adjust: 100%; }
 
-        /* Dark mode: layered elevation (canvas < window < row/label < card),
-           muted borders to kill halation, and boosted secondary-text contrast. */
-        :root[data-theme="dark"] {
-            --g0: #ededed;   /* primary text */
-            --g1: #d0d0d0;
-            --g2: #ababab;
-            --g3: #b0b0b0;   /* secondary text: dates, labels, subtitles */
-            --g4: #6b6b6b;
-            --g5: #4c4c4c;   /* subtle dividers */
-            --g6: #121212;   /* page / canvas background */
-            --g7: #1c1c1c;
-            --g8: #242424;   /* main window containers — a clear step up from canvas */
-            --g9: #202020;   /* alternating rows / label fills */
-            --surface: #282828; /* inner cards, sub-panels, tables */
-            --border-color: #a0a0a0; /* muted off-white — no glare against near-black */
-        }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-        /* Chrome accents (title bars, solid badges, buttons) always pair with
-           fixed white text, so they stay pinned dark regardless of theme. */
-        :root[data-theme="dark"] .window-title,
-        :root[data-theme="dark"] .modal-title {
-            background: linear-gradient(90deg, #000 0%, #2a2a2a 100%);
-        }
-        :root[data-theme="dark"] .badge-solid { background: #2a2a2a; }
-        :root[data-theme="dark"] .btn-primary { background: #2a2a2a; }
-        :root[data-theme="dark"] .btn-primary:hover { background: #444; }
-        :root[data-theme="dark"] .blog-rendered pre { background: #181818; color: var(--g0); }
+  .page {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 5rem 1.5rem 6rem;
+  }
 
-        /* Profiler chart bars/frame use a dedicated light gray, not raw white */
-        :root[data-theme="dark"] .graph-visual { border-color: #c0c0c0; }
-        :root[data-theme="dark"] .graph-bar { background: #c0c0c0; }
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+    transition: text-decoration-color .12s ease;
+  }
+  a:hover { text-decoration-color: var(--fg); }
+  a:focus-visible { outline: 1px solid var(--fg); outline-offset: 3px; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'VT323', monospace; }
-        html { scroll-behavior: smooth; }
+  /* ---------- masthead ---------- */
 
-        body {
-            background: var(--g6);
-            color: var(--g0);
-            line-height: 1.35;
-            font-size: 17px;
-            transition: background-color .15s ease, color .15s ease;
-        }
+  .masthead {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 2.75rem;
+  }
 
-        /* MENU BAR */
-        .menu-bar {
-            position: sticky; top: 0; z-index: 100;
-            display: flex; justify-content: space-between; align-items: center;
-            background: linear-gradient(180deg, var(--g9) 0%, var(--g8) 100%);
-            border-bottom: var(--border);
-            padding: 5px 16px;
-            font-size: 18px;
-        }
-        .menu-nav { display: flex; }
-        .menu-nav a {
-            color: var(--g0); text-decoration: none;
-            padding: 2px 13px;
-            border-right: var(--border-light);
-            transition: background 0.1s;
-        }
-        .menu-nav a:first-child { border-left: var(--border-light); }
-        .menu-nav a:hover { background: var(--g7); }
-        .menu-nav a.menu-home { display: flex; align-items: center; padding: 3px 15px; }
-        .menu-nav a.menu-home img { display: block; image-rendering: pixelated; border: 1px solid var(--border-color); }
-        #time-display { font-weight: bold; min-width: 44px; text-align: right; }
+  h1 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 1.25rem;
+  }
 
-        .menu-right { display: flex; align-items: center; gap: 12px; }
+  .intro { margin: 0; max-width: 30rem; }
 
-        /* Retro rocker switch — sun/moon toggle */
-        .theme-switch {
-            position: relative;
-            display: flex; align-items: center; justify-content: space-between;
-            width: 54px; height: 22px;
-            padding: 0 4px;
-            border: var(--border-light);
-            background: var(--g9);
-            cursor: pointer;
-            transition: background .1s;
-        }
-        .theme-switch:hover { background: var(--g7); }
-        .theme-icon {
-            position: relative; z-index: 1;
-            font-size: 13px; line-height: 1;
-            color: var(--g3);
-            transition: color .15s ease;
-        }
-        .theme-switch[aria-checked="false"] .theme-icon-sun,
-        .theme-switch[aria-checked="true"]  .theme-icon-moon {
-            color: var(--g0);
-        }
-        .theme-thumb {
-            position: absolute; top: 2px; left: 2px;
-            width: 20px; height: 16px;
-            background: var(--g1);
-            border: 1px solid var(--border-color);
-            transition: transform .15s ease;
-        }
-        .theme-switch[aria-checked="true"] .theme-thumb {
-            transform: translateX(28px);
-        }
+  /* ---------- epicycles ---------- */
 
-        /* PAGE SHELL */
-        .page {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px 16px 72px;
-            display: flex; flex-direction: column; gap: 20px;
-        }
+  #epicycle-canvas {
+    color: currentColor;   /* trace line uses this — inherits site's text color */
+    display: block;
+    width: 164px;
+    height: auto;
+    max-width: 100%;
+    flex-shrink: 0;
+    opacity: .9;
+  }
 
-        /* WINDOW CHROME  (reusable shell)
-           Usage:
-           <section class="window" id="foo">
-           <div class="window-title"><span>Title</span><div class="wt-dots">…</div></div>
-           <div class="window-body [ --cols-N ]">…</div>
-           </section> */
-        .window {
-            border: var(--border);
-            background: var(--g8);
-            box-shadow: 4px 4px 0 rgba(0,0,0,.22);
-        }
-        .window-title {
-            background: linear-gradient(90deg, var(--g0) 0%, var(--g2) 100%);
-            color: var(--white);
-            padding: 5px 12px;
-            font-size: 18px; letter-spacing: .06em;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .wt-dots { display: flex; gap: 5px; }
-        .wt-dot {
-            width: 10px; height: 10px;
-            border: 1px solid var(--g4); display: inline-block;
-        }
-        .wt-dot:nth-child(1) { background: var(--g5); }
-        .wt-dot:nth-child(2) { background: var(--g3); }
-        .wt-dot:nth-child(3) { background: var(--g1); }
+  /* ---------- sections ---------- */
 
-        /* Window body grid helpers — add class to .window-body */
-        .window-body          { padding: var(--pad); }
-        .window-body.cols-2   { display: grid; grid-template-columns: 1fr 1fr;         gap: var(--gap); }
-        .window-body.profiler { display: grid; grid-template-columns: 1fr 190px;   gap: var(--gap); padding: 10px; }
+  section { margin-top: 2.75rem; }
 
-        /* PANEL  (white card inside a window)
-           Usage:
-           <div class="panel">
-           <div class="panel-title">Label</div>
-           …content…
-           </div> */
-        .panel {
-            background: var(--surface);
-            border: var(--border);
-        }
-        .panel-title {
-            background: var(--g9);
-            border-bottom: var(--border-light);
-            padding: 4px 10px;
-            font-size: 16px; font-weight: bold; letter-spacing: .04em;
-            color: var(--g1);
-        }
-        .panel-body { padding: 10px; }
+  h2 {
+    font-size: .95rem;
+    font-weight: 600;
+    margin: 0 0 .85rem;
+  }
 
-        /* KV TABLE  (key-value rows)
-           Usage:
-           <dl class="kv">
-           <div class="kv-row">
-           <dt>Label</dt><dd>Value</dd>
-           </div>
-           </dl> */
-        .kv { display: flex; flex-direction: column; gap: 0; }
+  ol {
+    list-style: none;
+    counter-reset: item;
+    padding: 0;
+    margin: 0;
+  }
 
-        .kv-row {
-            display: grid;
-            grid-template-columns: var(--lw) 1fr;
-            gap: 0 8px;
-            padding: 4px 10px;
-            font-size: 16px;
-        }
-        .kv-row:nth-child(even) { background: var(--g9); }
+  ol li {
+    counter-increment: item;
+    display: flex;
+    gap: .85rem;
+    margin-bottom: .5rem;
+  }
+  ol li:last-child { margin-bottom: 0; }
 
-        .kv-row dt { color: var(--g3); font-weight: bold; white-space: nowrap; }
-        .kv-row dd { color: var(--g0); }
+  ol li::before {
+    content: counter(item, decimal-leading-zero) ".";
+    color: var(--muted);
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
 
-        /* Stacked kv for narrow profiler panels */
-        .window-body.profiler .panel .kv-row {
-            grid-template-columns: 1fr;
-            gap: 0;
-            padding: 2px 10px 1px;
-        }
-        .window-body.profiler .panel .kv-row dt {
-            font-size: 11px;
-        }
-        .window-body.profiler .panel .kv-row dd {
-            font-size: 15px;
-            padding-bottom: 1px;
-        }
+  .item-body { margin: 0; }
 
-        /* PROFILER GRAPHS */
-        .graph-stack { display: flex; flex-direction: column; gap: 10px; }
+  .dash { color: var(--muted); }
 
-        .graph-block {
-            border: var(--border);
-            padding: 8px 10px;
-            background: var(--g9);
-        }
-        .graph-title {
-            text-align: center; font-size: 14px; font-weight: bold;
-            color: var(--g2); margin-bottom: 5px;
-        }
-        .graph-visual {
-            height: 72px; border: var(--border);
-            background: var(--surface);
-            display: flex; gap: 2px; padding: 2px; overflow: hidden;
-        }
-        .graph-bar {
-            flex: 1; background: var(--g1);
-            align-self: flex-end; min-width: 4px;
-            transition: height .4s ease;
-        }
+  /* ---------- writing ---------- */
 
-        /* EXPERIENCE ITEMS
-           Usage:
-           <article class="exp-item">
-           <header class="exp-header">
-           <span class="exp-org">Company</span>
-           <span class="exp-date">Date</span>
-           </header>
-           <div class="exp-role">Role title</div>
-           <p class="exp-desc">Description</p>
-           </article> */
-        .exp-list { display: flex; flex-direction: column; gap: var(--gap); }
+  .post-link {
+    appearance: none;
+    background: none;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+    transition: text-decoration-color .12s ease;
+  }
+  .post-link:hover { text-decoration-color: var(--fg); }
+  .post-link:focus-visible { outline: 1px solid var(--fg); outline-offset: 3px; }
 
-        .exp-item {
-            border: var(--border);
-            background: var(--surface);
-        }
-        .exp-item:nth-child(even) { background: var(--g9); }
+  .post-date { color: var(--muted); }
 
-        .exp-header {
-            display: flex; justify-content: space-between; align-items: baseline;
-            padding: 6px 12px;
-            background: var(--g8);
-            border-bottom: var(--border-light);
-            gap: 8px;
-        }
-        .exp-org  { font-size: 18px; font-weight: bold; color: var(--g0); }
-        .exp-date { font-size: 14px; color: var(--g3); white-space: nowrap; }
-        .exp-role { padding: 4px 12px; font-size: 15px; color: var(--g2); border-bottom: var(--border-light); }
-        .exp-desc { padding: 8px 12px; font-size: 15px; line-height: 1.4; color: var(--g1); }
+  .post-excerpt {
+    margin: .15rem 0 0;
+    color: var(--muted);
+  }
 
-        /* PROJECT CARDS
-           Usage:
-           <article class="project-card">
-           <header class="pc-header">
-           <span class="pc-name">Name</span>
-           <div class="pc-badges">…badges…</div>
-           </header>
-           <p class="pc-desc">Description</p>
-           <footer class="pc-tech">…badges…</footer>
-           </article> */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--gap);
-        }
+  /* rendered post body */
 
-        .project-card {
-            border: var(--border);
-            background: var(--surface);
-            display: flex; flex-direction: column;
-        }
-        .project-card:nth-child(2n) { background: var(--g9); }
+  .post-back { margin: 0 0 1.5rem; }
 
-        .pc-header {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            gap: 8px;
-            padding: 8px 10px;
-            border-bottom: var(--border-light);
-            background: var(--g8);
-        }
-        .pc-name  { font-size: 18px; font-weight: bold; line-height: 1.2; }
-        .pc-badges { display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; flex-shrink: 0; }
+  .post-body h1 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 .35rem;
+  }
+  /* the section heading already shows the title */
+  .post-body > h1:first-child { display: none; }
+  .post-body h2 {
+    font-size: .95rem;
+    margin: 1.75rem 0 .5rem;
+  }
+  .post-body h3 { font-size: .9rem; font-weight: 600; margin: 1.25rem 0 .4rem; }
+  .post-body p { margin: 0 0 .9rem; }
+  .post-body ul, .post-body ol {
+    list-style: revert;
+    counter-reset: none;
+    padding-left: 1.25rem;
+    margin: 0 0 .9rem;
+  }
+  .post-body li {
+    display: list-item;
+    counter-increment: none;
+    margin-bottom: .25rem;
+  }
+  .post-body li::before { content: none; }
+  .post-body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .875em;
+    background: var(--rule);
+    padding: .1em .35em;
+    border-radius: 2px;
+  }
+  .post-body pre {
+    background: var(--rule);
+    padding: .85rem 1rem;
+    overflow-x: auto;
+    margin: 0 0 .9rem;
+  }
+  .post-body pre code { background: none; padding: 0; }
+  .post-body blockquote {
+    margin: 0 0 .9rem;
+    padding-left: .9rem;
+    border-left: 1px solid var(--rule);
+    color: var(--muted);
+  }
+  .post-body img { max-width: 100%; height: auto; }
+  .post-body hr { border: 0; border-top: 1px solid var(--rule); margin: 1.75rem 0; }
 
-        .pc-desc {
-            flex: 1;
-            padding: 8px 10px;
-            font-size: 15px; line-height: 1.4; color: var(--g1);
-        }
+  /* ---------- photos ---------- */
 
-        .pc-tech {
-            padding: 6px 10px;
-            border-top: var(--border-light);
-            background: var(--g9);
-            display: flex; flex-wrap: wrap; gap: 4px;
-        }
-        .pc-tech a {
-            color: var(--g0);
-            text-decoration: underline;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-        }
-        .pc-tech a:hover { color: var(--g2); }
+  #photos { margin-top: 3rem; }
 
-        /* BADGES */
-        .badge {
-            display: inline-block;
-            font-size: 13px; padding: 1px 7px;
-            white-space: nowrap;
-        }
-        .badge-solid   { background: var(--g1); color: var(--white); }
-        .badge-outline { background: var(--g8); color: var(--g1); border: 1px solid var(--g3); }
-        .badge-dim     { background: var(--g7); color: var(--g2); border: 1px solid var(--g5); }
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: .4rem;
+    max-width: 21rem;
+  }
+  .photo-grid a { display: block; line-height: 0; text-decoration: none; }
+  .photo-grid img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    background: var(--rule);
+    filter: grayscale(100%);
+    opacity: .85;
+    transition: opacity .15s ease;
+  }
+  .photo-grid a:hover img { opacity: 1; }
 
-        /* CONTACT */
-        .contact-link {
-            display: grid;
-            grid-template-columns: 80px 1fr;
-            gap: 0 8px;
-            padding: 5px 10px;
-            font-size: 16px;
-            border-bottom: var(--border-light);
-        }
-        .contact-link:last-child { border-bottom: none; }
-        .contact-link dt { font-weight: bold; color: var(--g3); }
-        .contact-link dd a { color: var(--g0); text-decoration: underline; }
+  .more-btn {
+    appearance: none;
+    background: none;
+    border: 0;
+    padding: 0;
+    margin: .9rem 0 0;
+    font: inherit;
+    color: var(--muted);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+    transition: color .12s ease, text-decoration-color .12s ease;
+  }
+  .more-btn:hover { color: var(--fg); text-decoration-color: var(--fg); }
+  .more-btn:focus-visible { outline: 1px solid var(--fg); outline-offset: 3px; }
 
-        form { display: flex; flex-direction: column; gap: 10px; }
+  [hidden] { display: none !important; }
 
-        .form-group { display: flex; flex-direction: column; gap: 3px; }
-        .form-group label { font-size: 15px; font-weight: bold; color: var(--g2); }
+  /* ---------- small screens ---------- */
 
-        form input, form textarea {
-            width: 100%; padding: 5px 8px;
-            border: var(--border); background: var(--g9);
-            font-family: 'VT323', monospace; font-size: 16px;
-        }
-        form textarea { height: 88px; resize: vertical; }
+  @media (max-width: 560px) {
+    .page { padding: 3rem 1.25rem 4rem; }
+    .masthead { flex-direction: column-reverse; align-items: flex-start; gap: 1.5rem; }
+    #epicycle-canvas { width: 132px; }
+    .photo-grid { grid-template-columns: repeat(2, 1fr); max-width: 15rem; }
+  }
 
-        .btn-primary {
-            align-self: flex-start;
-            background: var(--g1); color: var(--white);
-            border: var(--border); padding: 5px 20px;
-            cursor: pointer; font-family: 'VT323', monospace; font-size: 16px;
-            transition: background .1s;
-        }
-        .btn-primary:hover { background: var(--g2); }
-
-        .form-status {
-            display: none; padding: 6px 10px;
-            border: var(--border); background: var(--g9);
-            font-size: 15px;
-        }
-        .form-status.error { border-color: #c00; color: #c00; background: var(--surface); }
-
-        /* FOOTER TASKBAR */
-        .footer-bar {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: linear-gradient(180deg, var(--g7) 0%, var(--g6) 100%);
-            border-top: var(--border);
-            display: flex; align-items: center; gap: 4px;
-            padding: 4px 14px;
-            font-size: 16px;
-        }
-        .footer-btn {
-            display: flex; align-items: center; gap: 5px;
-            padding: 3px 11px;
-            border: 1px solid var(--g4);
-            cursor: pointer; background: var(--g8);
-            text-decoration: none; color: var(--g0);
-            font-family: 'VT323', monospace; font-size: 16px;
-            transition: background .1s;
-        }
-        .footer-btn:hover  { background: var(--g9); }
-        .footer-btn:active { background: var(--g6); box-shadow: inset 1px 1px 0 var(--g5); }
-        .footer-sep { width: 1px; height: 20px; background: var(--g4); margin: 0 3px; }
-
-        /* MODALS */
-        .modal-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,.65); z-index: 1000;
-            justify-content: center; align-items: center;
-        }
-        .modal-overlay.active { display: flex; }
-
-        .modal-box {
-            background: var(--g7); border: var(--border);
-            box-shadow: 5px 5px 0 rgba(0,0,0,.28);
-            max-width: 600px; width: 92%; max-height: 88vh; overflow-y: auto;
-        }
-        .modal-box.wide { max-width: 720px; }
-
-        .modal-title {
-            position: sticky; top: 0;
-            background: linear-gradient(90deg, var(--g0) 0%, var(--g2) 100%);
-            color: var(--white); padding: 5px 12px;
-            display: flex; justify-content: space-between; align-items: center;
-            font-size: 17px;
-        }
-        .modal-close {
-            cursor: pointer; font-size: 18px;
-            background: none; border: none; color: var(--white);
-            font-family: 'VT323', monospace; line-height: 1;
-        }
-        .modal-body { padding: 14px; }
-
-        /* PHOTOS (inside modal) */
-        .photos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 6px;
-        }
-        .photo-item {
-            position: relative; aspect-ratio: 1;
-            border: 2px solid var(--g5); overflow: hidden;
-            cursor: pointer; background: var(--g7);
-        }
-        .photo-item:hover { border-color: var(--border-color); }
-        .photo-item img {
-            width: 100%; height: 100%; object-fit: cover; display: block;
-            transition: opacity .2s;
-        }
-        .photo-item:hover img { opacity: .85; }
-        .photo-date {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            background: rgba(0,0,0,.65); color: var(--white);
-            font-size: 11px; padding: 2px 5px;
-            opacity: 0; transition: opacity .2s;
-        }
-        .photo-item:hover .photo-date { opacity: 1; }
-        .photos-status { text-align: center; padding: 28px; color: var(--g3); font-size: 17px; }
-
-        /* LIGHTBOX */
-        .lightbox {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,.93); z-index: 9000;
-            justify-content: center; align-items: center;
-        }
-        .lightbox.active { display: flex; }
-        .lightbox-inner {
-            position: relative; max-width: 92vw; max-height: 92vh;
-            display: flex; flex-direction: column; align-items: center;
-        }
-        .lightbox-inner img {
-            max-width: 100%; max-height: 80vh;
-            object-fit: contain; border: 2px solid var(--white);
-        }
-        .lightbox-date {
-            color: var(--white); font-size: 14px; margin-top: 8px;
-            border-top: var(--border-light); padding-top: 6px;
-            width: 100%; text-align: center;
-        }
-        .lightbox-close {
-            position: absolute; top: -36px; right: 0;
-            background: none; border: none; color: var(--white);
-            font-size: 28px; cursor: pointer;
-            font-family: 'VT323', monospace; line-height: 1;
-        }
-
-        /* BSOD */
-        #bsod {
-            display: none; position: fixed; inset: 0;
-            background: #00a; color: #fff;
-            font-family: 'VT323', monospace; font-size: 22px;
-            padding: 48px; z-index: 9999; cursor: pointer; overflow: hidden;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 700px) {
-            .window-body.profiler { grid-template-columns: 1fr; }
-            .window-body.cols-2   { grid-template-columns: 1fr; }
-            .projects-grid        { grid-template-columns: 1fr; }
-            .menu-nav a           { padding: 2px 8px; font-size: 15px; }
-            .menu-right           { gap: 8px; }
-        }
-
-        /* BLOG (inside modal) */
-        .blog-list { display: flex; flex-direction: column; gap: var(--gap); }
-
-        .blog-post-item {
-            border: var(--border);
-            background: var(--surface);
-            cursor: pointer;
-            transition: background .1s;
-        }
-        .blog-post-item:nth-child(even) { background: var(--g9); }
-        .blog-post-item:hover { background: var(--g7); }
-
-        .blog-post-header {
-            display: flex; justify-content: space-between; align-items: baseline;
-            padding: 6px 12px;
-            background: var(--g8);
-            border-bottom: var(--border-light);
-            gap: 8px;
-        }
-        .blog-post-title { font-size: 18px; font-weight: bold; color: var(--g0); }
-        .blog-post-date  { font-size: 14px; color: var(--g3); white-space: nowrap; flex-shrink: 0; }
-        .blog-post-excerpt { padding: 8px 12px; font-size: 15px; color: var(--g2); line-height: 1.4; }
-
-        /* Post content view */
-        .blog-content {
-            display: none;
-            font-size: 15px; line-height: 1.6; color: var(--g1);
-        }
-        .blog-content.active { display: block; }
-        .blog-back {
-            display: inline-flex; align-items: center; gap: 4px;
-            margin-bottom: 12px; padding: 3px 10px;
-            border: var(--border); background: var(--g8);
-            cursor: pointer; font-family: 'VT323', monospace; font-size: 16px;
-            transition: background .1s;
-        }
-        .blog-back:hover { background: var(--g7); }
-
-        /* Rendered markdown styles */
-        .blog-rendered h1, .blog-rendered h2, .blog-rendered h3 {
-            margin: 16px 0 8px; color: var(--g0); font-size: 20px;
-            border-bottom: var(--border-light); padding-bottom: 4px;
-        }
-        .blog-rendered h1 { font-size: 24px; }
-        .blog-rendered h2 { font-size: 20px; }
-        .blog-rendered h3 { font-size: 17px; border-bottom: none; }
-        .blog-rendered p  { margin-bottom: 10px; }
-        .blog-rendered ul, .blog-rendered ol { margin: 8px 0 10px 20px; }
-        .blog-rendered li { margin-bottom: 4px; }
-        .blog-rendered code {
-            background: var(--g8); border: 1px solid var(--g5);
-            padding: 1px 5px; font-size: 14px;
-        }
-        .blog-rendered pre {
-            background: var(--g1); color: var(--g9);
-            padding: 12px; margin: 10px 0; overflow-x: auto;
-            border: var(--border);
-        }
-        .blog-rendered pre code { background: none; border: none; color: inherit; }
-        .blog-rendered blockquote {
-            border-left: 3px solid var(--g4);
-            padding: 4px 12px; margin: 10px 0;
-            background: var(--g9); color: var(--g2);
-        }
-        .blog-rendered a { color: var(--g1); }
-        .blog-rendered hr { border: none; border-top: var(--border-light); margin: 14px 0; }
-        .blog-rendered img { max-width: 100%; border: var(--border); }
-        .blog-rendered strong { color: var(--g0); }
-    </style>
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
 </head>
 <body>
+<main class="page">
 
-<!-- MENU BAR -->
-<header class="menu-bar">
-    <nav class="menu-nav">
-        <a href="#about" class="menu-home"><img src="favicon.ico" alt="Home" width="18" height="18"></a>
-        <a href="#bio">About</a>
-        <a href="#experience">Experience</a>
-        <a href="#projects">Projects</a>
-        <a href="#contact">Contact</a>
-    </nav>
-    <div class="menu-right">
-        <button type="button" id="theme-toggle" class="theme-switch" role="switch" aria-checked="false" aria-label="Toggle dark mode">
-            <span class="theme-icon theme-icon-sun" aria-hidden="true">&#9728;</span>
-            <span class="theme-thumb"></span>
-            <span class="theme-icon theme-icon-moon" aria-hidden="true">&#9790;</span>
-        </button>
-        <span id="time-display">00:00</span>
+  <div class="masthead">
+    <div>
+      <h1>Devakh Rashie</h1>
+      <p class="intro">
+        Hey, I'm Dev. Interested in <a href="https://en.wikipedia.org/wiki/Formal_methods">formal
+        methods</a>, blockchain security, and AI safety. How lucky we are to be living in a time like this.
+      </p>
     </div>
-</header>
+    <canvas id="epicycle-canvas" width="480" height="420" aria-hidden="true"></canvas>
+  </div>
 
-<div class="page">
+  <section>
+    <h2>Experience</h2>
+    <ol>
+      <li><p class="item-body">Building <a href="https://bijectai.com">Biject</a> <span class="dash">—</span> conquering ambiguity.</p></li>
+      <li><p class="item-body">Blockchain Researcher at <a href="https://osu.edu">Ohio State</a> <span class="dash">—</span> replay-attack detection, cross-chain transaction validation.</p></li>
+      <li><p class="item-body">Software Engineer at Pennyworks <span class="dash">—</span> built Penny, a crypto accounting assistant, and <a href="https://github.com/arkanemystic/csv2api-router">csv2api-router</a>.</p></li>
+      <li><p class="item-body">Software Engineer at Radus Software <span class="dash">—</span> full-stack intranet, 2FA, security hardening.</p></li>
+    </ol>
+  </section>
 
-<!-- PROFILER -->
-<section class="window" id="about">
-    <div class="window-title">
-        <span>Profiler</span>
-        <div class="wt-dots"><span class="wt-dot"></span><span class="wt-dot"></span><span class="wt-dot"></span></div>
+  <section>
+    <h2>Work</h2>
+    <ol>
+      <li><p class="item-body">lean-agent-protocol <span class="dash">—</span> Lean 4 formal verification kernel for AI agent compliance, replacing probabilistic guardrails with mathematical proof (Python, Lean 4). <a href="https://github.com/arkanemystic/lean-agent-protocol">GitHub</a>.</p></li>
+      <li><p class="item-body">EventLoop <span class="dash">—</span> ride-sharing SaaS for event transportation (Next.js, PostgreSQL). <a href="https://github.com/arkanemystic/event-loop">GitHub</a>.</p></li>
+      <li><p class="item-body">csv2api-router <span class="dash">—</span> NL-to-API pipeline using local LLMs (Python). <a href="https://github.com/arkanemystic/csv2api-router">GitHub</a>.</p></li>
+      <li><p class="item-body">Semiconductor Geopolitics Ops <span class="dash">—</span> NLP/network-graph analysis of media narratives. <a href="https://github.com/arkanemystic/semiconductor-geopolitics-ops">GitHub</a>.</p></li>
+      <li><p class="item-body">Jane Street Puzzle Solutions <span class="dash">—</span> probability/combinatorics puzzles, Monte Carlo, Manim visualizations. <a href="https://github.com/arkanemystic/janestreetpuzzles">GitHub</a>.</p></li>
+    </ol>
+  </section>
+
+  <section id="writing" hidden>
+    <h2 id="writing-heading">Writing</h2>
+    <ol id="post-list"></ol>
+    <div id="post-view" hidden>
+      <p class="post-back"><button type="button" class="post-link" id="post-back">← Back to posts</button></p>
+      <div class="post-body" id="post-body"></div>
     </div>
-    <div class="window-body profiler">
+  </section>
 
-        <!-- Graphs column -->
-        <div class="graph-stack">
-            <div class="graph-block">
-                <div class="graph-title">CPU</div>
-                <div class="graph-visual" id="cpu-graph"></div>
-            </div>
-            <div class="graph-block">
-                <div class="graph-title">Memory</div>
-                <div class="graph-visual" id="memory-graph"></div>
-            </div>
-        </div>
+  <section>
+    <h2>Reading</h2>
+    <ol>
+      <li><p class="item-body">Siddhartha <span class="dash">—</span> Hermann Hesse.</p></li>
+      <li><p class="item-body">A River in Darkness <span class="dash">—</span> Masaji Ishikawa.</p></li>
+      <li><p class="item-body">Into the Wild <span class="dash">—</span> Jon Krakauer.</p></li>
+      <li><p class="item-body">The Stoker <span class="dash">—</span> Franz Kafka.</p></li>
+    </ol>
+  </section>
 
-        <!-- Profile panel -->
-        <div class="panel">
-            <div class="panel-title">Profile</div>
-            <dl class="kv">
-                <div class="kv-row"><dt>Name</dt><dd>Devakh Rashie</dd></div>
-                <div class="kv-row"><dt>Title</dt><dd>Founding @ biject</dd></div>
-                <div class="kv-row"><dt>Experience</dt><dd>4 Years</dd></div>
-                <div class="kv-row"><dt>Status</dt><dd>Available</dd></div>
-            </dl>
-        </div>
+  <section>
+    <h2>Other</h2>
+    <ol>
+      <li><p class="item-body">Based in Virginia. Always down to talk formal methods or math puzzles.</p></li>
+      <li><p class="item-body">Reach me at <a href="mailto:devrashie@gmail.com">devrashie[at]gmail.com</a>, or on <a href="https://github.com/arkanemystic">GitHub</a>, <a href="https://linkedin.com/in/devrashie">LinkedIn</a>, and <a href="https://x.com/devrashie">X</a>.</p></li>
+    </ol>
+  </section>
 
-    </div>
-</section>
+  <section id="photos" hidden>
+    <div class="photo-grid" id="photo-grid"></div>
+    <button type="button" class="more-btn" id="photo-more" hidden></button>
+  </section>
 
-<!-- ABOUT -->
-<section class="window" id="bio">
-    <div class="window-title">
-        <span>About</span>
-        <div class="wt-dots"><span class="wt-dot"></span><span class="wt-dot"></span><span class="wt-dot"></span></div>
-    </div>
-    <div class="window-body cols-2">
-
-        <div class="panel">
-            <div class="panel-title">Background</div>
-            <dl class="kv">
-                <div class="kv-row"><dt>Focus</dt><dd>AI/ML, blockchain security, software dev</dd></div>
-                <div class="kv-row"><dt>Mission</dt><dd>Complex problems in medicine &amp; fintech</dd></div>
-                <div class="kv-row"><dt>Interests</dt><dd>A Capella, reading, fitness</dd></div>
-                <div class="kv-row"><dt>Languages</dt><dd>English, Malayalam</dd></div>
-            </dl>
-        </div>
-
-        <div class="panel">
-            <div class="panel-title">Education</div>
-            <dl class="kv">
-                <div class="kv-row"><dt>Degree</dt><dd>BS Computer Science &amp; Applied Math</dd></div>
-                <div class="kv-row"><dt>University</dt><dd>The Ohio State University</dd></div>
-                <div class="kv-row"><dt>Graduation</dt><dd>2027</dd></div>
-                <div class="kv-row"><dt>Coursework</dt><dd>Vector Analysis, Probability, Combinatorics</dd></div>
-            </dl>
-        </div>
-
-    </div>
-</section>
-
-<!-- EXPERIENCE -->
-<section class="window" id="experience">
-    <div class="window-title">
-        <span>Experience</span>
-        <div class="wt-dots"><span class="wt-dot"></span><span class="wt-dot"></span><span class="wt-dot"></span></div>
-    </div>
-    <div class="window-body">
-        <div class="exp-list">
-
-            <article class="exp-item">
-                <header class="exp-header">
-                    <span class="exp-org">Pennyworks</span>
-                    <span class="exp-date">Jun 2025 — Sep 2025</span>
-                </header>
-                <div class="exp-role">Full-Stack Engineering Intern</div>
-                <p class="exp-desc">Developed <strong>Penny</strong>, a crypto accounting assistant with conversational interface and local LLM support; built a Python CLI tool (<strong>csv2api-router</strong>) for multi-chain CSV processing and automated API generation.</p>
-            </article>
-
-            <article class="exp-item">
-                <header class="exp-header">
-                    <span class="exp-org">The Ohio State University</span>
-                    <span class="exp-date">Sep 2024 — Present</span>
-                </header>
-                <div class="exp-role">Blockchain Research Assistant</div>
-                <p class="exp-desc">Built replay-attack detection systems for blockchains and developed secure cross-chain transaction validation DApps.</p>
-            </article>
-
-            <article class="exp-item">
-                <header class="exp-header">
-                    <span class="exp-org">Radus Software</span>
-                    <span class="exp-date">Jun 2022 — Sep 2022</span>
-                </header>
-                <div class="exp-role">Software Engineering Intern</div>
-                <p class="exp-desc">Built a full-stack intranet using Node.js and AWS, implemented two-factor authentication, and improved frontend and backend security.</p>
-            </article>
-
-        </div>
-    </div>
-</section>
-
-<!-- PROJECTS -->
-<section class="window" id="projects">
-    <div class="window-title">
-        <span>Projects</span>
-        <div class="wt-dots"><span class="wt-dot"></span><span class="wt-dot"></span><span class="wt-dot"></span></div>
-    </div>
-    <div class="window-body">
-        <div class="projects-grid">
-
-            <article class="project-card">
-                <header class="pc-header">
-                    <span class="pc-name">Axiom Protocol</span>
-                </header>
-                <p class="pc-desc">Formalized AI guardrails for financial agents that replace probabilistic filters with Lean 4 mathematical proofs, ensuring only provably compliant actions execute.</p>
-                <footer class="pc-tech">
-                    <span class="badge badge-solid">TypeScript</span>
-                    <span class="badge badge-solid">Lean 4</span>
-                    <a href="https://axiom.devrashie.space" target="_blank">Demo</a>
-                    <a href="https://arxiv.org/abs/2604.01483" target="_blank">Paper</a>
-                    <a href="https://github.com/arkanemystic/lean-agent-protocol" target="_blank">GitHub</a>
-                </footer>
-            </article>
-
-            <article class="project-card">
-                <header class="pc-header">
-                    <span class="pc-name">EventLoop</span>
-                </header>
-                <p class="pc-desc">Full-stack ride-sharing SaaS for event transportation with smart driver dispatch and real-time tracking.</p>
-                <footer class="pc-tech">
-                    <span class="badge badge-solid">Next.js</span>
-                    <span class="badge badge-solid">PostgreSQL</span>
-                    <a href="https://github.com/arkanemystic/event-loop" target="_blank">GitHub</a>
-                </footer>
-            </article>
-
-            <article class="project-card">
-                <header class="pc-header">
-                    <span class="pc-name">csv2api-router</span>
-                </header>
-                <p class="pc-desc">Modular Python pipeline using heuristics and local LLMs to parse CSVs and unstructured text, understand natural language instructions, and generate targeted API calls dynamically.</p>
-                <footer class="pc-tech">
-                    <span class="badge badge-solid">Python</span>
-                    <span class="badge badge-solid">LLM</span>
-                    <a href="https://github.com/arkanemystic/csv2api-router" target="_blank">GitHub</a>
-                </footer>
-            </article>
-
-            <article class="project-card">
-                <header class="pc-header">
-                    <span class="pc-name">Crypto Accountant Core</span>
-                </header>
-                <p class="pc-desc">Modular Streamlit chatbot for crypto accounting that ingests CSVs, uses a local LLM to extract insights, and dynamically routes to csv2api subprocesses with persona control and vector storage.</p>
-                <footer class="pc-tech">
-                    <span class="badge badge-solid">Streamlit</span>
-                    <span class="badge badge-solid">LLM</span>
-                    <a href="https://github.com/arkanemystic/Crypto-Accountant-Core" target="_blank">GitHub</a>
-                </footer>
-            </article>
-
-            <article class="project-card">
-                <header class="pc-header">
-                    <span class="pc-name">Semiconductor Geopolitics Ops</span>
-                </header>
-                <p class="pc-desc">Data science project analyzing semiconductor geopolitics using NLP, sentiment analysis, and network graphs to map evolving media narratives.</p>
-                <footer class="pc-tech">
-                    <span class="badge badge-solid">Python</span>
-                    <span class="badge badge-solid">NLP</span>
-                    <a href="https://github.com/arkanemystic/semiconductor-geopolitics-ops" target="_blank">GitHub</a>
-                </footer>
-            </article>
-
-            <article class="project-card">
-                <header class="pc-header">
-                    <span class="pc-name">Jane Street Puzzle Solutions</span>
-                </header>
-                <p class="pc-desc">Algorithmic solutions for probability and combinatorics puzzles with visualizations.</p>
-                <footer class="pc-tech">
-                    <span class="badge badge-solid">Python</span>
-                    <span class="badge badge-solid">Monte Carlo</span>
-                    <span class="badge badge-solid">Manim</span>
-                    <a href="https://github.com/arkanemystic/janestreetpuzzles" target="_blank">GitHub</a>
-                </footer>
-            </article>
-
-        </div>
-    </div>
-</section>
-
-<!-- CONTACT -->
-<section class="window" id="contact">
-    <div class="window-title">
-        <span>Contact</span>
-        <div class="wt-dots"><span class="wt-dot"></span><span class="wt-dot"></span><span class="wt-dot"></span></div>
-    </div>
-    <div class="window-body cols-2">
-
-        <div class="panel">
-            <div class="panel-title">Get In Touch</div>
-            <dl>
-                <div class="contact-link"><dt>Email</dt><dd><a href="mailto:devrashie@gmail.com">devrashie@gmail.com</a></dd></div>
-                <div class="contact-link"><dt>LinkedIn</dt><dd><a href="https://linkedin.com/in/devrashie" target="_blank">linkedin.com/in/devrashie</a></dd></div>
-                <div class="contact-link"><dt>GitHub</dt><dd><a href="https://github.com/arkanemystic" target="_blank">arkanemystic</a></dd></div>
-                <div class="contact-link"><dt>X</dt><dd><a href="https://x.com/devrashie" target="_blank">@devrashie</a></dd></div>
-            </dl>
-        </div>
-
-        <form id="contactForm" action="https://formspree.io/f/mrbpyqvp" method="POST">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="subject">Subject</label>
-                <input type="text" id="subject" name="subject">
-            </div>
-            <div class="form-group">
-                <label for="message">Message</label>
-                <textarea id="message" name="message" required></textarea>
-            </div>
-            <button type="submit" class="btn-primary" id="submitBtn">Send Message</button>
-            <div class="form-status" id="formStatus"></div>
-        </form>
-
-    </div>
-</section>
-
-</div><!-- /.page -->
-
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox">
-    <div class="lightbox-inner">
-        <button class="lightbox-close" id="lightbox-close">✕</button>
-        <img id="lightbox-img" src="" alt="Photo">
-        <div class="lightbox-date" id="lightbox-date"></div>
-    </div>
-</div>
-
-<!-- FOOTER TASKBAR -->
-<footer class="footer-bar">
-    <button class="footer-btn" id="books-btn">Books</button>
-    <div class="footer-sep"></div>
-    <button class="footer-btn" id="blog-btn">Blog</button>
-    <div class="footer-sep"></div>
-    <button class="footer-btn" id="photos-btn">Photos</button>
-    <div class="footer-sep"></div>
-    <button class="footer-btn" id="printer-btn">Printer</button>
-    <div class="footer-sep"></div>
-    <button class="footer-btn" id="trash-btn">Trash</button>
-</footer>
-
-<!-- MODALS -->
-
-<!-- Books -->
-<div class="modal-overlay" id="books-modal">
-    <div class="modal-box">
-        <div class="modal-title">
-            <span>READING_LIST.TXT</span>
-            <button class="modal-close" data-close="books-modal">✕</button>
-        </div>
-        <div class="modal-body">
-            <div class="exp-list">
-                <article class="exp-item">
-                    <header class="exp-header"><span class="exp-org">Siddhartha</span></header>
-                    <div class="exp-role">Hermann Hesse</div>
-                </article>
-                <article class="exp-item">
-                    <header class="exp-header"><span class="exp-org">A River in Darkness</span></header>
-                    <div class="exp-role">Masaji Ishikawa</div>
-                </article>
-                <article class="exp-item">
-                    <header class="exp-header"><span class="exp-org">Into the Wild</span></header>
-                    <div class="exp-role">Jon Krakauer</div>
-                </article>
-                <article class="exp-item">
-                    <header class="exp-header"><span class="exp-org">The Stoker</span></header>
-                    <div class="exp-role">Franz Kafka</div>
-                </article>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Blog -->
-<div class="modal-overlay" id="blog-modal">
-    <div class="modal-box wide">
-        <div class="modal-title">
-            <span id="blog-modal-title">BLOG.TXT</span>
-            <button class="modal-close" data-close="blog-modal">✕</button>
-        </div>
-        <div class="modal-body">
-            <!-- List view -->
-            <div id="blog-list-view">
-                <div id="blog-status" class="photos-status">Loading posts...</div>
-                <div class="blog-list" id="blog-list"></div>
-            </div>
-            <!-- Post view -->
-            <div class="blog-content" id="blog-post-view">
-                <button class="blog-back" id="blog-back">← Back to posts</button>
-                <div class="blog-rendered" id="blog-rendered"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Photos -->
-<div class="modal-overlay" id="photos-modal">
-    <div class="modal-box wide">
-        <div class="modal-title">
-            <span>PHOTOS</span>
-            <button class="modal-close" data-close="photos-modal">✕</button>
-        </div>
-        <div class="modal-body">
-            <div id="photos-status" class="photos-status">Loading photos...</div>
-            <div class="photos-grid" id="photos-grid"></div>
-        </div>
-    </div>
-</div>
-
-<!-- Printer -->
-<div class="modal-overlay" id="printer-modal">
-    <div class="modal-box" style="max-width:380px">
-        <div class="modal-title">
-            <span>PRINTING...</span>
-            <button class="modal-close" data-close="printer-modal">✕</button>
-        </div>
-        <div class="modal-body" style="text-align:center">
-            <div style="margin-bottom:12px;font-size:20px">PRINTING...</div>
-            <div style="border:var(--border);height:18px;overflow:hidden;margin-bottom:12px;background:var(--g9)">
-                <div id="print-progress" style="height:100%;width:0%;background:var(--g1);transition:width .15s linear"></div>
-            </div>
-            <div id="print-message" style="font-style:italic;font-size:15px;color:var(--g2)">Initializing printer...</div>
-        </div>
-    </div>
-</div>
-
-<!-- Trash -->
-<div class="modal-overlay" id="trash-modal">
-    <div class="modal-box" style="max-width:340px">
-        <div class="modal-title">
-            <span>Confirm Delete</span>
-            <button class="modal-close" data-close="trash-modal">✕</button>
-        </div>
-        <div class="modal-body" style="text-align:center">
-            <p style="font-size:20px;margin-bottom:20px">Delete System32?</p>
-            <div style="display:flex;justify-content:center;gap:20px">
-                <button id="yes-delete" class="btn-primary">Yes</button>
-                <button id="no-delete" style="background:var(--g7);border:var(--border);padding:5px 24px;cursor:pointer;font-family:'VT323',monospace;font-size:16px">No</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- BSOD -->
-<div id="bsod">
-    <div style="margin-bottom:20px">WINDOWS</div>
-    <div>A fatal exception 0E has occurred at 0028:C0011E36.</div>
-    <div id="bsod-text" style="margin-top:20px;white-space:pre-wrap"></div>
-    <div style="position:absolute;bottom:48px">Press any key to continue_</div>
-</div>
+</main>
 
 <script>
-/* ── THEME ── */
-const themeToggle = document.getElementById('theme-toggle');
-function setTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-    themeToggle.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
-}
-themeToggle.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme') || 'light';
-    setTheme(current === 'dark' ? 'light' : 'dark');
-});
-setTheme(document.documentElement.getAttribute('data-theme') || 'light');
+(function () {
+  const SILHOUETTE_POINTS_RAW = [
+    [350,13],[336,10],[334,16],[349,37],[356,54],[358,70],[356,92],[345,117],[336,125],[326,128],
+    [309,125],[221,128],[205,126],[185,118],[162,101],[120,36],[100,24],[76,23],[61,26],[50,31],
+    [42,43],[9,50],[10,73],[14,82],[33,94],[53,93],[55,96],[52,113],[55,122],[64,129],
+    [81,131],[95,172],[93,186],[97,191],[95,194],[99,196],[112,224],[110,230],[121,235],[129,245],
+    [134,315],[130,322],[124,322],[118,335],[125,340],[123,348],[132,351],[153,351],[161,344],[163,322],
+    [169,318],[173,250],[203,246],[272,228],[279,231],[277,240],[280,243],[301,240],[311,252],[329,261],
+    [343,279],[349,295],[349,316],[338,320],[332,333],[340,337],[361,336],[367,330],[369,290],[378,304],
+    [379,330],[367,336],[362,348],[369,351],[392,350],[398,344],[400,270],[373,241],[370,215],[378,191],
+    [377,163],[369,157],[360,143],[360,137],[377,101],[380,68],[371,39],[350,13]
+  ];
 
-/* ── TIME ── */
-function updateTime() {
-    const n = new Date();
-    document.getElementById('time-display').textContent =
-        String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
-}
-updateTime(); setInterval(updateTime, 30000);
+  function pointsToPathD(points) {
+    return "M " + points.map(p => p.join(",")).join(" L ") + " Z";
+  }
 
-/* ── GRAPHS ── */
-const GRAPH_IDS = ['cpu-graph','memory-graph'];
-const BAR_TARGET_WIDTH = 5; // px, gap not included
-const BAR_GAP = 2;
+  function samplePath(pathData, numPoints) {
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    const path = document.createElementNS(svgNS, "path");
+    path.setAttribute("d", pathData);
+    svg.appendChild(path);
+    svg.style.position = "absolute";
+    svg.style.opacity = "0";
+    svg.style.pointerEvents = "none";
+    document.body.appendChild(svg);
+    const total = path.getTotalLength();
+    const pts = [];
+    for (let i = 0; i < numPoints; i++) {
+      const p = path.getPointAtLength((i / numPoints) * total);
+      pts.push({ x: p.x, y: p.y });
+    }
+    document.body.removeChild(svg);
+    return pts;
+  }
 
-function populateGraphs() {
-    GRAPH_IDS.forEach(id => {
-        const el = document.getElementById(id);
-        const usable = el.clientWidth - 4; // minus el's own padding
-        const count = Math.max(10, Math.floor((usable + BAR_GAP) / (BAR_TARGET_WIDTH + BAR_GAP)));
-        el.innerHTML = '';
-        for (let i = 0; i < count; i++) {
-            const bar = document.createElement('div');
-            bar.className = 'graph-bar';
-            el.appendChild(bar);
-        }
-    });
-}
+  function DFT(points) {
+    const N = points.length;
+    const X = [];
+    for (let k = 0; k < N; k++) {
+      let re = 0, im = 0;
+      for (let n = 0; n < N; n++) {
+        const phi = (2 * Math.PI * k * n) / N;
+        re += points[n].x * Math.cos(phi) + points[n].y * Math.sin(phi);
+        im += -points[n].x * Math.sin(phi) + points[n].y * Math.cos(phi);
+      }
+      re /= N; im /= N;
+      const freq = k <= N / 2 ? k : k - N;
+      X.push({ re, im, freq, amp: Math.hypot(re, im), phase: Math.atan2(im, re) });
+    }
+    X.sort((a, b) => b.amp - a.amp);
+    return X;
+  }
 
-function updateGraphs() {
-    GRAPH_IDS.forEach(id =>
-        document.querySelectorAll('#'+id+' .graph-bar').forEach(b =>
-            b.style.height = (Math.random()*75+20)+'%'));
-}
+  const RAW_N = 180;
+  let rawPoints = samplePath(pointsToPathD(SILHOUETTE_POINTS_RAW), RAW_N);
+  const xs = rawPoints.map(p => p.x), ys = rawPoints.map(p => p.y);
+  const minX = Math.min(...xs), maxX = Math.max(...xs);
+  const minY = Math.min(...ys), maxY = Math.max(...ys);
+  const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+  const scale = 220 / Math.max(maxX - minX, maxY - minY);
+  rawPoints = rawPoints.map(p => ({ x: (p.x - cx) * scale, y: (p.y - cy) * scale }));
 
-let resizeTimer;
-window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => { populateGraphs(); updateGraphs(); }, 200);
-});
+  const fourier = DFT(rawPoints);
+  const N = fourier.length;
+  const TERMS = Math.min(60, N);       // fewer terms = cleaner at small display sizes
+  const CYCLE_SECONDS = 28;            // full trace duration — slow and steady
+  const HOLD_SECONDS = 2.5;            // pause on the completed shape before looping
 
-populateGraphs();
-updateGraphs(); setInterval(updateGraphs, 2200);
+  const canvas = document.getElementById("epicycle-canvas");
+  const ctx = canvas.getContext("2d");
+  const originX = canvas.width / 2;
+  const originY = canvas.height / 2;
 
-/* ── MODALS ── */
-const openModal  = id => document.getElementById(id).classList.add('active');
-const closeModal = id => document.getElementById(id).classList.remove('active');
+  // Canvas 2D cannot parse "currentColor" or "var(--epicycle-circle)" as a
+  // strokeStyle, so resolve both CSS values to concrete colors here and refresh
+  // them whenever the theme flips.
+  let traceColor = "#000";
+  let circleColor = "rgba(128,128,128,0.35)";
+  function readThemeColors() {
+    const s = getComputedStyle(canvas);
+    traceColor = s.color;
+    const c = s.getPropertyValue("--epicycle-circle").trim();
+    if (c) circleColor = c;
+  }
+  readThemeColors();
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", readThemeColors);
 
-document.querySelectorAll('[data-close]').forEach(b =>
-    b.addEventListener('click', () => closeModal(b.dataset.close)));
-document.querySelectorAll('.modal-overlay').forEach(o =>
-    o.addEventListener('click', e => { if(e.target===o) o.classList.remove('active'); }));
+  // CSS scales the 480px buffer down to ~164px, so a lineWidth of 1 lands at a
+  // third of a pixel. Express stroke widths in displayed pixels instead.
+  let downscale = 1;
+  function measureDownscale() {
+    const shown = canvas.getBoundingClientRect().width;
+    downscale = shown > 0 ? canvas.width / shown : 1;
+  }
+  measureDownscale();
+  window.addEventListener("resize", measureDownscale);
 
-document.getElementById('books-btn').addEventListener('click', () => openModal('books-modal'));
+  let time = 0;
+  let path = [];
+  let phase = "drawing"; // "drawing" | "holding"
+  let holdElapsed = 0;
+  let lastTs = null;
 
-/* ── PHOTOS ── */
-let photosLoaded = false;
-document.getElementById('photos-btn').addEventListener('click', () => {
-    openModal('photos-modal');
-    if (photosLoaded) return;
-    photosLoaded = true;
-    (async () => {
-        const grid   = document.getElementById('photos-grid');
-        const status = document.getElementById('photos-status');
-        try {
-            const res   = await fetch('./photos-data.json');
-            if (!res.ok) throw new Error('photos-data.json not found');
-            const data  = await res.json();
-            const items = (data.resources||[]).sort((a,b)=>new Date(b.photo_date)-new Date(a.photo_date));
-            if (!items.length) { status.textContent='No photos found.'; return; }
-            status.style.display = 'none';
-            items.forEach(p => {
-                const d = new Date(p.photo_date).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
-                const el = document.createElement('div');
-                el.className = 'photo-item';
-                el.innerHTML = `<img src="${p.secure_url}" alt="Photo" loading="lazy"><div class="photo-date">${d}</div>`;
-                el.addEventListener('click', () => openLightbox(p.secure_url, d));
-                grid.appendChild(el);
-            });
-        } catch(e) { status.textContent = 'Could not load photos. ('+e.message+')'; }
-    })();
-});
+  function epicycles(x, y, slice) {
+    for (const f of slice) {
+      const px = x, py = y;
+      x += f.amp * Math.cos(f.freq * time + f.phase);
+      y += f.amp * Math.sin(f.freq * time + f.phase);
+      ctx.beginPath();
+      ctx.strokeStyle = circleColor;
+      ctx.lineWidth = 1 * downscale;
+      ctx.arc(px, py, f.amp, 0, 2 * Math.PI);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    }
+    return { x, y };
+  }
 
-/* ── BLOG ── */
-let blogPosts = null;
-document.getElementById('blog-btn').addEventListener('click', () => {
-    openModal('blog-modal');
-    if (blogPosts !== null) return;
-    (async () => {
-        const listEl  = document.getElementById('blog-list');
-        const status  = document.getElementById('blog-status');
-        try {
-            const res  = await fetch('./blog-index.json');
-            if (!res.ok) throw new Error('blog-index.json not found');
-            const data = await res.json();
-            blogPosts  = data.posts || [];
-            if (!blogPosts.length) { status.textContent = 'No posts yet.'; return; }
-            status.style.display = 'none';
-            blogPosts.forEach((post, i) => {
-                const el = document.createElement('div');
-                el.className = 'blog-post-item';
-                el.innerHTML = `
-                    <div class="blog-post-header">
-                        <span class="blog-post-title">${post.title}</span>
-                        <span class="blog-post-date">${post.dateFormatted || post.date || ''}</span>
-                    </div>
-                    <div class="blog-post-excerpt">${post.excerpt || ''}</div>`;
-                el.addEventListener('click', () => openBlogPost(i));
-                listEl.appendChild(el);
-            });
-        } catch(e) { status.textContent = 'Could not load posts. (' + e.message + ')'; }
-    })();
-});
+  function frame(ts) {
+    if (lastTs === null) lastTs = ts;
+    const deltaSec = (ts - lastTs) / 1000;
+    lastTs = ts;
 
-function openBlogPost(i) {
-    const post = blogPosts[i];
-    document.getElementById('blog-modal-title').textContent = post.title;
-    document.getElementById('blog-rendered').innerHTML = post.html || '';
-    document.getElementById('blog-list-view').style.display  = 'none';
-    document.getElementById('blog-post-view').classList.add('active');
-    document.querySelector('#blog-modal .modal-box').scrollTop = 0;
-}
-
-document.getElementById('blog-back').addEventListener('click', () => {
-    document.getElementById('blog-modal-title').textContent = 'BLOG.TXT';
-    document.getElementById('blog-list-view').style.display  = '';
-    document.getElementById('blog-post-view').classList.remove('active');
-});
-
-/* ── PRINTER ── */
-const printMsgs = [
-    'Initializing printer...','Loading paper...','Detecting ink levels...',
-    'Ink not found! Have you checked behind the refrigerator?',
-    'Converting caffeine to code...','ERROR: PC LOAD LETTER. What does that even mean?!',
-    'Have you tried turning it off and on again?',
-    'Printer jam... Applying butter...','Downloading more RAM...',
-    'Printer out of ink. Attempting to use tears instead...',
-    'Successfully printed to the wrong printer!','Print failed successfully!'
-];
-document.getElementById('printer-btn').addEventListener('click', () => {
-    openModal('printer-modal');
-    const bar = document.getElementById('print-progress');
-    const msg = document.getElementById('print-message');
-    bar.style.width='0%'; msg.textContent=printMsgs[0];
-    let pct=0, mi=0;
-    const iv = setInterval(()=>{
-        pct+=5; bar.style.width=pct+'%';
-        if(pct%20===0){ mi=(mi+1)%printMsgs.length; msg.textContent=printMsgs[mi]; }
-        if(pct>=100){ clearInterval(iv); setTimeout(()=>closeModal('printer-modal'),1800); }
-    },150);
-});
-
-/* ── TRASH / BSOD ── */
-document.getElementById('trash-btn').addEventListener('click', ()=>openModal('trash-modal'));
-document.getElementById('no-delete').addEventListener('click', ()=>closeModal('trash-modal'));
-document.getElementById('yes-delete').addEventListener('click', ()=>{
-    closeModal('trash-modal');
-    const bsod = document.getElementById('bsod');
-    const tel  = document.getElementById('bsod-text');
-    bsod.style.display='block'; tel.textContent='';
-    const lines = [
-        'The current application will be terminated.','',
-        '* Deleting System32...','* Deleting important files...',
-        '* Corrupting hard drive...','* Downloading more RAM...',
-        '* Contacting Russian hackers...','* Selling your data to advertisers...',
-        '* Subscribing you to cat facts...',
-        '* Just kidding! Your portfolio is safe.','','Click anywhere to return.'
-    ];
-    let li=0, ci=0;
-    function type(){ if(li>=lines.length)return; if(ci<lines[li].length){tel.textContent+=lines[li][ci++];setTimeout(type,40);}else{tel.textContent+='\n';li++;ci=0;setTimeout(type,400);} }
-    type();
-    bsod.addEventListener('click',()=>{bsod.style.display='none';},{once:true});
-});
-
-/* ── LIGHTBOX ── */
-function openLightbox(src, date) {
-    document.getElementById('lightbox-img').src = src;
-    document.getElementById('lightbox-date').textContent = date;
-    document.getElementById('lightbox').classList.add('active');
-}
-function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
-document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
-document.getElementById('lightbox').addEventListener('click', e=>{ if(e.target===document.getElementById('lightbox')) closeLightbox(); });
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeLightbox(); });
-
-/* ── CONTACT FORM ── */
-document.getElementById('contactForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    const btn = document.getElementById('submitBtn');
-    const st  = document.getElementById('formStatus');
-    btn.disabled=true; btn.textContent='Sending...';
-    fetch(this.action,{method:'POST',body:new FormData(this),headers:{'Accept':'application/json'}})
-        .then(r=>{ if(r.ok){ st.className='form-status'; st.style.display='block'; st.textContent='Message sent successfully!'; this.reset(); } else throw new Error(); })
-        .catch(()=>{ st.className='form-status error'; st.style.display='block'; st.textContent='Error sending. Please try again.'; })
-        .finally(()=>{ btn.disabled=false; btn.textContent='Send Message'; setTimeout(()=>{st.style.display='none';},5000); });
-});
-</script>
-
-<script>
-(function() {
-  const loadGoatCounter = (userState = null) => {
-    if (userState) {
-      window.goatcounter = {
-        path: function(p) {
-          const separator = p.includes('?') ? '&' : '?';
-          return p + separator + 'state=' + encodeURIComponent(userState);
-        }
-      };
+    if (phase === "drawing") {
+      time += (2 * Math.PI / CYCLE_SECONDS) * deltaSec;
+      if (time >= 2 * Math.PI) { time = 2 * Math.PI; phase = "holding"; holdElapsed = 0; }
+    } else {
+      holdElapsed += deltaSec;
+      if (holdElapsed >= HOLD_SECONDS) { phase = "drawing"; time = 0; path = []; }
     }
 
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = '//gc.zgo.at/count.js';
-    script.setAttribute('data-goatcounter', 'https://devrashie.goatcounter.com/count');
-    document.body.appendChild(script);
-  };
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.translate(originX, originY);
 
-  fetch('https://ipapi.co/json/')
-    .then(r => r.json())
-    .then(data => { loadGoatCounter(data.region); })
-    .catch(() => { loadGoatCounter(); });
+    const slice = fourier.slice(0, TERMS);
+    const tip = epicycles(0, 0, slice);
+    if (phase === "drawing") path.push(tip); // no trimming — full shape stays visible as it builds
+
+    ctx.beginPath();
+    ctx.strokeStyle = traceColor;
+    ctx.lineWidth = 1.5 * downscale;
+    path.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
+    ctx.stroke();
+
+    ctx.restore();
+    requestAnimationFrame(frame);
+  }
+
+  requestAnimationFrame(frame);
+})();
+
+(function () {
+  "use strict";
+
+  /* ---------- Photos ---------- */
+
+  var INITIAL_PHOTOS = 6;
+
+  function renderPhoto(grid, photo) {
+    var link = document.createElement("a");
+    link.href = photo.secure_url;
+    link.target = "_blank";
+    link.rel = "noopener";
+
+    var img = document.createElement("img");
+    img.src = photo.secure_url;
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.alt = "";
+
+    link.appendChild(img);
+    grid.appendChild(link);
+  }
+
+  fetch("./photos-data.json")
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error(r.status)); })
+    .then(function (data) {
+      var photos = ((data && data.resources) || [])
+        .filter(function (p) { return p && p.secure_url; });
+      if (!photos.length) return;
+
+      var grid = document.getElementById("photo-grid");
+      var more = document.getElementById("photo-more");
+
+      photos.slice(0, INITIAL_PHOTOS).forEach(function (photo) {
+        renderPhoto(grid, photo);
+      });
+
+      var rest = photos.slice(INITIAL_PHOTOS);
+      if (rest.length) {
+        more.textContent = "More (" + rest.length + ")";
+        more.hidden = false;
+        more.addEventListener("click", function () {
+          // Off-screen images stay unfetched — they're all loading="lazy".
+          rest.forEach(function (photo) { renderPhoto(grid, photo); });
+          more.hidden = true;
+        });
+      }
+
+      document.getElementById("photos").hidden = false;
+    })
+    .catch(function () { /* section stays hidden */ });
+
+  /* ---------- Writing ---------- */
+
+  fetch("./blog-index.json")
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error(r.status)); })
+    .then(function (data) {
+      var posts = ((data && data.posts) || [])
+        .filter(function (p) { return p && p.title; });
+      if (!posts.length) return;
+
+      var section = document.getElementById("writing");
+      var heading = document.getElementById("writing-heading");
+      var list    = document.getElementById("post-list");
+      var view    = document.getElementById("post-view");
+      var body    = document.getElementById("post-body");
+
+      posts.forEach(function (post) {
+        var li = document.createElement("li");
+        var wrap = document.createElement("div");
+
+        var p = document.createElement("p");
+        p.className = "item-body";
+
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "post-link";
+        btn.textContent = post.title;
+        btn.addEventListener("click", function () { openPost(post); });
+        p.appendChild(btn);
+
+        if (post.dateFormatted || post.date) {
+          var dash = document.createElement("span");
+          dash.className = "dash";
+          dash.textContent = " — ";
+          var when = document.createElement("span");
+          when.className = "post-date";
+          when.textContent = post.dateFormatted || post.date;
+          p.appendChild(dash);
+          p.appendChild(when);
+        }
+
+        wrap.appendChild(p);
+
+        if (post.excerpt) {
+          var ex = document.createElement("p");
+          ex.className = "post-excerpt";
+          ex.textContent = post.excerpt;
+          wrap.appendChild(ex);
+        }
+
+        li.appendChild(wrap);
+        list.appendChild(li);
+      });
+
+      // post.html is pre-rendered from our own blog/*.md by scripts/update.js.
+      function openPost(post) {
+        heading.textContent = post.title;
+        body.innerHTML = post.html || "";
+        list.hidden = true;
+        view.hidden = false;
+        heading.scrollIntoView({ block: "start", behavior: "smooth" });
+      }
+
+      document.getElementById("post-back").addEventListener("click", function () {
+        heading.textContent = "Writing";
+        body.innerHTML = "";
+        view.hidden = true;
+        list.hidden = false;
+        heading.scrollIntoView({ block: "start", behavior: "smooth" });
+      });
+
+      section.hidden = false;
+    })
+    .catch(function () { /* section stays hidden */ });
 })();
 </script>
 </body>
