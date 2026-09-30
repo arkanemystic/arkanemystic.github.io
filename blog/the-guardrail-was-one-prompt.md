@@ -1,5 +1,5 @@
 ---
-title: The guardrail was one line in the prompt
+title: one-line-guardrail
 date: 2026-09-29
 excerpt: Self-evolving agents can rewrite their own prompts, so we built one whose guardrails it can't touch, and measured whether it still got better.
 ---
