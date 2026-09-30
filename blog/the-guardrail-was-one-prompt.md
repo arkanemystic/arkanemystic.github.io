@@ -15,7 +15,7 @@ In order to create self evolving agent harnesses, you give the model the ability
 
 ## Two gates
 
-We decided to build a self evolving coding harness, but designed to only change for measured performance benefits that align with a human’s intent. A great testing ground for Biject :) Every proposed change was checked by the [Lean-Agent Protocol](https://github.com/arkanemystic/lean-agent-protocol) (a distilled version of the Biject API, since the core is proprietary), checked against a formal spec written in Lean, which is outside of the harness’s grasp. Once approved by Biject, the change has to beat the old harness on tasks it’s never seen, by a rule fixed in advance. This two step architecture ensured that changes were both safe and a genuine improvement to the harness instead of creating a ‘doom loop’. We utilized MongoDB Atlas to hold the loop's state. Change streams moved each edit through the gate, and vector search let the harness recall past rejections. 
+We decided to build a self evolving coding harness, but designed to only change for measured performance benefits that align with a human’s intent. Every proposed change was checked by the [Lean-Agent Protocol](https://github.com/arkanemystic/lean-agent-protocol) (a distilled version of the Biject API, since the core is proprietary), checked against a formal spec written in Lean, which is outside of the harness’s grasp. Once approved by Biject, the change has to beat the old harness on tasks it’s never seen, by a rule fixed in advance. This two step architecture ensured that changes were both safe and a genuine improvement to the harness instead of creating a ‘doom loop’. We utilized MongoDB Atlas to hold the loop's state. Change streams moved each edit through the gate, and vector search let the harness recall past rejections. 
 
 ## Results
 
@@ -27,5 +27,3 @@ On 40 unseen coding problems over 3 runs, the harness improved from 59% to 71% u
 ## Why it matters
 
 A harness that rewrites itself to score higher is as adversarial as it gets, and it’s exactly where prompt-based guardrails break first. Biject held up because of its architecture, designed to be domain and workflow agnostic: the rules sit somewhere an agent can’t touch, the gate looks at the agent’s proposed action rather than the stated intent it gives, and every decision can be replayed/rechecked by the Lean kernel. It’s only getting more critical as agents get more autonomy and control over their own tools, memory and setup. Monitoring them with another model delivers a confidence score. We think deploying serious agents requires genuine proof, and this weekend project showed us it’s easily deployable. If an agent can edit its own guardrails, they aren’t really guardrails. 
-
-Check out Biject [here](https://bijectai.com) :D
