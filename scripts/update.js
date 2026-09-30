@@ -131,7 +131,7 @@ function postPageHtml(post) {
   a {
     color: inherit;
     text-decoration: underline;
-    text-decoration-color: var(--rule);
+    text-decoration-color: var(--muted);
     text-underline-offset: 2px;
     text-decoration-thickness: 1px;
     transition: text-decoration-color .12s ease;
