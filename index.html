@@ -470,7 +470,8 @@
 
   /* ---------- Writing ---------- */
 
-  fetch("./blog-index.json")
+  // no-cache: revalidate so new or renamed posts show up without waiting out the 10-min Pages cache.
+  fetch("./blog-index.json", { cache: "no-cache" })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error(r.status)); })
     .then(function (data) {
       var posts = ((data && data.posts) || [])

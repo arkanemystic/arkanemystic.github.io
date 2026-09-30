@@ -1,7 +1,7 @@
 {
   "posts": [
     {
-      "title": "one-line-guardrail",
+      "title": "The guardrail was one line in the prompt",
       "slug": "one-line-guardrail",
       "url": "/blog/one-line-guardrail",
       "date": "2026-09-29T00:00:00.000Z",
