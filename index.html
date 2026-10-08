@@ -160,6 +160,7 @@
   .photo-grid a:hover img { opacity: 1; }
 
   .more-btn {
+    display: inline-block;
     appearance: none;
     background: none;
     border: 0;
@@ -253,7 +254,7 @@
 
   <section id="photos" hidden>
     <div class="photo-grid" id="photo-grid"></div>
-    <button type="button" class="more-btn" id="photo-more" hidden></button>
+    <a class="more-btn" id="photo-more" href="photos.html" hidden>All photos →</a>
   </section>
 
 </main>
@@ -453,16 +454,10 @@
         renderPhoto(grid, photo);
       });
 
-      var rest = photos.slice(INITIAL_PHOTOS);
-      if (rest.length) {
-        more.textContent = "More (" + rest.length + ")";
-        more.hidden = false;
-        more.addEventListener("click", function () {
-          // Off-screen images stay unfetched — they're all loading="lazy".
-          rest.forEach(function (photo) { renderPhoto(grid, photo); });
-          more.hidden = true;
-        });
+      if (photos.length > INITIAL_PHOTOS) {
+        more.textContent = "All " + photos.length + " photos →";
       }
+      more.hidden = false;
 
       document.getElementById("photos").hidden = false;
     })
