@@ -1,6 +1,13 @@
 {
   "resources": [
     {
+      "public_id": "PXL_20260818_102703818_kilrmn",
+      "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/v1791433111/PXL_20260818_102703818_kilrmn.jpg",
+      "photo_date": "2026-10-08T04:18:31Z",
+      "taken_at": "2026-10-08T04:18:31Z",
+      "caption": "{caption}"
+    },
+    {
       "public_id": "20260605_204909_tpxk6t",
       "secure_url": "https://res.cloudinary.com/dqpl3a9gb/image/upload/v1785474981/20260605_204909_tpxk6t.jpg",
       "photo_date": "2026-07-31T05:16:21Z"
