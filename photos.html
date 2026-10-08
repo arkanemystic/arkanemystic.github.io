@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photos — Devakh Rashie</title>
+<meta name="description" content="Photos by Devakh Rashie.">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta property="og:title" content="Photos — Devakh Rashie">
+<meta property="og:description" content="Photos by Devakh Rashie.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://devrashie.space/photos">
+<style>
+  :root {
+    --bg:    #ffffff;
+    --fg:    #000000;
+    --muted: #666666;
+    --rule:  #e0e0e0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:    #0d0d0d;
+      --fg:    #ededed;
+      --muted: #8c8c8c;
+      --rule:  #262626;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .page {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 5rem 1.5rem 6rem;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--muted);
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+    transition: text-decoration-color .12s ease;
+  }
+  a:hover { text-decoration-color: var(--fg); }
+  a:focus-visible { outline: 1px solid var(--fg); outline-offset: 3px; }
+
+  .back { margin: 0 0 2.75rem; color: var(--muted); }
+
+  h1 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 .5rem;
+  }
+
+  .intro { margin: 0; color: var(--muted); }
+
+  /* ---------- timeline ---------- */
+
+  .timeline {
+    position: relative;
+    margin-top: 2.75rem;
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--rule);
+  }
+
+  .year + .year { margin-top: 2.75rem; }
+
+  .year h2 {
+    position: relative;
+    font-size: .95rem;
+    font-weight: 600;
+    margin: 0 0 .85rem;
+    font-variant-numeric: tabular-nums;
+  }
+  /* the year's mark on the line */
+  .year h2::before {
+    content: "";
+    position: absolute;
+    left: calc(-1.5rem - 4px);
+    top: .62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--muted);
+  }
+  .year .count { color: var(--muted); font-weight: 400; }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: .4rem;
+  }
+
+  .thumb {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: var(--rule);
+    line-height: 0;
+    cursor: zoom-in;
+  }
+  .thumb:focus-visible { outline: 1px solid var(--fg); outline-offset: 3px; }
+  .thumb img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    filter: grayscale(100%);
+    opacity: .85;
+    transition: opacity .15s ease, filter .3s ease;
+  }
+  .thumb:hover img,
+  .thumb:focus-visible img { opacity: 1; filter: none; }
+
+  .status { color: var(--muted); margin: 2.75rem 0 0; }
+
+  /* ---------- lightbox ---------- */
+
+  dialog.lightbox {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 1.5rem;
+    border: 0;
+    background: var(--bg);
+    color: var(--fg);
+  }
+  dialog.lightbox[open] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    animation: fade .15s ease;
+  }
+  dialog.lightbox::backdrop { background: var(--bg); }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+  .lb-figure {
+    margin: 0;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  .lb-figure img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .lb-meta {
+    width: 100%;
+    max-width: 40rem;
+    flex-shrink: 0;
+  }
+  .lb-caption { margin: 0; }
+  .lb-date { margin: 0; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .lb-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem 1.25rem;
+    margin-top: .5rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .lb-nav .counter { margin-right: auto; }
+
+  .link-btn {
+    appearance: none;
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    color: var(--muted);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: var(--muted);
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+    transition: color .12s ease, text-decoration-color .12s ease;
+  }
+  .link-btn:hover { color: var(--fg); text-decoration-color: var(--fg); }
+  .link-btn:focus-visible { outline: 1px solid var(--fg); outline-offset: 3px; }
+
+  [hidden] { display: none !important; }
+
+  /* ---------- small screens ---------- */
+
+  @media (max-width: 560px) {
+    .page { padding: 3rem 1.25rem 4rem; }
+    .timeline { padding-left: 1.1rem; }
+    .year h2::before { left: calc(-1.1rem - 4px); }
+    .photo-grid { grid-template-columns: repeat(3, 1fr); }
+    dialog.lightbox { padding: 1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+  <p class="back"><a href="./">← Devakh Rashie</a></p>
+  <h1>Photos</h1>
+  <p class="intro" id="intro"></p>
+
+  <div class="timeline" id="timeline" hidden></div>
+  <p class="status" id="status" hidden></p>
+</main>
+
+<dialog class="lightbox" id="lightbox" aria-label="Photo">
+  <figure class="lb-figure" id="lb-figure">
+    <img id="lb-img" alt="">
+  </figure>
+  <div class="lb-meta">
+    <p class="lb-caption" id="lb-caption" hidden></p>
+    <p class="lb-date" id="lb-date"></p>
+    <div class="lb-nav">
+      <span class="counter" id="lb-counter"></span>
+      <button type="button" class="link-btn" id="lb-prev">← Prev</button>
+      <button type="button" class="link-btn" id="lb-next">Next →</button>
+      <button type="button" class="link-btn" id="lb-close">Close</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function () {
+  "use strict";
+
+  var MONTHS = ["January","February","March","April","May","June",
+                "July","August","September","October","November","December"];
+
+  // Camera filenames carry the capture date: 20250613_122821, IMG_20231011_101104,
+  // IMG-20250928-WA0010, PXL_20221024_035857575. Cloudinary's own upload date is
+  // useless here (everything was uploaded the same night), so trust the filename.
+  function parseTaken(id) {
+    var m = /(?:^|[^0-9])((?:19|20)\d{2})[-_]?(\d{2})[-_]?(\d{2})(?:[-_](\d{2})(\d{2})(\d{2}))?/.exec(id);
+    if (!m) return null;
+    var y = +m[1], mo = +m[2], d = +m[3];
+    if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+    var hasTime = m[4] !== undefined;
+    return { y: y, mo: mo, d: d, h: hasTime ? +m[4] : null, mi: hasTime ? +m[5] : null,
+             t: Date.UTC(y, mo - 1, d, hasTime ? +m[4] : 12, hasTime ? +m[5] : 0) };
+  }
+
+  // Phone uploads whose filename has no date carry their upload time instead.
+  function fromISO(iso) {
+    var d = iso ? new Date(iso) : null;
+    if (!d || isNaN(d)) return null;
+    return { y: d.getFullYear(), mo: d.getMonth() + 1, d: d.getDate(),
+             h: d.getHours(), mi: d.getMinutes(), t: d.getTime() };
+  }
+
+  function formatDate(taken) {
+    if (!taken) return "Undated";
+    var s = MONTHS[taken.mo - 1] + " " + taken.d + ", " + taken.y;
+    if (taken.h !== null) {
+      var h = taken.h % 12 || 12;
+      s += " · " + h + ":" + (taken.mi < 10 ? "0" : "") + taken.mi + (taken.h < 12 ? " AM" : " PM");
+    }
+    return s;
+  }
+
+  function sized(url, w) {
+    return url.replace("/upload/", "/upload/c_limit,w_" + w + ",q_auto/");
+  }
+
+  function getJSON(url) {
+    // no-cache: revalidate so new captions show up without waiting out the Pages cache.
+    return fetch(url, { cache: "no-cache" })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error(r.status)); });
+  }
+
+  var photos = [];
+  var thumbs = [];
+
+  /* ---------- timeline ---------- */
+
+  function render() {
+    var timeline = document.getElementById("timeline");
+    var groups = [];
+    var byKey = {};
+    photos.forEach(function (p, i) {
+      var key = p.taken ? String(p.taken.y) : "Undated";
+      if (!byKey[key]) { byKey[key] = { key: key, indexes: [] }; groups.push(byKey[key]); }
+      byKey[key].indexes.push(i);
+    });
+
+    groups.forEach(function (group) {
+      var section = document.createElement("section");
+      section.className = "year";
+
+      var h2 = document.createElement("h2");
+      h2.textContent = group.key + " ";
+      var count = document.createElement("span");
+      count.className = "count";
+      count.textContent = "— " + group.indexes.length;
+      h2.appendChild(count);
+      section.appendChild(h2);
+
+      var grid = document.createElement("div");
+      grid.className = "photo-grid";
+      group.indexes.forEach(function (i) {
+        var p = photos[i];
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "thumb";
+        btn.setAttribute("aria-label", p.caption || formatDate(p.taken));
+
+        var img = document.createElement("img");
+        img.src = sized(p.secure_url, 480);
+        img.loading = "lazy";
+        img.decoding = "async";
+        img.alt = "";
+        btn.appendChild(img);
+
+        btn.addEventListener("click", function () { openLightbox(i); });
+        thumbs[i] = btn;
+        grid.appendChild(btn);
+      });
+      section.appendChild(grid);
+      timeline.appendChild(section);
+    });
+
+    var dated = photos.filter(function (p) { return p.taken; });
+    var intro = photos.length + " photos";
+    if (dated.length) intro += ", " + dated[dated.length - 1].taken.y + "–" + dated[0].taken.y;
+    document.getElementById("intro").textContent = intro + ".";
+
+    timeline.hidden = false;
+  }
+
+  /* ---------- lightbox ---------- */
+
+  var dialog = document.getElementById("lightbox");
+  var lbImg = document.getElementById("lb-img");
+  var lbCaption = document.getElementById("lb-caption");
+  var lbDate = document.getElementById("lb-date");
+  var lbCounter = document.getElementById("lb-counter");
+  var current = 0;
+
+  function show(index) {
+    current = (index + photos.length) % photos.length;
+    var p = photos[current];
+    lbImg.src = sized(p.secure_url, 1600);
+    lbImg.alt = p.caption || "Photo, " + formatDate(p.taken);
+    lbCaption.textContent = p.caption || "";
+    lbCaption.hidden = !p.caption;
+    lbDate.textContent = formatDate(p.taken);
+    lbCounter.textContent = (current + 1) + " / " + photos.length;
+    // warm the cache for the neighbours
+    [current - 1, current + 1].forEach(function (j) {
+      new Image().src = sized(photos[(j + photos.length) % photos.length].secure_url, 1600);
+    });
+  }
+
+  function openLightbox(index) {
+    show(index);
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else window.open(photos[index].secure_url, "_blank", "noopener");
+  }
+
+  function closeLightbox() { dialog.close(); }
+
+  dialog.addEventListener("close", function () {
+    if (thumbs[current]) thumbs[current].focus({ preventScroll: true });
+  });
+
+  document.getElementById("lb-prev").addEventListener("click", function () { show(current - 1); });
+  document.getElementById("lb-next").addEventListener("click", function () { show(current + 1); });
+  document.getElementById("lb-close").addEventListener("click", closeLightbox);
+  // clicking empty space around the photo closes it
+  document.getElementById("lb-figure").addEventListener("click", function (e) {
+    if (e.target !== lbImg) closeLightbox();
+  });
+  dialog.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowLeft") show(current - 1);
+    else if (e.key === "ArrowRight") show(current + 1);
+  });
+
+  // swipe left/right on touch screens
+  var touchX = null;
+  dialog.addEventListener("touchstart", function (e) { touchX = e.touches[0].clientX; }, { passive: true });
+  dialog.addEventListener("touchend", function (e) {
+    if (touchX === null) return;
+    var dx = e.changedTouches[0].clientX - touchX;
+    touchX = null;
+    if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+  });
+
+  /* ---------- load ---------- */
+
+  // Captions live in photo-captions.json, keyed by public_id. Missing file = no captions.
+  var captionsReq = getJSON("./photo-captions.json").catch(function () { return {}; });
+
+  Promise.all([getJSON("./photos-data.json"), captionsReq])
+    .then(function (res) {
+      var data = res[0], captions = res[1] || {};
+      photos = ((data && data.resources) || [])
+        .filter(function (p) { return p && p.secure_url; })
+        .map(function (p) {
+          var c = captions[p.public_id];
+          if (typeof c !== "string" || !c.trim()) c = p.caption || "";
+          return {
+            secure_url: p.secure_url,
+            taken: parseTaken(p.public_id || "") || fromISO(p.taken_at),
+            caption: c.trim()
+          };
+        });
+
+      // Newest first; undated ones go at the end.
+      photos.sort(function (a, b) {
+        if (a.taken && b.taken) return b.taken.t - a.taken.t;
+        return a.taken ? -1 : b.taken ? 1 : 0;
+      });
+
+      if (!photos.length) throw new Error("empty");
+      render();
+    })
+    .catch(function () {
+      var status = document.getElementById("status");
+      status.textContent = "No photos yet.";
+      status.hidden = false;
+    });
+})();
+</script>
+</body>
+</html>

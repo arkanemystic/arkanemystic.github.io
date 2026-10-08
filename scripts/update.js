@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
  * update.js — regenerates blog-index.json and photos-data.json
+ * (and adds any new photos to photo-captions.json, leaving existing captions alone)
  *
  * Usage:
  *   node scripts/update.js            # update both blog and photos
@@ -286,6 +287,9 @@ async function updateBlog() {
 }
 
 // ── Photos ────────────────────────────────────────────────────────────────────
+// Tag the phone upload preset adds to every photo (see PHOTOS.md).
+const PHONE_TAG = 'phone-upload';
+
 async function updatePhotos() {
   const cloudName  = process.env.CLOUDINARY_CLOUD_NAME;
   const apiKey     = process.env.CLOUDINARY_API_KEY;
@@ -309,7 +313,8 @@ async function updatePhotos() {
   let nextCursor;
 
   do {
-    const opts = { type: 'upload', max_results: 500 };
+    // context: captions typed on the phone arrive as context.custom.caption
+    const opts = { type: 'upload', max_results: 500, context: true, tags: true };
     if (folder) opts.prefix = folder;
     if (nextCursor) opts.next_cursor = nextCursor;
     const res = await cloudinary.api.resources(opts);
@@ -317,13 +322,29 @@ async function updatePhotos() {
     nextCursor = res.next_cursor;
   } while (nextCursor);
 
-  const out = resources.map(r => ({
-    public_id:  r.public_id,
-    secure_url: r.format === 'heic'
-      ? r.secure_url.replace('/upload/', '/upload/f_jpg,q_auto/')
-      : r.secure_url,
-    photo_date: r.created_at,
-  }));
+  // An empty listing almost always means a wrong folder or a Cloudinary hiccup;
+  // writing it out would wipe every photo off the site.
+  if (!resources.length) {
+    console.error(`No photos found in folder "${folder}" — leaving photos-data.json untouched.`);
+    process.exit(1);
+  }
+
+  const out = resources.map(r => {
+    const photo = {
+      public_id:  r.public_id,
+      secure_url: r.format === 'heic'
+        ? r.secure_url.replace('/upload/', '/upload/f_jpg,q_auto/')
+        : r.secure_url,
+      photo_date: r.created_at,
+    };
+    // Phone uploads are posted right after they're taken, so the upload time is a
+    // fair stand-in when the filename carries no date. (Older bulk uploads all
+    // share one upload night, so they don't get this.)
+    if ((r.tags || []).includes(PHONE_TAG)) photo.taken_at = r.created_at;
+    const caption = r.context && r.context.custom && r.context.custom.caption;
+    if (caption) photo.caption = caption;
+    return photo;
+  });
 
   // Newest first
   out.sort((a, b) => new Date(b.photo_date) - new Date(a.photo_date));
@@ -331,6 +352,33 @@ async function updatePhotos() {
   const outPath = path.join(ROOT, 'photos-data.json');
   fs.writeFileSync(outPath, JSON.stringify({ resources: out }, null, 2));
   console.log(`✓ photos-data.json — ${out.length} photo(s)`);
+
+  syncCaptions(out);
+}
+
+// photo-captions.json maps public_id → caption and is edited by hand. Add an
+// entry for every photo so there's a slot to fill in; never drop or overwrite one,
+// so captions survive a photo being temporarily removed from Cloudinary.
+function syncCaptions(photos) {
+  const capPath = path.join(ROOT, 'photo-captions.json');
+  let existing = {};
+  if (fs.existsSync(capPath)) {
+    try {
+      existing = JSON.parse(fs.readFileSync(capPath, 'utf8'));
+    } catch (err) {
+      console.error(`photo-captions.json is not valid JSON, leaving it alone: ${err.message}`);
+      return;
+    }
+  }
+
+  // A caption written in the file wins; one typed on the phone fills an empty slot.
+  const merged = {};
+  photos.forEach(p => { merged[p.public_id] = existing[p.public_id] || p.caption || ''; });
+  Object.keys(existing).forEach(id => { if (!(id in merged)) merged[id] = existing[id]; });
+
+  const added = photos.filter(p => !(p.public_id in existing)).length;
+  fs.writeFileSync(capPath, JSON.stringify(merged, null, 2) + '\n');
+  console.log(`✓ photo-captions.json — ${added} new slot(s)`);
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────

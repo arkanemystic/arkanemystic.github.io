@@ -1,0 +1,66 @@
+# Workflow: pull the photo list (and any captions typed on the phone) from Cloudinary
+# into photos-data.json / photo-captions.json, commit, and redeploy the site.
+# Triggers: the phone shortcut calls workflow_dispatch right after an upload (see PHOTOS.md);
+# the schedule is a safety net in case that call fails.
+name: Sync Photos
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *' # every 6 hours
+
+permissions:
+  contents: write # commit the updated JSON
+  pages: write    # request a Pages rebuild
+
+# Two uploads in a row shouldn't race each other to push.
+concurrency:
+  group: sync-photos
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Update photos data from Cloudinary
+        env:
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          # Photos live at the root of the Cloudinary account; unset would default to "photos/".
+          CLOUDINARY_FOLDER: ''
+        run: node scripts/update.js --photos
+
+      - name: Commit and push
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add photos-data.json photo-captions.json
+          if git diff --cached --quiet; then
+            echo "No photo changes"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "chore: sync photos from Cloudinary"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Belt and braces: make sure Pages picks up a push made with GITHUB_TOKEN.
+      - name: Request Pages build
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds" || true
