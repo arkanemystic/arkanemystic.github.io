@@ -1,6 +1,14 @@
 {
   "posts": [
     {
+      "title": "The derivative of advice",
+      "slug": "derivative-of-advice",
+      "url": "/blog/derivative-of-advice",
+      "date": "2026-10-28T00:00:00.000Z",
+      "dateFormatted": "October 28, 2026",
+      "excerpt": "My guidelines to filter advice."
+    },
+    {
       "title": "The guardrail was one line in the prompt",
       "slug": "one-line-guardrail",
       "url": "/blog/one-line-guardrail",
